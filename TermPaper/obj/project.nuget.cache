@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "3q+hscr9aUM=",
+  "dgSpecHash": "BXSjVqhi6tI=",
   "success": true,
   "projectFilePath": "C:\\Users\\Alexander\\RiderProjects\\TermPaper\\TermPaper\\TermPaper.csproj",
   "expectedPackageFiles": [
@@ -44,6 +44,7 @@
     "C:\\Users\\Alexander\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512",
     "C:\\Users\\Alexander\\.nuget\\packages\\npgsql\\10.0.3\\npgsql.10.0.3.nupkg.sha512",
     "C:\\Users\\Alexander\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\10.0.3\\npgsql.entityframeworkcore.postgresql.10.0.3.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\resend\\0.16.0\\resend.0.16.0.nupkg.sha512",
     "C:\\Users\\Alexander\\.nuget\\packages\\system.clientmodel\\1.8.0\\system.clientmodel.1.8.0.nupkg.sha512",
     "C:\\Users\\Alexander\\.nuget\\packages\\system.codedom\\6.0.0\\system.codedom.6.0.0.nupkg.sha512",
     "C:\\Users\\Alexander\\.nuget\\packages\\system.composition\\9.0.0\\system.composition.9.0.0.nupkg.sha512",

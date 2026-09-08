@@ -1,0 +1,9 @@
+C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\obj\Debug\net10.0\EmbeddedAttribute.cs
+C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\obj\Debug\net10.0\ValidatableTypeAttribute.cs
+C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\obj\Debug\net10.0\TermPaper.csproj.AssemblyReference.cache
+C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\obj\Debug\net10.0\TermPaper.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\obj\Debug\net10.0\TermPaper.AssemblyInfoInputs.cache
+C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\obj\Debug\net10.0\TermPaper.AssemblyInfo.cs
+C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\obj\Debug\net10.0\TermPaper.csproj.CoreCompileInputs.cache
+C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\obj\Debug\net10.0\TermPaper.MvcApplicationPartsAssemblyInfo.cache

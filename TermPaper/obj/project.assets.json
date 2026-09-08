@@ -917,6 +917,19 @@
           }
         }
       },
+      "Resend/0.16.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Resend.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Resend.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.ClientModel/1.8.0": {
         "type": "package",
         "dependencies": {
@@ -2942,6 +2955,21 @@
         "postgresql.png"
       ]
     },
+    "Resend/0.16.0": {
+      "sha512": "Zz601fI/zbRd/KkkfGfjfIw+87IrDXi4ekVGOXNnoOl97XakoMt7PvunY62PKBayo5BQs3C+MS8KPtWm+pWXBw==",
+      "type": "package",
+      "path": "resend/0.16.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "icon.png",
+        "lib/net8.0/Resend.dll",
+        "lib/net8.0/Resend.xml",
+        "resend.0.16.0.nupkg.sha512",
+        "resend.nuspec"
+      ]
+    },
     "System.ClientModel/1.8.0": {
       "sha512": "AqRzhn0v29GGGLj/Z6gKq4lGNtvPHT4nHdG5PDJh9IfVjv/nYUVmX11hwwws1vDFeIAzrvmn0dPu8IjLtu6fAw==",
       "type": "package",
@@ -3307,7 +3335,8 @@
       "Microsoft.EntityFrameworkCore.InMemory >= 10.0.11",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.11",
       "Microsoft.EntityFrameworkCore.Tools >= 10.0.11",
-      "Npgsql.EntityFrameworkCore.PostgreSQL >= 10.0.3"
+      "Npgsql.EntityFrameworkCore.PostgreSQL >= 10.0.3",
+      "Resend >= 0.16.0"
     ]
   },
   "packageFolders": {
@@ -3392,6 +3421,10 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": {
             "target": "Package",
             "version": "[10.0.3, )"
+          },
+          "Resend": {
+            "target": "Package",
+            "version": "[0.16.0, )"
           }
         },
         "imports": [

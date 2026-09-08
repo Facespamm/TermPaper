@@ -1,0 +1,43 @@
+﻿    @page "/RegisterPage"
+    @using Microsoft.AspNetCore.Identity
+    @using TermPaper.Services
+    @inject AutorisationsServices AutorServices
+    <div class="Register-page">
+        <div class="register-form">
+            <form>
+                <h3>Register form</h3>
+                <label for="exampleUserName">User name</label>
+                <input @bind="userName" class="form-control" id="exampleUserName" placeholder="User name" required/>
+                <label for="exampleEmail">Email</label>
+                <input @bind="email" class="form-control" id="exampleEmail" placeholder="Email" required/>
+                <label for="examplePassword">Password</label>
+                <input type="password" @bind="password" class="form-control" id="examplePassword" placeholder="Password" required/>
+                <label for="exampleCheckPassword">Check password</label>
+                <input @bind="checkPassword" class="form-control" id="exampleCheckPassword" placeholder="Check Password" required/>
+                <button type="button" @onclick="HandleClick">Register</button>
+                @if (!string.IsNullOrWhiteSpace(result))
+                {
+                    <div class="alert alert-success">
+                        @result
+                    </div>
+                }
+                <p><a href="/LoginPage">Do you have a account?</a></p>
+            </form>
+        </div>
+        <div class="register-img"></div>
+    </div>
+    @code {
+        private string userName = "";
+        private string password = "";
+        private string email = "";
+        private string checkPassword = "";
+        private string result = "";
+
+        private async Task HandleClick()
+        {
+        var reg=  await AutorServices.RegisterUserAsync( userName, password, email, checkPassword);
+        if (!reg.Succeeded)
+        {result ="Failed to register. Please try again."; return;}
+        result = "A confirmation email has been sent to your email address.";
+        }
+    }

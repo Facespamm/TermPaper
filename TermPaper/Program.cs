@@ -3,15 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using TermPaper.Components;
 using TermPaper.Context;
 using TermPaper.Models;
+using TermPaper.Services;
+using Resend;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddDbContext<AppDbContext>(options =>options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
-
+builder.Services.AddIdentity<AppUser,IdentityRole>(options=>options.SignIn.RequireConfirmedEmail=true).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+builder.Services.AddScoped<RegisterServices>();
+builder.Services.AddScoped<AutorisationsServices>();
+builder.Services.AddResend(options=>options.ApiToken=Environment.GetEnvironmentVariable("RESEND_TOKEN"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
