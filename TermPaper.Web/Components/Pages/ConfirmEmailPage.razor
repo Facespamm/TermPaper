@@ -1,0 +1,25 @@
+﻿@page "/ConfirmEmailPage"
+@using Microsoft.AspNetCore.Identity
+@using TermPaper.Services
+@inject AutorisationsServices Autorisations
+<h3>Confirm email page</h3>
+<p>Please enter button and confirm your email</p>
+<button type="button" @onclick="ConfirmClick">Confirm</button>
+
+@if (!string.IsNullOrWhiteSpace(result))
+{
+    <div class="alert-success">@result</div>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    private string email  { get; set; }
+    [SupplyParameterFromQuery]
+    private string token   { get; set; }
+    private string result = "";
+    public async Task ConfirmClick()
+    {
+        var confirm = await Autorisations.ConfirmEmailAsync(email, token);
+        if(!confirm.Succeeded){ result = "Failed to confirm email"; return;  ; }
+        result = "Success"; }
+}

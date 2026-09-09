@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "CYpivrg3rnU=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Alexander\\Documents\\GitHub\\TermPaper\\TermPaper.Application\\TermPaper.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Alexander\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.12\\microsoft.extensions.dependencyinjection.abstractions.10.0.12.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -12,7 +12,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddDbContext<AppDbContext>(options =>options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<AppUser,IdentityRole>(options=>options.SignIn.RequireConfirmedEmail=true).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
-builder.Services.AddScoped<RegisterServices>();
 builder.Services.AddScoped<AutorisationsServices>();
 builder.Services.AddResend(options=>options.ApiToken=Environment.GetEnvironmentVariable("RESEND_TOKEN"));
 var app = builder.Build();

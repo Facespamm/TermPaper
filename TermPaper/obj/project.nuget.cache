@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BXSjVqhi6tI=",
+  "dgSpecHash": "SOfh1G+7rus=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Alexander\\RiderProjects\\TermPaper\\TermPaper\\TermPaper.csproj",
+  "projectFilePath": "C:\\Users\\Alexander\\Documents\\GitHub\\TermPaper\\TermPaper\\TermPaper.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Alexander\\.nuget\\packages\\azure.core\\1.50.0\\azure.core.1.50.0.nupkg.sha512",
     "C:\\Users\\Alexander\\.nuget\\packages\\azure.identity\\1.17.1\\azure.identity.1.17.1.nupkg.sha512",

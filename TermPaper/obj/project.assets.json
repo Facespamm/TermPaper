@@ -3345,11 +3345,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Alexander\\RiderProjects\\TermPaper\\TermPaper\\TermPaper.csproj",
+      "projectUniqueName": "C:\\Users\\Alexander\\Documents\\GitHub\\TermPaper\\TermPaper\\TermPaper.csproj",
       "projectName": "TermPaper",
-      "projectPath": "C:\\Users\\Alexander\\RiderProjects\\TermPaper\\TermPaper\\TermPaper.csproj",
+      "projectPath": "C:\\Users\\Alexander\\Documents\\GitHub\\TermPaper\\TermPaper\\TermPaper.csproj",
       "packagesPath": "C:\\Users\\Alexander\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Alexander\\RiderProjects\\TermPaper\\TermPaper\\obj\\",
+      "outputPath": "C:\\Users\\Alexander\\Documents\\GitHub\\TermPaper\\TermPaper\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Alexander\\AppData\\Roaming\\NuGet\\NuGet.Config"

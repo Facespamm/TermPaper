@@ -31,7 +31,7 @@ public class AutorisationsServices
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var send = await SendEmailAsync(user, token);
-        if(!send.Succeeded){ return IdentityResult.Failed(); }
+        if(!send.Succeeded){ return IdentityResult.Failed(); }  
         return IdentityResult.Success;
     }
 

@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "dgSpecHash": "MpX3JD9MjHQ=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Alexander\\Documents\\GitHub\\TermPaper\\TermPaper.Web\\TermPaper.Web.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Alexander\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.11\\microsoft.aspnetcore.app.internal.assets.10.0.11.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\10.0.12\\microsoft.aspnetcore.identity.entityframeworkcore.10.0.12.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\microsoft.entityframeworkcore\\10.0.12\\microsoft.entityframeworkcore.10.0.12.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\10.0.12\\microsoft.entityframeworkcore.abstractions.10.0.12.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\10.0.12\\microsoft.entityframeworkcore.analyzers.10.0.12.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\10.0.12\\microsoft.entityframeworkcore.inmemory.10.0.12.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\10.0.12\\microsoft.entityframeworkcore.relational.10.0.12.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\npgsql\\10.0.3\\npgsql.10.0.3.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\10.0.3\\npgsql.entityframeworkcore.postgresql.10.0.3.nupkg.sha512",
+    "C:\\Users\\Alexander\\.nuget\\packages\\resend\\0.16.0\\resend.0.16.0.nupkg.sha512"
+  ],
+  "logs": []
+}

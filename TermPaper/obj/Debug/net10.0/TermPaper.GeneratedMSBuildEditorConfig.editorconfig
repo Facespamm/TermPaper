@@ -20,57 +20,61 @@ build_property.TargetFrameworkVersion = v10.0
 build_property.EntryPointFilePath = 
 build_property.RootNamespace = TermPaper
 build_property.RootNamespace = TermPaper
-build_property.ProjectDir = C:\Users\Alexander\RiderProjects\TermPaper\TermPaper\
+build_property.ProjectDir = C:\Users\Alexander\Documents\GitHub\TermPaper\TermPaper\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 10.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Alexander\RiderProjects\TermPaper\TermPaper
+build_property.MSBuildProjectDirectory = C:\Users\Alexander\Documents\GitHub\TermPaper\TermPaper
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/App.razor]
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/App.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/Pages/Error.razor]
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Pages/ConfirmEmailPage.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb25maXJtRW1haWxQYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/Pages/Home.razor]
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/Pages/LoginPage.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xMb2dpblBhZ2UucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/Pages/NotFound.razor]
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Pages/NotFound.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOb3RGb3VuZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/Pages/RegisterPage.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xSZWdpc3RlclBhZ2UucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/Routes.razor]
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Routes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/_Imports.razor]
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/Layout/MainLayout.razor]
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Layout/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTWFpbkxheW91dC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-azs69mkxl9
 
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/Layout/NavMenu.razor]
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTmF2TWVudS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-1eubl0p792
 
-[C:/Users/Alexander/RiderProjects/TermPaper/TermPaper/Components/Layout/ReconnectModal.razor]
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Layout/ReconnectModal.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcUmVjb25uZWN0TW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-u3aknn8z0b
+
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Pages/LoginPage.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xMb2dpblBhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-bpakwwzln6
+
+[C:/Users/Alexander/Documents/GitHub/TermPaper/TermPaper/Components/Pages/RegisterPage.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xSZWdpc3RlclBhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-k7i7dwlhkb

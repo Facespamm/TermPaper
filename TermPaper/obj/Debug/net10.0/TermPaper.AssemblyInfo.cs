@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TermPaper")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9c3022f0fa4796f1338197b057c18d96c72091f8")]
 [assembly: System.Reflection.AssemblyProductAttribute("TermPaper")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TermPaper")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
