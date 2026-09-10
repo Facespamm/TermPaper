@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Resend;
+using TermPaper.Application.Common;
+using TermPaper.Application.Interface;
 using TermPaper.Context;
 using TermPaper.Models;
-using TermPaper.Services;
+using TermPaper.Application.Interface;
+using TermPaper.Infrastructure.Services;
 
 namespace TermPaper.Infrastructure;
 
@@ -19,8 +23,8 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddScoped<AutorisationsServices>();
-
+        services.AddScoped<IRegisteredServices, RegisteredServices>();
+        services.AddScoped<ILoginService,LoginService>();
         services.AddResend(options => options.ApiToken = Environment.GetEnvironmentVariable("RESEND_TOKEN"));
 
         return services;

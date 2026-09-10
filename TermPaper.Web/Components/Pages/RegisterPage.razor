@@ -1,7 +1,9 @@
 ﻿    @page "/RegisterPage"
     @using Microsoft.AspNetCore.Identity
-    @using TermPaper.Services
-    @inject AutorisationsServices AutorServices
+    
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Interface
+    @inject IRegisterService RegisterService
     <div class="Register-page">
         <div class="register-form">
             <form>
@@ -35,8 +37,8 @@
 
         private async Task HandleClick()
         {
-//var reg=  await AutorServices.RegisterUserAsync( userName, password, email, checkPassword);
-     //   if (!reg.Succeeded)
+        var reg=  await RegisterService.RegisterUserAsync( userName, password, email, checkPassword);
+        if (!reg.IsSuccess)
         {result ="Failed to register. Please try again."; return;}
         result = "A confirmation email has been sent to your email address.";
         }

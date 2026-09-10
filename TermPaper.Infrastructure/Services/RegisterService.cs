@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Resend;
-using TermPaper.Domain.Models;
+using TermPaper.Application.Common;
 using TermPaper.Enum;
-using TermPaper.Infrastructure.Services;
+using TermPaper.Application.Interface;
 
-namespace TermPaper.Services;
+namespace TermPaper.Infrastructure.Services;
 
-public class RegisterService
+public class RegisterService:IRegisterService
 {
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly IEmailSender  _emailSender;
+    private readonly ISenderEmail  _emailSender;
 
-    public RegisterService(UserManager<IdentityUser> userManager,IEmailSender  emailSender)
+    public RegisterService(UserManager<IdentityUser> userManager,ISenderEmail emailSender)
     {
         _userManager = userManager;
         _emailSender = emailSender;
@@ -32,18 +30,19 @@ public class RegisterService
         if (!result.Succeeded) {return Result.Failure(ErrorCode.PasswordsDoNotMatch);}
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-       // var send = await _emailSender.SendEmailAsync(email,token);
+        var confirmLink = $"https://online-recruiter/confirm-email?email={email}&token={token}";
+        var send = await _emailSender.SendEmailAsync(email,confirmLink);
         return Result.Success();
     }
     
-    public async Task<IdentityResult> ConfirmEmailAsync(string email, string token)
+    public async Task<Result> ConfirmEmailAsync(string email, string token)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        if (user == null){ return IdentityResult.Failed(); }
+        if (user == null){ return Result.Failure(ErrorCode.UserNotFound); }
         var result = await _userManager.ConfirmEmailAsync(user, token);
-        if (!result.Succeeded){ return IdentityResult.Failed(); }
+        if (!result.Succeeded){ return Result.Failure(ErrorCode.UserNotFound); }
 
-        return IdentityResult.Success;
+        return Result.Success();
     }
 
 

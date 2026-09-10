@@ -1,10 +1,11 @@
-﻿using TermPaper.Domain.Models;
+﻿using TermPaper.Application.Common;
+using TermPaper.Application.Common;
 
 namespace TermPaper.Application.Interface;
 
 public interface ILoginService
 {
-    Task<Result> LoginAsync (string email, string password);
-    Task<string>GeneratePasswordResetTokenAsync (string email);
+    Task<Result> LoginUsersAsync (string email, string password);
+    //Task<string>GeneratePasswordResetTokenAsync (string email);
     
 }

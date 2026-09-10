@@ -1,12 +1,12 @@
 ﻿using TermPaper.Enum;
 
-namespace TermPaper.Domain.Models;
+namespace TermPaper.Application.Common;
 
 public class Result
 {
-    private bool IsSuccess { get; }
-    private ErrorCode ErrorCode { get; }
-    private string? ErrorMessage { get; }
+    public bool IsSuccess { get; }
+    public ErrorCode ErrorCode { get; }
+    public string? ErrorMessage { get; }
 
     public Result(bool isSuccess, ErrorCode errorCode, string? errorMessage)
     {

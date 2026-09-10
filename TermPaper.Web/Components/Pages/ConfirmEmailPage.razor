@@ -1,7 +1,7 @@
 ﻿@page "/ConfirmEmailPage"
 @using Microsoft.AspNetCore.Identity
-@using TermPaper.Services
-@inject AutorisationsServices Autorisations
+@using TermPaper.Application.Interface
+@inject IRegisterService RegisterService
 <h3>Confirm email page</h3>
 <p>Please enter button and confirm your email</p>
 <button type="button" @onclick="ConfirmClick">Confirm</button>
@@ -19,7 +19,7 @@
     private string result = "";
     public async Task ConfirmClick()
     {
-       // var confirm = await Autorisations.ConfirmEmailAsync(email, token);
-//if(!confirm.Succeeded){ result = "Failed to confirm email"; return;  ; }
+        var confirm = await RegisterService.ConfirmEmailAsync(email, token);
+        if(!confirm.IsSuccess){ result = "Failed to confirm email"; return;}
         result = "Success"; }
 }

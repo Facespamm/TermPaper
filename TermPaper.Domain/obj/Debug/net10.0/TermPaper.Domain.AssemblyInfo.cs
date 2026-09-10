@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TermPaper.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+705340991f9e8881f79aadec4a85c33bce1a9617")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+64acfef522b1374e6b77d2664fe055d7895a0eae")]
 [assembly: System.Reflection.AssemblyProductAttribute("TermPaper.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TermPaper.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

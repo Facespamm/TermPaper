@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Resend;
+using TermPaper.Application.Interface;
+using TermPaper.Application.Common;
+using TermPaper.Enum;
 
 namespace TermPaper.Infrastructure.Services;
 
-public class LoginService
+public class LoginService:ILoginService
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
@@ -14,24 +17,21 @@ public class LoginService
         _signInManager = signInManager;
     }
 
-    public async Task<IdentityResult> LoginUsersAsync(string email, string password)
+    public async Task<Result> LoginUsersAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        if (user == null){ return IdentityResult.Failed(); }
+        if (user == null){ return Result.Failure(ErrorCode.UserNotFound); }
         var result = await _signInManager.PasswordSignInAsync(user,password, false, false);
-        if (!result.Succeeded){ return IdentityResult.Failed(); }
+        if (!result.Succeeded){ return Result.Failure(ErrorCode.PasswordsDoNotMatch); }
         if (result.IsNotAllowed)
         {
-            return IdentityResult.Failed(new IdentityError
-            {
-                Description = "Not allowed to confirm your email"
-            });
+            return Result.Failure(ErrorCode.None);
         }
         if (!result.Succeeded)
         {
-            return IdentityResult.Failed();
+            return Result.Failure(ErrorCode.None);
         }
 
-        return IdentityResult.Success;
+        return Result.Success();
     }
 }

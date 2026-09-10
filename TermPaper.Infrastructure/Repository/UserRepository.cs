@@ -1,7 +1,7 @@
-﻿using TermPaper.Domain.Models;
+﻿using TermPaper.Application.Common;
 using TermPaper.Interface;
 
-namespace TermPaper.Repository;
+namespace TermPaper.Infrastructure.Repository;
 
 public class UserRepository:IUserRepository
 {

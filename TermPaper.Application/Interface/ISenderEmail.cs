@@ -1,4 +1,4 @@
-﻿using TermPaper.Domain.Models;
+﻿using TermPaper.Application.Common;
 
 namespace TermPaper.Application.Interface;
 

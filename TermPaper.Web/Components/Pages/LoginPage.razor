@@ -1,8 +1,10 @@
 ﻿@page "/LoginPage"
 @using Microsoft.AspNetCore.Identity
-@using TermPaper.Services
-@inject AutorisationsServices Autorisations
+@using TermPaper.Application.Interface
+@inject ILoginService LoginService
 @inject NavigationManager Navigation
+@using TermPaper.Application
+@using TermPaper.Application.Common
 <div class="login-page">
     <div class="login-form">
         <form>
@@ -28,8 +30,8 @@
 
     private async Task HandleClick()
     {
-   //    var login = await Autorisations.LoginUsersAsync(email, password);
-   //    if (login.Succeeded){Navigation.NavigateTo("/");return;}
+       var login = await LoginService.LoginUsersAsync(email, password);
+        if (login.IsSuccess){Navigation.NavigateTo("/");return;}
        error = "Failed to login";
        
         
