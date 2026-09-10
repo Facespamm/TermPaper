@@ -35,8 +35,8 @@
 
         private async Task HandleClick()
         {
-        var reg=  await AutorServices.RegisterUserAsync( userName, password, email, checkPassword);
-        if (!reg.Succeeded)
+//var reg=  await AutorServices.RegisterUserAsync( userName, password, email, checkPassword);
+     //   if (!reg.Succeeded)
         {result ="Failed to register. Please try again."; return;}
         result = "A confirmation email has been sent to your email address.";
         }

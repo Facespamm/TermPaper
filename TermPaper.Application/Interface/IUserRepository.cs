@@ -1,6 +1,6 @@
 ﻿namespace TermPaper.Interface;
 
-public interface ILoginRepository
+public interface IUserRepository
 {
     
 }
