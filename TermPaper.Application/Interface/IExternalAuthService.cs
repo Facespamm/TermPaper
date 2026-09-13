@@ -4,5 +4,5 @@ namespace TermPaper.Interface;
 
 public interface IExternalAuthService
 {
-    Task <Result> ExternalLoginAsync(string provider);
+    Task <Result> ExternalLoginAsync();
 }

@@ -1,7 +1,7 @@
 using TermPaper.Application;
 using TermPaper.Components;
 using TermPaper.Infrastructure;
-
+using TermPaper.EndPoints;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
@@ -25,8 +25,8 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapStaticAssets();
+app.MapAuthEndpoints();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

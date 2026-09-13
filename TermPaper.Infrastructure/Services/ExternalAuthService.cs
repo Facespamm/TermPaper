@@ -18,7 +18,7 @@ public class ExternalAuthService: IExternalAuthService
         _signInManager = signInManager;
     }
 
-    public async Task <Result> ExternalLoginAsync(string provider)
+    public async Task <Result> ExternalLoginAsync( )
     {
         var info = await _signInManager.GetExternalLoginInfoAsync();
         if (info == null) { return Result.Failure(ErrorCode.ValidationFailed);}
