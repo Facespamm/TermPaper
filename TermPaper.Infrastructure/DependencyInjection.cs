@@ -4,13 +4,12 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Resend;
-using TermPaper.Application.Common;
 using TermPaper.Application.Interface;
-using TermPaper.Context;
+using TermPaper.Infrastructure.Context;
 using TermPaper.Models;
-using TermPaper.Application.Interface;
 using TermPaper.Infrastructure.Services;
 using TermPaper.Infrastructure.Settings;
+using TermPaper.Interface;
 
 namespace TermPaper.Infrastructure;
 
@@ -39,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<IRegisteredServices, RegisteredServices>();
         services.AddScoped<ILoginService,LoginService>();
         services.AddResend(options => options.ApiToken = Environment.GetEnvironmentVariable("RESEND_TOKEN"));
+        services.AddScoped<IExternalAuthService, ExternalAuthService>();
 
         return services;
     }

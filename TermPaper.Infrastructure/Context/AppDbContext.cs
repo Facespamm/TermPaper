@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TermPaper.Models;
 
-namespace TermPaper.Context;
+namespace TermPaper.Infrastructure.Context;
 
 public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
 {

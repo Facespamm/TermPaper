@@ -3,15 +3,16 @@ using Resend;
 using TermPaper.Application.Interface;
 using TermPaper.Application.Common;
 using TermPaper.Enum;
+using TermPaper.Models;
 
 namespace TermPaper.Infrastructure.Services;
 
 public class LoginService:ILoginService
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<AppUser> _signInManager;
 
-    public LoginService(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public LoginService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
