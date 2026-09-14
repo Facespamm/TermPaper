@@ -27,6 +27,7 @@ public class RegisterService:IRegisterService
             Email = email,
         };
         var result = await _userManager.CreateAsync(user,password);
+        await _userManager.AddToRoleAsync(user,"Candidate");
         if (!result.Succeeded) {return Result.Failure(ErrorCode.PasswordsDoNotMatch);}
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);

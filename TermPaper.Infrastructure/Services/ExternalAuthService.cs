@@ -33,6 +33,7 @@ public class ExternalAuthService: IExternalAuthService
         var createResult = await _userManager.CreateAsync(user);
         if (!createResult.Succeeded)
         { Result.Failure(ErrorCode.ValidationFailed); }
+        await _userManager.AddToRoleAsync(user, "Candidate");
         await _userManager.AddLoginAsync(user, info);
         await _signInManager.SignInAsync(user,isPersistent:false);
         return Result.Success();

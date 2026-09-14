@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using TermPaper.Application.Common;
 using TermPaper.Interface;
 using TermPaper.Models;
 
@@ -16,6 +17,19 @@ public static class AuthEndPoints
             }
         );
         app.MapGet("/api/auth/google-callback", async (IExternalAuthService externalAuthService) =>
+        {
+            var result = await externalAuthService.ExternalLoginAsync();
+            return result.IsSuccess ? Results.Redirect("/") : Results.Redirect($"/LoginPage?error={result.ErrorCode}");
+        });
+
+        app.MapGet("/api/auth/facebook-login", (SignInManager<AppUser> signInManager) =>
+        {
+            var redirectUrl = "/api/auth/facebook-callback";
+            var properties = signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+            return Results.Challenge(properties, new[] { "Facebook" });
+        });
+
+        app.MapGet("/api/auth/facebook-callback", async (IExternalAuthService externalAuthService) =>
         {
             var result = await externalAuthService.ExternalLoginAsync();
             return result.IsSuccess ? Results.Redirect("/") : Results.Redirect($"/LoginPage?error={result.ErrorCode}");

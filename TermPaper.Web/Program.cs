@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using TermPaper.Application;
 using TermPaper.Components;
 using TermPaper.Infrastructure;
@@ -19,6 +20,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+using (var scope = app.Services.CreateScope())  
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] roles = { "Candidate", "Recruiter", "Admin" };
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role)); 
+    }
+}
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
