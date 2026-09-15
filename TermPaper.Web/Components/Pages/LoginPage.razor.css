@@ -1,0 +1,10 @@
+.login-form {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 30px;
+    width: 400px;
+    background: white;
+}
+.login-page{
+    background: blue;
+}

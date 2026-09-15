@@ -8,11 +8,16 @@
 <div class="login-page">
     <div class="login-form">
         <form>
-            <h3>Login form</h3>
-            <label for="exampleLogin">Login</label>
-            <input @bind="email" class="form-control" id="exampleEmail" placeholder="Email" required=""/>
-            <label for="examplePassword">Password</label>
+            <div class="mb-3">
+                <h3>Login form</h3>
+                <i class="bi bi-briefcase"></i>
+                <label for="exampleEmail" class="form-label">Login</label>
+                <input @bind="email" class="form-control" id="exampleEmail" placeholder="Email" required=""/>
+            </div>
+            <div class="mb-3">
+            <label for="examplePassword" class="form-la">Password</label>
             <input type="password" @bind="password" class="form-control" id="examplePassword" placeholder="Password" required/>
+            </div>
             <button type="button" @onclick="HandleClick" class="btn btn-primary w-100 align-content-center">Login</button>
             @if (!string.IsNullOrWhiteSpace(error))
             {
@@ -22,7 +27,7 @@
         </form>
     </div>
     <div class="login-img"></div>   
-</div>
+</div>  
 @code {
     private string email = "";
     private string password = "";
