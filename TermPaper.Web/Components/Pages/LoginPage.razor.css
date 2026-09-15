@@ -1,3 +1,10 @@
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #f0f2f5;  /* обычный светло-серый фон, как у многих сайтов */
+}
 .login-form {
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -5,6 +12,8 @@
     width: 400px;
     background: white;
 }
-.login-page{
-    background: blue;
+.login-img {
+    background-image: url("../Image/login.png");
+    width: 400px;
+    height: 400px;
 }
