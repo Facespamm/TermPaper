@@ -2,15 +2,16 @@
 using TermPaper.Application.Common;
 using TermPaper.Enum;
 using TermPaper.Application.Interface;
+using TermPaper.Models;
 
 namespace TermPaper.Infrastructure.Services;
 
 public class RegisterService:IRegisterService
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<AppUser> _userManager;
     private readonly ISenderEmail  _emailSender;
 
-    public RegisterService(UserManager<IdentityUser> userManager,ISenderEmail emailSender)
+    public RegisterService(UserManager<AppUser> userManager,ISenderEmail emailSender)
     {
         _userManager = userManager;
         _emailSender = emailSender;
@@ -21,7 +22,7 @@ public class RegisterService:IRegisterService
         var existingUser  = await _userManager.FindByEmailAsync(email);
         if ( existingUser != null){ return  Result.Failure(ErrorCode.UserNotFound); }
         if (password != confirmPassword){return Result.Failure(ErrorCode.PasswordsDoNotMatch); }
-        var user = new IdentityUser
+        var user = new AppUser
         {
             UserName = userName,
             Email = email,

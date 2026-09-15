@@ -35,7 +35,8 @@ public static class DependencyInjection
             options.AppId = facebookSettings.AppId;
             options.AppSecret = facebookSettings.AppSecret;
         });
-        services.AddScoped<IRegisteredServices, RegisteredServices>();
+        services.AddScoped<IRegisterService, RegisterService>();
+        services.AddScoped<ISenderEmail, SenderEmailSerivce>();
         services.AddScoped<ILoginService,LoginService>();
         services.AddResend(options => options.ApiToken = Environment.GetEnvironmentVariable("RESEND_TOKEN"));
         services.AddScoped<IExternalAuthService, ExternalAuthService>();
