@@ -1,6 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermPaper", " TermPaper\TermPaper.csproj", "{7EA0AB94-897F-4723-9B4A-78517B736523}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermPaper.Domain", "TermPaper.Domain\TermPaper.Domain.csproj", "{43A3D738-F345-4845-B504-FA1240C56E00}"
 EndProject
@@ -36,5 +35,8 @@ Global
 		{7C294D99-B908-4FB2-97CE-0FDE16E93F8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C294D99-B908-4FB2-97CE-0FDE16E93F8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C294D99-B908-4FB2-97CE-0FDE16E93F8D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

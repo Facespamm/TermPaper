@@ -19,10 +19,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Components\Image\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Include="wwwroot\images\login.png" />
     </ItemGroup>
 
