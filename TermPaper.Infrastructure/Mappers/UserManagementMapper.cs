@@ -5,7 +5,7 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class UserManagementMapper
 {
-    public static UserDto ToDto(AppUser user, List<string> roles, bool isLockedOut)
+    public static UserDto ToDto(AppUser user, IList<string> roles, bool isLockedOut)
     {
         return new UserDto()
         {
