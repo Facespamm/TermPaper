@@ -22,17 +22,10 @@ public class LoginService:ILoginService
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null){ return Result.Failure(ErrorCode.UserNotFound); }
-        var result = await _signInManager.PasswordSignInAsync(user,password, false, false);
+        var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
         if (!result.Succeeded){ return Result.Failure(ErrorCode.PasswordsDoNotMatch); }
         if (result.IsNotAllowed)
-        {
-            return Result.Failure(ErrorCode.None);
-        }
-        if (!result.Succeeded)
-        {
-            return Result.Failure(ErrorCode.None);
-        }
-
+        { return Result.Failure(ErrorCode.None); } 
         return Result.Success();
     }
 }

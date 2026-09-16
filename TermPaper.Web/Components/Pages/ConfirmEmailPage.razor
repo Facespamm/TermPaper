@@ -1,15 +1,19 @@
 ﻿@page "/ConfirmEmailPage"
 @using Microsoft.AspNetCore.Identity
+@rendermode InteractiveServer
 @using TermPaper.Application.Interface
 @inject IRegisterService RegisterService
-<h3>Confirm email page</h3>
-<p>Please enter button and confirm your email</p>
-<button type="button" @onclick="ConfirmClick">Confirm</button>
-
-@if (!string.IsNullOrWhiteSpace(result))
-{
-    <div class="alert-success">@result</div>
-}
+<div class="confirm-page">
+    <div class="confirm-form">
+        <h3>Confirm email page</h3>
+        <p>Please enter button and confirm your email</p>
+        <button type="button" class="btn btn-primary w-100 align-content-center" @onclick="ConfirmClick">Confirm</button>
+        @if (!string.IsNullOrWhiteSpace(result))
+        {
+            <div class="alert-success">@result</div>
+        }
+    </div>
+</div>
 
 @code {
     [SupplyParameterFromQuery]

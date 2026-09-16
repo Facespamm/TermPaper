@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using TermPaper.Application.Common;
 using TermPaper.Enum;
 using TermPaper.Application.Interface;
+using Microsoft.AspNetCore.WebUtilities;
 using TermPaper.Models;
 
 namespace TermPaper.Infrastructure.Services;
@@ -28,11 +30,11 @@ public class RegisterService:IRegisterService
             Email = email,
         };
         var result = await _userManager.CreateAsync(user,password);
-        await _userManager.AddToRoleAsync(user,"Candidate");
         if (!result.Succeeded) {return Result.Failure(ErrorCode.PasswordsDoNotMatch);}
-
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmLink = $"https://online-recruiter/confirm-email?email={email}&token={token}";
+        await _userManager.AddToRoleAsync(user,"Candidate");
+        var token =  await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        //var confirmLink = $"https://online-recruiter/ConfirmEmailPage?email={email}&token={token}";
+        var confirmLink = QueryHelpers.AddQueryString("http://localhost:5000/ConfirmEmailPage",new Dictionary<string, string?>{["email"] = email,["token"] = token});
         var send = await _emailSender.SendEmailAsync(email,confirmLink);
         return Result.Success();
     }
@@ -46,6 +48,5 @@ public class RegisterService:IRegisterService
 
         return Result.Success();
     }
-
 
 }
