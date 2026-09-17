@@ -31,4 +31,19 @@ public class SenderEmailSerivce:ISenderEmail
         await _resend.EmailSendAsync(message);
         return Result.Success();
     }
+
+    public async Task<Result> SendPasswordAsync(string email, string link)
+    {
+        var message = new EmailMessage();
+        message.From = "onboarding@resend.dev";
+        message.To.Add(email);
+        message.Subject = "Confirmation code to password";
+        message.HtmlBody = $"""
+                            <h1>Confirmation code</h1>
+                            <p>Enter code to app.</p>
+                            <a href="{link}">Confirm password</a> 
+                            """;
+        await _resend.EmailSendAsync(message);
+        return Result.Success();
+    }
 }

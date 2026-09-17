@@ -38,7 +38,7 @@ public static class AuthEndPoints
         app.MapGet("/api/auth/log-out", async (SignInManager<AppUser> signInManager) =>
         {
             await signInManager.SignOutAsync();
-            return Results.Redirect("/LoginPage    ");
+            return Results.Redirect("/LoginPage");
         });
     }
 }

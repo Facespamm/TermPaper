@@ -33,7 +33,6 @@ public class RegisterService:IRegisterService
         if (!result.Succeeded) {return Result.Failure(ErrorCode.PasswordsDoNotMatch);}
         await _userManager.AddToRoleAsync(user,"Candidate");
         var token =  await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        //var confirmLink = $"https://online-recruiter/ConfirmEmailPage?email={email}&token={token}";
         var confirmLink = QueryHelpers.AddQueryString("http://localhost:5000/ConfirmEmailPage",new Dictionary<string, string?>{["email"] = email,["token"] = token});
         var send = await _emailSender.SendEmailAsync(email,confirmLink);
         return Result.Success();

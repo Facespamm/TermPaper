@@ -92,7 +92,7 @@
 {
     private async Task LogOutClick()
     {
-        Navigation.NavigateTo("api/auth/log-out");
+        Navigation.NavigateTo("api/auth/log-out",forceLoad: true);
         
     }
 }
