@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Radzen;
 using TermPaper.Application;
 using TermPaper.Components;
 using TermPaper.Infrastructure;
@@ -10,7 +11,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-
+builder.Services.AddRadzenComponents();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

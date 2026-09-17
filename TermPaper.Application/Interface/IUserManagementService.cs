@@ -9,5 +9,8 @@ public interface IUserManagementService
     Task<Result> DeleteUsersAsync(List<string> users);
     Task<Result> DeleteUserRolesAsync(string userId, List<string> roles);
     Task<Result> AddUserRolesAsync(string userId, List<string> roles);
+    Task<Result> UnlockUserAsync(List<string> userId);
+    Task<Result> LockUserAsync(List<string> userId);
+    
     
 }

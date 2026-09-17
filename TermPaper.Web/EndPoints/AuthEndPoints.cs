@@ -34,5 +34,11 @@ public static class AuthEndPoints
             var result = await externalAuthService.ExternalLoginAsync();
             return result.IsSuccess ? Results.Redirect("/") : Results.Redirect($"/LoginPage?error={result.ErrorCode}");
         });
+
+        app.MapGet("/api/auth/log-out", async (SignInManager<AppUser> signInManager) =>
+        {
+            await signInManager.SignOutAsync();
+            return Results.Redirect("/LoginPage    ");
+        });
     }
 }

@@ -1,6 +1,7 @@
 ﻿    @page "/RegisterPage"
     @using Microsoft.AspNetCore.Identity
-    
+    @layout EmptyLayout
+
 @using TermPaper.Application.Interface
 @using TermPaper.Application.Interface
     @inject IRegisterService RegisterService
@@ -67,14 +68,6 @@
                 </div>
                 <div class="mb-3">
                     <button type="button" @onclick="HandleClick" class="btn btn-primary w-100 align-content-center">Register</button>
-                </div>
-                <div class="mb-3">
-                    <button type="button" class="btn btn-primary w-100 align-content-center" @onclick=""><i class="bi bi-google"></i>
-                    </button>
-                </div>
-                <div class="mb-3">
-                    <button type="button" class="btn btn-primary w-100 align-content-center" @onclick=""><i class="bi bi-facebook"></i>
-                    </button>
                 </div>
                 <p><a href="/LoginPage">Do you have a account?</a></p>
             </form>

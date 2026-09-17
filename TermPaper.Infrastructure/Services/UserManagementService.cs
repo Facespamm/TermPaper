@@ -10,18 +10,18 @@ using TermPaper.Models;
 
 namespace TermPaper.Infrastructure.Services;
 
-public class UserManagementService:IUserManagementService
+public class UserManagementService : IUserManagementService
 {
     private readonly UserManager<AppUser> _userManager;
 
     public UserManagementService(UserManager<AppUser> userManager)
     {
-        _userManager  = userManager;
+        _userManager = userManager;
     }
-    
-    public async Task<List<UserDto>> GetUsersAsync()
+
+    public async Task<List<UserDto>> GetUsersAsync() 
     {
-        var users = await  _userManager.Users.ToListAsync();
+        var users = await _userManager.Users.ToListAsync();
         var usersDto = new List<UserDto>();
 
         foreach (var user in users)
@@ -30,6 +30,7 @@ public class UserManagementService:IUserManagementService
             var isLockedOut = await _userManager.IsLockedOutAsync(user);
             usersDto.Add(UserManagementMapper.ToDto(user, roles, isLockedOut));
         }
+
         return usersDto;
     }
 
@@ -42,27 +43,77 @@ public class UserManagementService:IUserManagementService
             {
                 return Result.Failure(ErrorCode.UserNotFound);
             }
+
             var result = await _userManager.DeleteAsync(userToDelete);
-            if (!result.Succeeded) { return Result.Failure(ErrorCode.ValidationFailed); }
+            if (!result.Succeeded)
+            {
+                return Result.Failure(ErrorCode.ValidationFailed);
+            }
         }
+
         return Result.Success();
     }
 
     public async Task<Result> DeleteUserRolesAsync(string userId, List<string> roles)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user is null) { return Result.Failure(ErrorCode.UserNotFound); }
+        if (user is null)
+        {
+            return Result.Failure(ErrorCode.UserNotFound);
+        }
+
         var delete = await _userManager.RemoveFromRolesAsync(user, roles);
-        if(!delete.Succeeded) { return Result.Failure(ErrorCode.ValidationFailed); }
+        if (!delete.Succeeded)
+        {
+            return Result.Failure(ErrorCode.ValidationFailed);
+        }
+
         return Result.Success();
-}
+    }
 
     public async Task<Result> AddUserRolesAsync(string userId, List<string> roles)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user is null) { return Result.Failure(ErrorCode.UserNotFound); }
+        if (user is null)
+        {
+            return Result.Failure(ErrorCode.UserNotFound);
+        }
+
         var add = await _userManager.AddToRolesAsync(user, roles);
-        if (!add.Succeeded) { return Result.Failure(ErrorCode.ValidationFailed); }
+        if (!add.Succeeded)
+        {
+            return Result.Failure(ErrorCode.ValidationFailed);
+        }
+
         return Result.Success();
     }
+
+    public async Task<Result> UnlockUserAsync(List<string> userId)
+    {
+        foreach (var user in userId)
+        {
+            var result = await _userManager.FindByIdAsync(user);
+            if (result is null)
+            { return Result.Failure(ErrorCode.UserNotFound); }
+            var unlock = await _userManager.SetLockoutEndDateAsync(result, null);
+            if (!unlock.Succeeded)
+            { return Result.Failure(ErrorCode.ValidationFailed); }
+        }
+        return Result.Success();
+    }
+
+    public async Task<Result> LockUserAsync(List<string> userId)
+    {
+        foreach (var user in userId)
+        {
+            var result = await _userManager.FindByIdAsync(user);
+            if (result is null)
+            { return Result.Failure(ErrorCode.UserNotFound);}
+            var userLock = await _userManager.SetLockoutEndDateAsync(result, DateTimeOffset.MaxValue);
+            if (!userLock.Succeeded)
+            { return Result.Failure(ErrorCode.ValidationFailed); }
+        }
+        return  Result.Success();
+    }
+
 }
