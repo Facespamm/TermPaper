@@ -18,9 +18,9 @@ public class Attributes
     
     public AttributeCategory Category {get; set;}
     
-    public List<AttributeEnumValue> AttributeEnumValues { get; set; } = new();
+    public List<AttributeValueOption> AttributeValueOptions { get; set; } = new();
     
-    public List<UserAtributes> UserAtributes { get; set; } = new();
+    public List<UserAttributes> UserAttributes { get; set; } = new();
     
     
     

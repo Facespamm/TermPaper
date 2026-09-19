@@ -33,35 +33,33 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
             }
         );
 
-        modelBuilder.Entity<AttributeEnumValue>(entity =>
+        modelBuilder.Entity<AttributeValueOption>(entity =>
         {
             entity.HasOne<Attributes>()
-                .WithMany(a => a.AttributeEnumValues)
-                .HasForeignKey(a => a.AtributeId)
+                .WithMany(a => a.AttributeValueOptions)
+                .HasForeignKey(a => a.AttributeId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<UserAtributes>(entity =>
+        modelBuilder.Entity<UserAttributes>(entity =>
         {
             entity.HasOne<AppUser>()
                 .WithMany()
                 .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             entity.HasOne<Attributes>()
-                .WithMany(a => a.UserAtributes)
+                .WithMany(a => a.UserAttributes)
                 .HasForeignKey(a => a.AtributeId)
                 .OnDelete(DeleteBehavior.Cascade);
             
         });
-        
-
     }
     
     public virtual DbSet<Attributes>  Attributes { get; set; }
     
-    public virtual DbSet<AttributeEnumValue> AttributeEnumValues { get; set; }
+    public virtual DbSet<AttributeValueOption> AttributeValueOptions { get; set; }
     
-    public virtual DbSet<UserAtributes>  UserAttributes { get; set; }
+    public virtual DbSet<UserAttributes>  UserAttributes { get; set; }
     
     public virtual DbSet<AttributeCategory> AttributeCategories { get; set; }
     

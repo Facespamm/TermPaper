@@ -1,6 +1,6 @@
 ﻿namespace TermPaper.Domain.Models;
 
-public class UserAtributes
+public class UserAttributes
 {
     public int Id {get; set;}
     
