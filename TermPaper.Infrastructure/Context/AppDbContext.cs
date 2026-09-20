@@ -53,6 +53,16 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
                 .OnDelete(DeleteBehavior.Cascade);
             
         });
+
+        modelBuilder.Entity<RecentlyUsedAttribute>(entity =>
+        {
+            entity.HasOne<AppUser>()
+                .WithMany()
+                .HasForeignKey(a => a.UserId);
+            entity.HasOne<Attributes>()
+                .WithMany()
+                .HasForeignKey(a => a.AttributeId);
+        });
     }
     
     public virtual DbSet<Attributes>  Attributes { get; set; }
@@ -61,7 +71,19 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
     
     public virtual DbSet<UserAttributes>  UserAttributes { get; set; }
     
+    public virtual DbSet<RecentlyUsedAttribute> RecentlyUsedAttribute { get; set; }
+    
     public virtual DbSet<AttributeCategory> AttributeCategories { get; set; }
+    
+    public virtual DbSet<Position> Positions { get; set; }
+    
+    public virtual DbSet<PositionAttribute> PositionAttributes { get; set; }
+    
+    public virtual DbSet<PositionProjectTag> PositionProjectTags { get; set; }
+    
+    
+    
+    
     
     
 }

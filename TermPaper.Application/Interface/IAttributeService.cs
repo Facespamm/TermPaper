@@ -1,5 +1,7 @@
 ﻿using TermPaper.Application.Common;
 using TermPaper.Application.Dto;
+using TermPaper.Application.Dto.UsersAtributesDto;
+using TermPaper.Domain.Models;
 using TermPaper.Enum;
 
 namespace TermPaper.Application.Interface;
@@ -19,7 +21,11 @@ public interface IAttributeService
     public Task<AttributeGetDto> GetAttribute();
     
     public Task<Result> UpdateAttribute();
+    Task<List<AttributeGetDto>> SearchByPrefixAsync(string prefix);
     
+    Task<List<AttributeGetDto>> GetByCategoryAsync(int categoryId);
+    
+    Task<List<GetUserAttributeDto>> GetRecentlyUsedAsync(string userId);
     public Task<Result> DeleteAttribute();
     
     public Task<Result> AddAttributeValue();

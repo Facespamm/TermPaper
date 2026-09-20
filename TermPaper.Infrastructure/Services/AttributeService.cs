@@ -28,7 +28,6 @@ public class AttributeService
         {
             listDto.Add(AttributeMapper.GetToDto(attribute));
         }
-
         return listDto;
     }
 
@@ -38,7 +37,6 @@ public class AttributeService
         {
             Result.Failure(ErrorCode.ValidationFailed);
         }
-
         var entity = AttributeCategoryMapper.ToEntity(dto);
         await _context.AttributeCategories.AddAsync(entity);
         await _context.SaveChangesAsync();
@@ -53,7 +51,6 @@ public class AttributeService
         {
             categoryDto.Add(AttributeCategoryMapper.GetDtoToEntity(entity));
         }
-
         return categoryDto;
     }
 
@@ -63,7 +60,6 @@ public class AttributeService
         {
             return Result.Failure(ErrorCode.ValidationFailed);
         }
-
         var entity = AttributeMapper.ToEntity(dto);
         await _context.Attributes.AddAsync(entity);
         await _context.SaveChangesAsync();
@@ -76,7 +72,6 @@ public class AttributeService
         {
             return Result.Failure(ErrorCode.ValidationFailed);
         }
-
         var maxOrder = await _context.AttributeValueOptions
             .Where(x => x.AttributeId == addDto.AttributeId)
             .MaxAsync(x => x.Order) ?? 0;
@@ -92,7 +87,6 @@ public class AttributeService
         {
             return Result.Failure(ErrorCode.ValidationFailed);
         }
-
         UserAttributeMapper.AddUserAttributes(addDto);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -109,16 +103,17 @@ public class AttributeService
         return Result.Success();
     }
 
-    public async Task<Result> DeleteAttribute(int attributeId)
+    public async Task<Result> DeleteAttribute(List<int> attributeIds)
     {
-        var entity = await _context.Attributes.FindAsync(attributeId);
-
-        if (entity == null)
+        foreach (var id in attributeIds)
         {
-            return Result.Failure(ErrorCode.ValidationFailed);
+            var entity = await _context.Attributes.FindAsync(id);
+            if (entity == null)
+            {
+                return Result.Failure(ErrorCode.ValidationFailed);
+            }
+            _context.Attributes.Remove(entity);
         }
-
-        _context.Attributes.Remove(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
@@ -130,22 +125,23 @@ public class AttributeService
         {
             return Result.Failure(ErrorCode.ValidationFailed);
         }
-
         var update = AttributeCategoryMapper.UpdateEntity(dto, entity);
         _context.AttributeCategories.Update(update);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
 
-    public async Task<Result> DeleteAttributeCategory(int attributeCategoryId)
+    public async Task<Result> DeleteAttributeCategory(List<int> attributeCategoryIds)
     {
-        var entity = await _context.AttributeCategories.FindAsync(attributeCategoryId);
-        if (entity == null)
+        foreach (var id in attributeCategoryIds)
         {
-            return Result.Failure(ErrorCode.ValidationFailed);
+            var entity = await _context.AttributeCategories.FindAsync(id);
+            if (entity == null)
+            {
+                return Result.Failure(ErrorCode.ValidationFailed);
+            }
+            _context.AttributeCategories.Remove(entity);
         }
-
-        _context.AttributeCategories.Remove(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
@@ -157,22 +153,23 @@ public class AttributeService
         {
             return Result.Failure(ErrorCode.ValidationFailed);
         }
-
         var update = AttributeValueOptionMapper.UpdateToEntity(dto, entity);
         _context.AttributeValueOptions.Update(update);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
 
-    public async Task<Result> DeleteAttributeValueOption(int attributeValueOptionId)
+    public async Task<Result> DeleteAttributeValueOption(List<int> attributeValueOptionIds)
     {
-        var entity = await _context.AttributeValueOptions.FindAsync(attributeValueOptionId);
-        if (entity == null)
+        foreach (var id in attributeValueOptionIds)
         {
-            return Result.Failure(ErrorCode.ValidationFailed);
+            var entity = await _context.AttributeValueOptions.FindAsync(id);
+            if (entity == null)
+            {
+                return Result.Failure(ErrorCode.ValidationFailed);
+            }
+            _context.AttributeValueOptions.Remove(entity);
         }
-
-        _context.AttributeValueOptions.Remove(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
@@ -184,22 +181,70 @@ public class AttributeService
         {
             return Result.Failure(ErrorCode.ValidationFailed);
         }
-
         var update = UserAttributeMapper.UpdateUserAttributes(dto, entity);
         _context.UserAttributes.Update(update);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
 
-    public async Task<Result> DeleteUserAttribute(int attributeId)
+    public async Task<Result> DeleteUserAttribute(List<int> attributeIds)
     {
-        var entity = await _context.UserAttributes.FindAsync(attributeId);
-        if (entity == null)
+        foreach (var id in attributeIds)
         {
-            return Result.Failure(ErrorCode.ValidationFailed);
+            var entity = await _context.UserAttributes.FindAsync(id);
+            if (entity == null)
+            {
+                return Result.Failure(ErrorCode.ValidationFailed);
+            }
+            _context.UserAttributes.Remove(entity);
         }
-        _context.UserAttributes.Remove(entity);
-         await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
          return Result.Success();
+    }
+
+    public async Task<List<GetUserAttributeDto>> GetOptionValuesAsync(int attributeId)
+    {
+        var entitys = await _context.UserAttributes.Where(x=>x.AtributeId  == attributeId).ToListAsync();
+        List<GetUserAttributeDto> userDto = new();
+        foreach (var entity in entitys)
+        {
+            userDto.Add(UserAttributeMapper.GetUserAttribute(entity));
+        }
+        return userDto;
+    }
+
+    public async Task<List<AttributeGetDto>> SearchByPrefixAsync(string prefix)
+    {
+        var search = await _context.Attributes.Where(x => x.Name.StartsWith(prefix)).ToListAsync();
+        var listDto = new List<AttributeGetDto>();
+
+        foreach (var attribute in search)
+        {
+            listDto.Add(AttributeMapper.GetToDto(attribute));
+        }
+        return listDto;
+    }
+
+    public async Task<List<AttributeGetDto>> GetByCategoryAsync(int categoryId)
+    {
+        var entity = await _context.Attributes.Where(x => x.CategoryId == categoryId).ToListAsync();
+        var listDto = new List<AttributeGetDto>();
+        foreach (var attribute in entity)
+        {
+            listDto.Add(AttributeMapper.GetToDto(attribute));
+        }
+        return listDto;
+    }
+
+    public async Task<List<AttributeGetDto>> GetRecentlyUsedAsync(string userId)
+    {
+        var recently = await _context.RecentlyUsedAttribute.Where(x => x.UserId == userId)
+            .Select(y => y.Attribute).Take(10).ToListAsync();
+        var listDto = new List<AttributeGetDto>();
+        foreach (var attribute in recently)
+        {
+            listDto.Add(AttributeMapper.GetToDto(attribute));
+        }
+        return listDto;
     }
 }

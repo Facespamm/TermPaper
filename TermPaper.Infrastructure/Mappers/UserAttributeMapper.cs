@@ -23,4 +23,15 @@ public class UserAttributeMapper
             Value = dto.Value ?? entity.Value
         };
     }
+
+    public static GetUserAttributeDto GetUserAttribute(UserAttributes entity)
+    {
+        return new GetUserAttributeDto
+        {
+            Id = entity.AtributeId,
+            AtributeId = entity.AtributeId,
+            UserId = entity.UserId,
+            Value = entity.Value
+        };
+    }
 }
