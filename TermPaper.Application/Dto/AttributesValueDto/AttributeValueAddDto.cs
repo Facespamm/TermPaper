@@ -1,6 +1,6 @@
 ﻿namespace TermPaper.Application.Dto.AttributeValueDto;
 
-public class AttributeValueDto
+public class AttributeValueAddDto
 {
     public int AttributeId {get; set;}
     

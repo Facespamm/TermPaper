@@ -28,4 +28,15 @@ public  class AttributeMapper
             IsBuiltIn = false,
         };
     }
+    
+        public static Attributes ToUpdateEntity(Attributes attribute,UpdateAttributeDto dto)
+        {
+            return new Attributes
+            {
+                Id = attribute.Id,
+                Name = dto.Name ?? attribute.Name,
+                Description = dto.Description ?? attribute.Description,
+                CategoryId = dto.CategoryId ?? attribute.CategoryId
+            };
+        }
 }

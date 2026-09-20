@@ -21,4 +21,13 @@ public class AttributeCategoryMapper
                 Name = entity.Name
             };
     }
+
+    public static AttributeCategory UpdateEntity(AttributeUpdateCategoryDto dto,AttributeCategory entity)
+    {
+        return new AttributeCategory
+        {
+            Id = entity.Id,
+            Name = dto.Name ?? entity.Name
+        };
+    }
 }

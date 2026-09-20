@@ -5,13 +5,22 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class UserAttributeMapper
 {
-    public static UserAttributes AddUserAttributes(UserAttributesDto dto)
+    public static UserAttributes AddUserAttributes(UserAttributesAddDto addDto)
     {
         return new UserAttributes()
         {
-            AtributeId = dto.AtributeId,
-            UserId = dto.UserId,
-            Value = dto.Value
+            AtributeId = addDto.AtributeId,
+            UserId = addDto.UserId,
+            Value = addDto.Value
+        };
+    }
+
+    public static UserAttributes UpdateUserAttributes(UpdateUserAttributeDto dto, UserAttributes entity)
+    {
+        return new UserAttributes()
+        {
+            AtributeId = dto.AtributeId ?? entity.AtributeId,
+            Value = dto.Value ?? entity.Value
         };
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TermPaper.Application.Dto.UsersAtributesDto;
 
-public class UserAttributesDto
+public class UserAttributesAddDto
 {
     public int AtributeId {get; set;}
     

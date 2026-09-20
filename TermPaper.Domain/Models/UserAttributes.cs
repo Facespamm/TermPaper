@@ -10,7 +10,4 @@ public class UserAttributes
     
     public string Value {get; set;}
     
-    
-
-
 }
