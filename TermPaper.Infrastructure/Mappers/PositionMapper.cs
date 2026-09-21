@@ -40,5 +40,17 @@ public class PositionMapper
             Title = dto.Title,
             Level = dto.Level
         };
-    } 
+    }
+    
+    public static Position UpdateToEntity(UpdatePositionDto dto, Position position)
+    {
+        return new Position
+        {
+            Title = dto.Title ?? position.Title,
+            ShortDescription = dto.ShortDescription ?? position.ShortDescription,
+            CompanyName = dto.CompanyName ?? position.CompanyName,
+            MaxProjectsCount = dto.MaxProjectsCount ?? position.MaxProjectsCount,
+            Level = dto.Level ?? position.Level,
+        };
+    }
 }

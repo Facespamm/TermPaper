@@ -14,7 +14,7 @@ public class AttributeService
 {
     private readonly AppDbContext _context;
 
-    public AttributeService(AppDbContext context, AttributeCreateCategoryDto attributeCreateCategoryDto)
+    public AttributeService(AppDbContext context)
     {
         _context = context;
     }

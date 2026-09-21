@@ -1,12 +1,11 @@
-﻿namespace TermPaper.Domain.Models;
+﻿namespace TermPaper.Application.Dto.PositionAttributeDto;
 
-public class PositionAttribute
+public class CreatePositionAttributeDto
 {
-    public int Id { get; set; }
-    
     public int PositionId { get; set; }
     
     public int AttributeId { get; set; }
     
     public int Order { get; set; }
+
 }

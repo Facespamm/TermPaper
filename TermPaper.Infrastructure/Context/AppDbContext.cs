@@ -77,9 +77,13 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
     
     public virtual DbSet<Position> Positions { get; set; }
     
+    
     public virtual DbSet<PositionAttribute> PositionAttributes { get; set; }
     
+    
     public virtual DbSet<PositionProjectTag> PositionProjectTags { get; set; }
+    
+    public virtual DbSet<AccessRule> AccessRules { get; set; }
     
     
     
