@@ -44,4 +44,8 @@ public interface IPositionService
     
     public Task<List<GetPositionAccessRuleDto>> GetPositionAccessRules(int positionId);
     
+    public Task<Result> DeletePositionAccessRule(List<int> positionId);
+    
+    
+    
 }

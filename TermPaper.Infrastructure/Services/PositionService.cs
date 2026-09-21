@@ -140,4 +140,12 @@ public class PositionService:IPositionService
         var entity = await _context.AccessRules.Where(x => x.PositionId== positionId).ToListAsync<AccessRule>();
         return entity.Select(x=>PositionAccessRuleMapper.GetPositionAccessRule(x)).ToList();
     }
+
+    public async Task<Result> DeletePositionAccessRule(List<int> positionIds)
+    {
+        var entities = await _context.AccessRules.Where(x => positionIds.Contains(x.PositionId)).ToListAsync();
+        _context.AccessRules.RemoveRange(entities);
+        await _context.SaveChangesAsync();
+        return Result.Success();
+    }
 }
