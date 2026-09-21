@@ -4,7 +4,7 @@ public class UserAttributes
 {
     public int Id {get; set;}
     
-    public int AtributeId {get; set;}
+    public int AttributeId {get; set;}
     
     public string UserId  {get; set;}
     

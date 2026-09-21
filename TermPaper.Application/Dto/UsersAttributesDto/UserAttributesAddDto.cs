@@ -1,8 +1,8 @@
-﻿namespace TermPaper.Application.Dto.UsersAtributesDto;
+﻿namespace TermPaper.Application.Dto.UsersAttributesDto;
 
 public class UserAttributesAddDto
 {
-    public int AtributeId {get; set;}
+    public int AttributeId {get; set;}
     
     public string UserId  {get; set;}
     

@@ -1,4 +1,4 @@
-﻿using TermPaper.Application.Dto.UsersAtributesDto;
+﻿using TermPaper.Application.Dto.UsersAttributesDto;
 using TermPaper.Domain.Models;
 
 namespace TermPaper.Infrastructure.Mappers;
@@ -9,7 +9,7 @@ public class UserAttributeMapper
     {
         return new UserAttributes()
         {
-            AtributeId = addDto.AtributeId,
+            AttributeId = addDto.AttributeId,
             UserId = addDto.UserId,
             Value = addDto.Value
         };
@@ -19,7 +19,7 @@ public class UserAttributeMapper
     {
         return new UserAttributes()
         {
-            AtributeId = dto.AtributeId ?? entity.AtributeId,
+            AttributeId = dto.AttributeId ?? entity.AttributeId,
             Value = dto.Value ?? entity.Value
         };
     }
@@ -28,8 +28,8 @@ public class UserAttributeMapper
     {
         return new GetUserAttributeDto
         {
-            Id = entity.AtributeId,
-            AtributeId = entity.AtributeId,
+            Id = entity.AttributeId,
+            AttributeId = entity.AttributeId,
             UserId = entity.UserId,
             Value = entity.Value
         };

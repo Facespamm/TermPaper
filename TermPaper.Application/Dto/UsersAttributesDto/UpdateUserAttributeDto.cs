@@ -1,10 +1,10 @@
-﻿namespace TermPaper.Application.Dto.UsersAtributesDto;
+﻿namespace TermPaper.Application.Dto.UsersAttributesDto;
 
 public class UpdateUserAttributeDto
 {
     public int Id {get; set;}
     
-    public int? AtributeId {get; set;}
+    public int? AttributeId {get; set;}
     
     public string? Value {get; set;}
 }

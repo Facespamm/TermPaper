@@ -12,7 +12,7 @@ public interface IPositionService
     //Position
     public Task<List<GetPositionDto>> GetPositions(string search);
     
-    public Task<GetPositionDto?> GetPositionInfo(int positionId);
+    public Task<GetPositionInfoDto> GetPositionInfo(int positionId);
     
     public Task<Result> CreatePosition(CreatePositionDto createPositionDto);
     
@@ -38,7 +38,7 @@ public interface IPositionService
     
     //PositionAccessRule
     
-    public Task<List<Operator>> GetOperators();
+    public List<Operator> GetOperators();
     
     public Task<Result> CreatePositionAccessRule(CreatePositionAccessRuleDto dto);
     

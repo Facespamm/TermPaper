@@ -1,37 +1,50 @@
 ﻿using TermPaper.Application.Common;
 using TermPaper.Application.Dto;
-using TermPaper.Application.Dto.UsersAtributesDto;
-using TermPaper.Domain.Models;
+using TermPaper.Application.Dto.AttributeValueDto;
+using TermPaper.Application.Dto.UsersAttributesDto;
 using TermPaper.Enum;
 
 namespace TermPaper.Application.Interface;
 
 public interface IAttributeService
 {
+    // Attribute
+    public Task<List<AttributeGetDto>> GetAttribute();
+
+    public Task<Result> CreateAttribute(CreateAttributeDto dto);
+
+    public Task<Result> UpdateAttribute(UpdateAttributeDto dto);
+
+    public Task<Result> DeleteAttribute(List<int> attributeIds);
+
+    public Task<List<AttributeGetDto>> SearchByPrefixAsync(string prefix);
+
+    public Task<List<AttributeGetDto>> GetByCategoryAsync(int categoryId);
+
+    public Task<List<AttributeGetDto>> GetRecentlyUsedAsync(string userId);
+
+    // Attribute Category
     public Task<Result> CreateCategory(AttributeCreateCategoryDto dto);
-    
-    public Task<AttributeGetCategoryDto> GetCategory();
-    
-    public Task<Result> UpdateCategory(int categoryId);
-    
-    public Task<Result> DeleteCategory(int categoryId);
-    
-    public Task<Result> CreateAttribute(int categoryId, string name, DataType dataType, string description,List<string> values);
-    
-    public Task<AttributeGetDto> GetAttribute();
-    
-    public Task<Result> UpdateAttribute();
-    Task<List<AttributeGetDto>> SearchByPrefixAsync(string prefix);
-    
-    Task<List<AttributeGetDto>> GetByCategoryAsync(int categoryId);
-    
-    Task<List<GetUserAttributeDto>> GetRecentlyUsedAsync(string userId);
-    public Task<Result> DeleteAttribute();
-    
-    public Task<Result> AddAttributeValue();
-    
-    public Task<Result> GetEnumValue();
-    
-    
-    
+
+    public Task<List<AttributeGetCategoryDto>> GetCategory();
+
+    public Task<Result> UpdateAttributeCategory(AttributeUpdateCategoryDto dto);
+
+    public Task<Result> DeleteAttributeCategory(List<int> attributeCategoryIds);
+
+    // Attribute Value Option
+    public Task<Result> AddAttributeValueOption(AttributeValueAddDto addDto);
+
+    public Task<Result> UpdateAttributeValue(UpdateAttributeValueDto dto);
+
+    public Task<Result> DeleteAttributeValueOption(List<int> attributeValueOptionIds);
+
+    // User Attribute
+    public Task<Result> AddToUsersValue(UserAttributesAddDto addDto);
+
+    public Task<Result> UpdateUserAttribute(UpdateUserAttributeDto dto);
+
+    public Task<Result> DeleteUserAttribute(List<int> attributeIds);
+
+    public Task<List<GetUserAttributeDto>> GetOptionValuesAsync(int attributeId);
 }

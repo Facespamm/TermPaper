@@ -5,14 +5,14 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class PositionAttributeMapper
 {
-    public static GetPositionAttributeDto GetPositionAttribute(int positionId)
+    public static GetPositionAttributeDto GetPositionAttribute(PositionAttribute positionAttribute)
     {
         return new GetPositionAttributeDto
         {
-            Id = positionId,
-            PositionId = positionId,
-            AttributeId = positionId,
-            Order = positionId,
+            Id = positionAttribute.Id,
+            PositionId = positionAttribute.PositionId,
+            AttributeId = positionAttribute.AttributeId,
+            Order = positionAttribute.Order,
         };
     }
 

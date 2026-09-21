@@ -49,7 +49,7 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
                 .OnDelete(DeleteBehavior.Cascade);
             entity.HasOne<Attributes>()
                 .WithMany(a => a.UserAttributes)
-                .HasForeignKey(a => a.AtributeId)
+                .HasForeignKey(a => a.AttributeId)
                 .OnDelete(DeleteBehavior.Cascade);
             
         });
