@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TermPaper.Domain.Models;
 using TermPaper.Enum;
 using TermPaper.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace TermPaper.Infrastructure.Context;
 
@@ -31,6 +32,8 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
                 .WithMany(b => b.AttributesList)
                 .HasForeignKey(a => a.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+            entity.Property(e=>e.Version)
+                .IsRowVersion();
         });
 
         modelBuilder.Entity<AttributeValueOption>(entity =>
@@ -54,6 +57,8 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
                 .OnDelete(DeleteBehavior.Cascade); 
 
             entity.HasIndex(e => new { e.UserId, e.AttributeId }).IsUnique();
+
+            entity.Property(x=>x.Version).IsRowVersion();
         });
 
         modelBuilder.Entity<RecentlyUsedAttribute>(entity =>
@@ -122,6 +127,15 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
                 .HasForeignKey(a => a.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade); 
         });
+
+        modelBuilder.Entity<AttributeCategory>(entity =>
+        {
+            entity.Property(x => x.Version).IsRowVersion();
+        });
+        modelBuilder.Entity<Position>(entity =>
+        {
+            entity.Property(x => x.Version).IsRowVersion();
+        });
         
         
         modelBuilder.Entity<AttributeCategory>().HasData(
@@ -129,13 +143,13 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
         );
 
         modelBuilder.Entity<Attributes>().HasData(
-            new Attributes { Id = 1, CategoryId = 1, Name = "Имя", DataType = DataType.String, Description = "", IsBuiltIn = true },
-            new Attributes { Id = 2, CategoryId = 1, Name = "Фамилия", DataType = DataType.String, Description = "", IsBuiltIn = true },
-            new Attributes { Id = 3, CategoryId = 1, Name = "Дата рождения", DataType = DataType.Date, Description = "", IsBuiltIn = true },
-            new Attributes { Id = 4, CategoryId = 1, Name = "Телефон", DataType = DataType.String, Description = "", IsBuiltIn = true },
-            new Attributes { Id = 5, CategoryId = 1, Name = "Локация", DataType = DataType.String, Description = "", IsBuiltIn = true },
-            new Attributes { Id = 6, CategoryId = 1, Name = "Фото профиля", DataType = DataType.Image, Description = "", IsBuiltIn = true },
-            new Attributes { Id = 7, CategoryId = 1, Name = "О себе", DataType = DataType.Text, Description = "", IsBuiltIn = true }
+            new Attributes { Id = 1, CategoryId = 1, Name = "First Name", DataType = DataType.String, Description = "", IsBuiltIn = true },
+            new Attributes { Id = 2, CategoryId = 1, Name = "Last Name", DataType = DataType.String, Description = "", IsBuiltIn = true },
+            new Attributes { Id = 3, CategoryId = 1, Name = "Date of Birth", DataType = DataType.Date, Description = "", IsBuiltIn = true },
+            new Attributes { Id = 4, CategoryId = 1, Name = "Phone", DataType = DataType.String, Description = "", IsBuiltIn = true },
+            new Attributes { Id = 5, CategoryId = 1, Name = "Location", DataType = DataType.String, Description = "", IsBuiltIn = true },
+            new Attributes { Id = 6, CategoryId = 1, Name = "Profile Picture", DataType = DataType.Image, Description = "", IsBuiltIn = true },
+            new Attributes { Id = 7, CategoryId = 1, Name = "About Me", DataType = DataType.Text, Description = "", IsBuiltIn = true }
         );
     }
     

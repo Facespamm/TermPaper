@@ -14,6 +14,7 @@ public  class AttributeMapper
             Name = attribute.Name,
             DataType = attribute.DataType,
             Description = attribute.Description,
+            Version =  attribute.Version
         };
     }
 

@@ -22,8 +22,6 @@ public class Attributes
     
     public List<UserAttributes> UserAttributes { get; set; } = new();
     
-    
-    
-
+    public uint Version {get; set;}
     
 }

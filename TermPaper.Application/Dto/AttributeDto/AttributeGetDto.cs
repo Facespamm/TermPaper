@@ -15,5 +15,7 @@ public class AttributeGetDto
     public string Description {get; set;}
     
     public bool IsBuiltIn {get; set;}
+    
+    public uint Version { get; set; }
 
 }

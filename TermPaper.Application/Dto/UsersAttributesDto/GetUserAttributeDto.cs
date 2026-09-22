@@ -12,4 +12,6 @@ public class GetUserAttributeDto
     
     public DateTime LastUsedAt {get; set;}
     
+    public uint Version { get; set; }
+    
 }

@@ -7,4 +7,6 @@ public class UpdateUserAttributeDto
     public int? AttributeId {get; set;}
     
     public string? Value {get; set;}
+    
+    public uint Version { get; set; }
 }

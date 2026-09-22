@@ -15,4 +15,6 @@ public class GetPositionInfoDto
     public string? CompanyName { get; set; }
     
     public string? Level { get; set; }
+    
+    public uint Version { get; set; }
 }

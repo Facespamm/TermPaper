@@ -12,4 +12,5 @@ public class UserAttributes
     
     public string Value {get; set;}
     
+    public uint Version {get; set;}
 }

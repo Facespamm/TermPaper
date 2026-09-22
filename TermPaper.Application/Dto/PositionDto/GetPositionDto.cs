@@ -7,4 +7,6 @@ public class GetPositionDto
     public string? Title { get; set; }
     
     public string? ShortDescription { get; set; }
+    
+    public uint Version { get; set; }
 }

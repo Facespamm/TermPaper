@@ -8,5 +8,6 @@ public class AttributeCategory
     
     public List<Attributes> AttributesList { get; set; } = new();
 
-    
+    public uint Version {get; set;}
+
 }   

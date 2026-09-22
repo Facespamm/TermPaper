@@ -15,4 +15,7 @@ public class Position
     public string? CompanyName { get; set; }
     
     public string? Level { get; set; }
+    
+    public uint Version {get; set;}
+
 }

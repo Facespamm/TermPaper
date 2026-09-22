@@ -72,11 +72,19 @@ public class AttributeService:IAttributeService
     {
         var entity = await _context.Attributes.FindAsync(dto.Id);
         if (entity == null)
-            return Result.Failure(ErrorCode.ValidationFailed);
-        var update = AttributeMapper.ToUpdateEntity(entity, dto);
-        _context.Attributes.Update(update);
-        await _context.SaveChangesAsync();
-        return Result.Success();
+            return Result.Failure(ErrorCode.NotFound);
+        
+        AttributeMapper.ToUpdateEntity(entity, dto);
+        _context.Entry(entity).Property(x=>x.Version).OriginalValue = dto.Version;
+        try
+        {
+            await _context.SaveChangesAsync();
+            return Result.Success();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Result.Failure(ErrorCode.ConcurrencyConflict);
+        }
     }
 
     public async Task<Result> DeleteAttribute(List<int> attributeIds)
@@ -92,12 +100,19 @@ public class AttributeService:IAttributeService
         var entity = await _context.AttributeCategories.FindAsync(dto.Id);
         if (entity == null)
         {
-            return Result.Failure(ErrorCode.ValidationFailed);
+            return Result.Failure(ErrorCode.NotFound);
         }
-        var update = AttributeCategoryMapper.UpdateEntity(dto, entity);
-        _context.AttributeCategories.Update(update);
-        await _context.SaveChangesAsync();
-        return Result.Success();
+        _context.Entry(entity).Property(x => x.Version).OriginalValue = dto.Version;
+        AttributeCategoryMapper.UpdateEntity(dto, entity);
+        try
+        {
+            await _context.SaveChangesAsync();
+            return Result.Success();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Result.Failure(ErrorCode.ConcurrencyConflict);
+        }
     }
 
     public async Task<Result> DeleteAttributeCategory(List<int> attributeCategoryIds)
@@ -113,10 +128,9 @@ public class AttributeService:IAttributeService
         var entity = await _context.AttributeValueOptions.FindAsync(dto.Id);
         if (entity == null)
         {
-            return Result.Failure(ErrorCode.ValidationFailed);
+            return Result.Failure(ErrorCode.NotFound);
         }
-        var update = AttributeValueOptionMapper.UpdateToEntity(dto, entity);
-        _context.AttributeValueOptions.Update(update);
+        AttributeValueOptionMapper.UpdateToEntity(dto, entity);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
@@ -134,12 +148,19 @@ public class AttributeService:IAttributeService
         var entity = await _context.UserAttributes.FindAsync(dto.Id);
         if (entity == null)
         {
-            return Result.Failure(ErrorCode.ValidationFailed);
+            return Result.Failure(ErrorCode.NotFound);
         }
-        var update = UserAttributeMapper.UpdateUserAttributes(dto, entity);
-        _context.UserAttributes.Update(update);
-        await _context.SaveChangesAsync();
-        return Result.Success();
+        _context.Entry(entity).Property(x => x.Version).OriginalValue = dto.Version;
+        UserAttributeMapper.UpdateUserAttributes(dto, entity);
+        try
+        {
+            await _context.SaveChangesAsync();
+            return Result.Success();
+        }
+        catch (DbUpdateConcurrencyException e)
+        {
+            return Result.Failure(ErrorCode.ConcurrencyConflict);
+        }
     }
 
     public async Task<Result> DeleteUserAttribute(List<int> attributeIds)

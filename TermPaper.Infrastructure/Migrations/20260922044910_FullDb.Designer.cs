@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TermPaper.Infrastructure.Context;
@@ -11,9 +12,11 @@ using TermPaper.Infrastructure.Context;
 namespace TermPaper.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260922044910_FullDb")]
+    partial class FullDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,12 +199,6 @@ namespace TermPaper.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<uint>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
-                        .HasColumnName("xmin");
-
                     b.HasKey("Id");
 
                     b.ToTable("AttributeCategories");
@@ -210,8 +207,7 @@ namespace TermPaper.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Personal",
-                            Version = 0u
+                            Name = "Personal"
                         });
                 });
 
@@ -266,12 +262,6 @@ namespace TermPaper.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<uint>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
-                        .HasColumnName("xmin");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -289,8 +279,7 @@ namespace TermPaper.Infrastructure.Migrations
                             DataType = "String",
                             Description = "",
                             IsBuiltIn = true,
-                            Name = "First Name",
-                            Version = 0u
+                            Name = "First Name"
                         },
                         new
                         {
@@ -299,8 +288,7 @@ namespace TermPaper.Infrastructure.Migrations
                             DataType = "String",
                             Description = "",
                             IsBuiltIn = true,
-                            Name = "Last Name",
-                            Version = 0u
+                            Name = "Last Name"
                         },
                         new
                         {
@@ -309,8 +297,7 @@ namespace TermPaper.Infrastructure.Migrations
                             DataType = "Date",
                             Description = "",
                             IsBuiltIn = true,
-                            Name = "Date of Birth",
-                            Version = 0u
+                            Name = "Date of Birth"
                         },
                         new
                         {
@@ -319,8 +306,7 @@ namespace TermPaper.Infrastructure.Migrations
                             DataType = "String",
                             Description = "",
                             IsBuiltIn = true,
-                            Name = "Phone",
-                            Version = 0u
+                            Name = "Phone"
                         },
                         new
                         {
@@ -329,8 +315,7 @@ namespace TermPaper.Infrastructure.Migrations
                             DataType = "String",
                             Description = "",
                             IsBuiltIn = true,
-                            Name = "Location",
-                            Version = 0u
+                            Name = "Location"
                         },
                         new
                         {
@@ -339,8 +324,7 @@ namespace TermPaper.Infrastructure.Migrations
                             DataType = "Image",
                             Description = "",
                             IsBuiltIn = true,
-                            Name = "Profile Picture",
-                            Version = 0u
+                            Name = "Profile Picture"
                         },
                         new
                         {
@@ -349,8 +333,7 @@ namespace TermPaper.Infrastructure.Migrations
                             DataType = "Text",
                             Description = "",
                             IsBuiltIn = true,
-                            Name = "About Me",
-                            Version = 0u
+                            Name = "About Me"
                         });
                 });
 
@@ -533,12 +516,6 @@ namespace TermPaper.Infrastructure.Migrations
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<uint>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
-                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
