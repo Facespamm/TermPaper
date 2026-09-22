@@ -206,7 +206,10 @@ public class AttributeService:IAttributeService
 
     public async Task<List<AttributeGetDto>> GetBuiltInAttributes()
     {
-        await _context.Attributes.Where(a => a.IsBuiltIn).ToListAsync();
-        return _context.Attributes.Select(x=>AttributeMapper.GetToDto(x)).ToList();
-    }
+        var attributes = await _context.Attributes
+            .Where(a => a.IsBuiltIn)
+            .ToListAsync();
+        return attributes
+            .Select(x => AttributeMapper.GetToDto(x))
+            .ToList();    }
 }

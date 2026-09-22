@@ -1,0 +1,33 @@
+﻿@page "/ProfilePage"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize(Roles = "Candidate,Admin")]
+@inject AuthenticationStateProvider AuthStateProvider
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="Me">
+            <ProfileMeSection UserId="@userId" />
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Info">
+            <ProfileInfoSection UserId="@userId" />
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Projects">
+            <ProfileProjectsSection UserId="@userId" />
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="CVs">
+            <ProfileCvsSection UserId="@userId" />
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>
+
+@code {
+    private  string userId = "";
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+         userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+    }
+
+}
