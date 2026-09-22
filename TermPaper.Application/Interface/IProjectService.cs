@@ -6,21 +6,21 @@ namespace TermPaper.Application.Interface;
 
 public interface IProjectService
 {
-    public Task<GetProjectDto> GetProjects(int userId);
+    public Task<List<GetProjectDto>> GetProjectList(string userId);
     
     public Task<Result> CreateProject(CreateProjectDto createProjectDto);
     
     public Task<Result> UpdateProject(UpdateProjectDto updateProjectDto);
     
-    public Task<Result> DeleteProject(int projectId);
+    public Task<Result> DeleteProject(List<int> projectIds);
     
     //ProjectTags
     
-    public Task<GetProjectTagDto> GetProject(int projectId);
+    public Task<List<GetProjectTagDto>> GetProjectTag(int projectId);
     
-    public Task<Result> AddTag(CreateProjectTagDto createProjectTagDto);
+    public Task<Result> CreateProjectTag(CreateProjectTagDto createProjectTagDto);
     
-    public Task<Result> UpdateTag(UpdateProjectTagDto updateProjectTagDto);
+    public Task<Result> UpdateProjectTag(UpdateProjectTagDto updateProjectTagDto);
     
-    public Task<Result> DeleteTag(List<int> tagId);
+    public Task<Result> DeleteProjectTag(List<int> tagId);
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using TermPaper.Application.Common;
 using TermPaper.Application.Dto.ProjectDto;
 using TermPaper.Application.Dto.ProjectTagDto;
+using TermPaper.Application.Interface;
 using TermPaper.Domain.Models;
 using TermPaper.Enum;
 using TermPaper.Infrastructure.Context;
@@ -10,7 +11,7 @@ using TermPaper.Infrastructure.Mappers;
 
 namespace TermPaper.Infrastructure.Services;
 
-public class ProjectService
+public class ProjectService :IProjectService
 {
     private readonly AppDbContext _context;
     
