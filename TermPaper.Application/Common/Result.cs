@@ -17,6 +17,5 @@ public class Result
     
     public static Result Success() => new (true,ErrorCode.None,null);
     public static Result Failure(ErrorCode errorCode) => new (false,errorCode,null);
-    
+    public static Result Failure(ErrorCode errorCode, string? errorMessage) => new (false,errorCode,errorMessage);
 }
-
