@@ -20,7 +20,8 @@ public interface IAttributeService
     public Task<List<AttributeGetDto>> SearchByPrefixAsync(string prefix);
 
     public Task<List<AttributeGetDto>> GetByCategoryAsync(int categoryId);
-
+    public Task<List<AttributeGetDto>> GetBuiltInAttributes();
+    
     public Task<List<AttributeGetDto>> GetRecentlyUsedAsync(string userId);
 
     // Attribute Category
@@ -39,6 +40,8 @@ public interface IAttributeService
 
     public Task<Result> DeleteAttributeValueOption(List<int> attributeValueOptionIds);
 
+    public Task<List<GetUserAttributeDto>> GetUserAttributeValuesAsync(string userId);
+    
     // User Attribute
     public Task<Result> AddToUsersValue(UserAttributesAddDto addDto);
 

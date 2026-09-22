@@ -176,6 +176,12 @@ public class AttributeService:IAttributeService
         var entitys = await _context.UserAttributes.Where(x=>x.AttributeId  == attributeId).ToListAsync();
 
         return entitys.Select( x=>UserAttributeMapper.GetUserAttribute(x)).ToList();
+    } 
+    public async Task<List<GetUserAttributeDto>> GetUserAttributeValuesAsync(string userId)
+    {
+        var entitys = await _context.UserAttributes.Where(x=>x.UserId  == userId).ToListAsync();
+
+        return entitys.Select( x=>UserAttributeMapper.GetUserAttribute(x)).ToList();
     }
 
     public async Task<List<AttributeGetDto>> SearchByPrefixAsync(string prefix)
@@ -190,11 +196,17 @@ public class AttributeService:IAttributeService
         var entity = await _context.Attributes.Where(x => x.CategoryId == categoryId).ToListAsync();
         return entity.Select(x=>AttributeMapper.GetToDto(x)).ToList();
     }
-
+    
     public async Task<List<AttributeGetDto>> GetRecentlyUsedAsync(string userId)
     {
         var recently = await _context.RecentlyUsedAttribute.Where(x => x.UserId == userId)
             .Select(y => y.Attribute).Take(10).ToListAsync();
         return recently.Select(x=>AttributeMapper.GetToDto(x)).ToList();
+    }
+
+    public async Task<List<AttributeGetDto>> GetBuiltInAttributes()
+    {
+        await _context.Attributes.Where(a => a.IsBuiltIn).ToListAsync();
+        return _context.Attributes.Select(x=>AttributeMapper.GetToDto(x)).ToList();
     }
 }

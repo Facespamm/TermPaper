@@ -26,7 +26,7 @@ public class UserAttributeMapper
     {
         return new GetUserAttributeDto
         {
-            Id = entity.AttributeId,
+            Id = entity.Id,
             AttributeId = entity.AttributeId,
             UserId = entity.UserId,
             Value = entity.Value
