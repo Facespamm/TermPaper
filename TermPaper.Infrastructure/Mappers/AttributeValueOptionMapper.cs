@@ -5,6 +5,16 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class AttributeValueOptionMapper
 {
+
+    public static AttributeValueOptionDto GetValueOption(AttributeValueOption entity)
+    {
+        return new AttributeValueOptionDto()
+        {
+            Id = entity.Id,
+            Value = entity.Value,
+            Order = entity.Order,
+        };
+    }
     public static AttributeValueOption AddToEntity(AttributeValueAddDto addDto,int maxOrder)
     {
         return new AttributeValueOption

@@ -177,16 +177,15 @@ public class AttributeService:IAttributeService
             .Where(x => x.AttributeId == attributeId)
             .OrderBy(x => x.Order)
             .ToListAsync();
-
-        return options.Select(x => new AttributeValueOptionDto
-        {
-            Id = x.Id,
-            Value = x.Value,
-            Order = x.Order
-        }).ToList();
-    }    public async Task<List<GetUserAttributeDto>> GetUserAttributeValuesAsync(string userId)
+        return options.Select(x=>AttributeValueOptionMapper.GetValueOption(x)).ToList();
+    }   
+    public async Task<List<GetUserAttributeDto>> GetUserAttributeValuesAsync(string userId)
     {
-        var entitys = await _context.UserAttributes.Where(x=>x.UserId  == userId).ToListAsync();
+        var entitys = await _context.UserAttributes
+            .Where(x=>x.UserId  == userId)
+            .Include(x=>x.Attributes)
+            .ThenInclude(x=>x.AttributeValueOptions)
+            .ToListAsync();
 
         return entitys.Select( x=>UserAttributeMapper.GetUserAttribute(x)).ToList();
     }

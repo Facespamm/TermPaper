@@ -1,4 +1,5 @@
-﻿using TermPaper.Enum;
+﻿using TermPaper.Application.Dto.AttributeValueDto;
+using TermPaper.Enum;
 
 namespace TermPaper.Application.Dto;
 
@@ -15,6 +16,8 @@ public class AttributeGetDto
     public string Description {get; set;}
     
     public bool IsBuiltIn {get; set;}
+    
+    public List<AttributeValueOptionDto> AttributeValueOptions { get; set; } = [];
     
     public uint Version { get; set; }
 

@@ -10,8 +10,8 @@ public class GetUserAttributeDto
     
     public string Value {get; set;}
     
-    public DateTime LastUsedAt {get; set;}
-    
     public uint Version { get; set; }
+    
+    public AttributeGetDto Attribute { get; set; }
     
 }

@@ -8,37 +8,47 @@
 
 <RadzenStack Gap="1rem">
 
-    @foreach (var attribute in builtInAttributes)
+    @foreach (var item in userValues)
     {
-        var entry = GetOrCreateEntry(attribute.Id);
-
-        <RadzenFormField Text="@attribute.Name" Variant="Variant.Outlined">
-            @switch (attribute.DataType)
+        <RadzenFormField Text="@item.Attribute.Name" Variant="Variant.Outlined">
+            @switch (item.Attribute.DataType)
             {
                 case DataType.String:
-                    <RadzenTextBox TValue="string" Value="@entry.Value" ValueChanged="@(v => OnValueChanged(entry, v ?? ""))" />
+                    <RadzenTextBox TValue="string"
+                                   Value="@item.Value"
+                                   ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
                     break;
 
                 case DataType.Text:
-                    <RadzenTextArea Value="@entry.Value" Rows="4" ValueChanged="@(v => OnValueChanged(entry, v ?? ""))" />
+                    <RadzenTextArea Value="@item.Value"
+                                    Rows="4"
+                                    ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
                     break;
 
                 case DataType.Date:
-                    <RadzenDatePicker TValue="DateTime?" Value="@ParseDate(entry.Value)" ValueChanged="@(v => OnValueChanged(entry, v?.ToString("O") ?? ""))" />
+                    <RadzenDatePicker TValue="DateTime?"
+                                      Value="@ParseDate(item.Value)"
+                                      ValueChanged="@(v => OnValueChanged(item, v?.ToString("O") ?? ""))" />
                     break;
 
                 case DataType.Image:
                     <div class="rz-p-2">
-                        @if (!string.IsNullOrWhiteSpace(entry.Value))
+                        @if (!string.IsNullOrWhiteSpace(item.Value))
                         {
-                            <img src="@entry.Value" style="max-width:150px;border-radius:8px;" />
+                            <img src="@item.Value"
+                                 style="max-width:150px;border-radius:8px;" />
                         }
-                        <p class="rz-text-caption">Загрузка через Cloudinary — подключим отдельно</p>
+
+                        <p class="rz-text-caption">
+                            Загрузка через Cloudinary — подключим отдельно
+                        </p>
                     </div>
                     break;
 
                 default:
-                    <RadzenTextBox TValue="string" Value="@entry.Value" ValueChanged="@(v => OnValueChanged(entry, v ?? ""))" />
+                    <RadzenTextBox TValue="string"
+                                   Value="@item.Value"
+                                   ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
                     break;
             }
         </RadzenFormField>
@@ -46,7 +56,9 @@
 
     @if (savingIndicatorVisible)
     {
-        <RadzenText TextStyle="TextStyle.Caption">Сохранение...</RadzenText>
+        <RadzenText TextStyle="TextStyle.Caption">
+            Сохранение...
+        </RadzenText>
     }
 
 </RadzenStack>
@@ -54,53 +66,35 @@
 @code {
     [Parameter] public string UserId { get; set; } = "";
 
-    private List<AttributeGetDto> builtInAttributes = new();
-    private Dictionary<int, GetUserAttributeDto> entriesByAttributeId = new();   
+    private List<GetUserAttributeDto> userValues = new();
 
     private Dictionary<int, string> pendingChanges = new();
+
     private System.Threading.Timer? autoSaveTimer;
+
     private bool savingIndicatorVisible;
 
     protected override async Task OnInitializedAsync()
     {
-        builtInAttributes = await AttributeService.GetBuiltInAttributes();
+        userValues = await AttributeService.GetUserAttributeValuesAsync(UserId);
 
-        var existingValues = await AttributeService.GetUserAttributeValuesAsync(UserId);
-        foreach (var value in existingValues)
-        {
-            entriesByAttributeId[value.AttributeId] = value;
-        }
-
-        autoSaveTimer = new System.Threading.Timer(async _ => await AutoSaveAsync(), null,
-            TimeSpan.FromSeconds(7), TimeSpan.FromSeconds(7));
+        autoSaveTimer = new System.Threading.Timer(
+            async _ => await AutoSaveAsync(),
+            null,
+            TimeSpan.FromSeconds(7),
+            TimeSpan.FromSeconds(7));
     }
 
-    private GetUserAttributeDto GetOrCreateEntry(int attributeId)
+    private void OnValueChanged(GetUserAttributeDto item, string newValue)
     {
-        if (entriesByAttributeId.TryGetValue(attributeId, out var existing))
-            return existing;
-
-        var placeholder = new GetUserAttributeDto
-        {
-            Id = 0,
-            AttributeId = attributeId,
-            UserId = UserId,
-            Value = "",
-            Version = 0
-        };
-        entriesByAttributeId[attributeId] = placeholder;
-        return placeholder;
-    }
-
-    private void OnValueChanged(GetUserAttributeDto entry, string newValue)
-    {
-        entry.Value = newValue;
-        pendingChanges[entry.AttributeId] = newValue;
+        item.Value = newValue;
+        pendingChanges[item.Id] = newValue;
     }
 
     private async Task AutoSaveAsync()
     {
-        if (pendingChanges.Count == 0) return;
+        if (pendingChanges.Count == 0)
+            return;
 
         savingIndicatorVisible = true;
         await InvokeAsync(StateHasChanged);
@@ -108,44 +102,38 @@
         var changesToSave = new Dictionary<int, string>(pendingChanges);
         pendingChanges.Clear();
 
-        foreach (var (attributeId, value) in changesToSave)
+        foreach (var (id, value) in changesToSave)
         {
-            var entry = entriesByAttributeId[attributeId];
+            var item = userValues.FirstOrDefault(x => x.Id == id);
 
-            if (entry.Id == 0)
+            if (item == null)
+                continue;
+
+            var updateDto = new UpdateUserAttributeDto
             {
-                var addDto = new UserAttributesAddDto
-                {
-                    AttributeId = attributeId,
-                    UserId = UserId,
-                    Value = value
-                };
-                await AttributeService.AddToUsersValue(addDto);
-            }
-            else
-            {
-                var updateDto = new UpdateUserAttributeDto
-                {
-                    Id = entry.Id,
-                    Value = value,
-                    Version = entry.Version
-                };
-                await AttributeService.UpdateUserAttribute(updateDto);
-            }
+                Id = item.Id,
+                Value = value,
+                Version = item.Version
+            };
+
+            await AttributeService.UpdateUserAttribute(updateDto);
         }
 
         var refreshed = await AttributeService.GetUserAttributeValuesAsync(UserId);
-        foreach (var value in refreshed)
-        {
-            entriesByAttributeId[value.AttributeId] = value;
-        }
+
+        userValues = refreshed;
 
         savingIndicatorVisible = false;
+
         await InvokeAsync(StateHasChanged);
     }
 
-    private DateTime? ParseDate(string? value) =>
-        DateTime.TryParse(value, out var result) ? result : null;
+    private DateTime? ParseDate(string? value)
+    {
+        return DateTime.TryParse(value, out var result)
+            ? result
+            : null;
+    }
 
     public void Dispose()
     {

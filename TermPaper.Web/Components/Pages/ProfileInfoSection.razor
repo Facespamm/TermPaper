@@ -1,7 +1,7 @@
 ﻿@page "/ProfileInfoSection"
 @using TermPaper.Application.Interface
-@using TermPaper.Application.Dto
 @using TermPaper.Application.Dto.UsersAttributesDto
+@using TermPaper.Application.Dto
 @using TermPaper.Enum
 @inject IAttributeService AttributeService
 @implements IDisposable
@@ -10,38 +10,50 @@
 
     @foreach (var item in userValues)
     {
-        var attribute = attributesById.GetValueOrDefault(item.AttributeId);
-        if (attribute == null) continue;
-
-        <RadzenFormField Text="@attribute.Name" Variant="Variant.Outlined">
-            @switch (attribute.DataType)
+        <RadzenFormField Text="@(item.Attribute.Name)" Variant="Variant.Outlined">
+            @switch (item.Attribute.DataType)
             {
                 case DataType.String:
-                    <RadzenTextBox TValue="string" Value="@item.Value" ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
+                    <RadzenTextBox TValue="string"
+                                   Value="@item.Value"
+                                   ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
                     break;
 
                 case DataType.Text:
-                    <RadzenTextArea Value="@item.Value" Rows="4" ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
+                    <RadzenTextArea Value="@item.Value"
+                                    Rows="4"
+                                    ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
                     break;
 
                 case DataType.Numeric:
-                    <RadzenNumeric TValue="decimal?" Value="@ParseDecimal(item.Value)" ValueChanged="@(v => OnValueChanged(item, v?.ToString() ?? ""))" />
+                    <RadzenNumeric TValue="decimal?"
+                                   Value="@ParseDecimal(item.Value)"
+                                   ValueChanged="@(v => OnValueChanged(item, v?.ToString() ?? ""))" />
                     break;
 
                 case DataType.Date:
-                    <RadzenDatePicker TValue="DateTime?" Value="@ParseDate(item.Value)" ValueChanged="@(v => OnValueChanged(item, v?.ToString("O") ?? ""))" />
+                    <RadzenDatePicker TValue="DateTime?"
+                                      Value="@ParseDate(item.Value)"
+                                      ValueChanged="@(v => OnValueChanged(item, v?.ToString("O") ?? ""))" />
                     break;
 
                 case DataType.Boolean:
-                    <RadzenCheckBox TValue="bool" Value="@(item.Value == "true")" ValueChanged="@(v => OnValueChanged(item, v.ToString().ToLower()))" />
+                    <RadzenCheckBox TValue="bool"
+                                    Value="@(item.Value == "true")"
+                                    ValueChanged="@(v => OnValueChanged(item, v.ToString().ToLower()))" />
                     break;
 
                 case DataType.Dropdown:
-                    <RadzenDropDown TValue="string" Data="@GetOptionsFor(attribute.Id)" Value="@item.Value" ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
+                    <RadzenDropDown TValue="string"
+                                    Data="@(item.Attribute.AttributeValueOptions.Select(x => x.Value).ToList())"
+                                    Value="@item.Value"
+                                    ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
                     break;
 
                 default:
-                    <RadzenTextBox TValue="string" Value="@item.Value" ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
+                    <RadzenTextBox TValue="string"
+                                   Value="@item.Value"
+                                   ValueChanged="@(v => OnValueChanged(item, v ?? ""))" />
                     break;
             }
         </RadzenFormField>
@@ -49,45 +61,28 @@
 
 </RadzenStack>
 
-<RadzenButton Text="Добавить атрибут" Icon="add" Click="@OpenAddAttributeDialog" class="rz-mt-4" />
+<RadzenButton Text="Добавить атрибут"
+              Icon="add"
+              Click="@OpenAddAttributeDialog"
+              class="rz-mt-4" />
 
 @code {
     [Parameter] public string UserId { get; set; } = "";
 
-    private List<AttributeGetDto> allAttributes = new();
-    private Dictionary<int, AttributeGetDto> attributesById = new();
     private List<GetUserAttributeDto> userValues = new();
-
-    private Dictionary<int, List<string>> optionsByAttributeId = new(); 
 
     private Dictionary<int, string> pendingChanges = new();
     private System.Threading.Timer? autoSaveTimer;
 
     protected override async Task OnInitializedAsync()
     {
-        allAttributes = await AttributeService.GetAttribute();
-        attributesById = allAttributes.ToDictionary(a => a.Id);
-
         userValues = await AttributeService.GetUserAttributeValuesAsync(UserId);
 
-        var dropdownAttributeIds = userValues
-            .Select(v => v.AttributeId)
-            .Where(id => attributesById.GetValueOrDefault(id)?.DataType == DataType.Dropdown)
-            .Distinct();
-
-        foreach (var attributeId in dropdownAttributeIds)   
-        {
-            var options = await AttributeService.GetOptionValuesAsync(attributeId);
-            optionsByAttributeId[attributeId] = options.Select(o => o.Value).ToList();
-        }
-
-        autoSaveTimer = new System.Threading.Timer(async _ => await AutoSaveAsync(), null,
-            TimeSpan.FromSeconds(7), TimeSpan.FromSeconds(7));
-    }
-
-    private List<string> GetOptionsFor(int attributeId)
-    {
-       return optionsByAttributeId.GetValueOrDefault(attributeId, new List<string>());
+        autoSaveTimer = new System.Threading.Timer(
+            async _ => await AutoSaveAsync(),
+            null,
+            TimeSpan.FromSeconds(7),
+            TimeSpan.FromSeconds(7));
     }
 
     private void OnValueChanged(GetUserAttributeDto item, string newValue)
@@ -98,14 +93,18 @@
 
     private async Task AutoSaveAsync()
     {
-        if (pendingChanges.Count == 0) return;
+        if (pendingChanges.Count == 0)
+            return;
 
         var changesToSave = new Dictionary<int, string>(pendingChanges);
         pendingChanges.Clear();
 
         foreach (var (id, value) in changesToSave)
         {
-            var item = userValues.First(u => u.Id == id);
+            var item = userValues.FirstOrDefault(x => x.Id == id);
+
+            if (item == null)
+                continue;
 
             var dto = new UpdateUserAttributeDto
             {
@@ -116,27 +115,31 @@
 
             var result = await AttributeService.UpdateUserAttribute(dto);
 
-            if (!result.IsSuccess && result.ErrorCode == ErrorCode.ConcurrencyConflict)
+            if (!result.IsSuccess &&
+                result.ErrorCode == ErrorCode.ConcurrencyConflict)
             {
                 userValues = await AttributeService.GetUserAttributeValuesAsync(UserId);
             }
         }
 
-        var refreshed = await AttributeService.GetUserAttributeValuesAsync(UserId);
-        foreach (var value in refreshed)
-        {
-            var existing = userValues.FirstOrDefault(u => u.Id == value.Id);
-            if (existing != null) existing.Version = value.Version;
-        }
+        userValues = await AttributeService.GetUserAttributeValuesAsync(UserId);
 
         await InvokeAsync(StateHasChanged);
     }
 
-    private decimal? ParseDecimal(string? value) =>
-        decimal.TryParse(value, out var result) ? result : null;
+    private decimal? ParseDecimal(string? value)
+    {
+        return decimal.TryParse(value, out var result)
+            ? result
+            : null;
+    }
 
-    private DateTime? ParseDate(string? value) =>
-        DateTime.TryParse(value, out var result) ? result : null;
+    private DateTime? ParseDate(string? value)
+    {
+        return DateTime.TryParse(value, out var result)
+            ? result
+            : null;
+    }
 
     private async Task OpenAddAttributeDialog()
     {

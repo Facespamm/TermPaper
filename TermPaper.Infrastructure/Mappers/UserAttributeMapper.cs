@@ -12,6 +12,7 @@ public class UserAttributeMapper
             AttributeId = addDto.AttributeId,
             UserId = addDto.UserId,
             Value = addDto.Value
+            
         };
     }
 
@@ -29,7 +30,8 @@ public class UserAttributeMapper
             Id = entity.Id,
             AttributeId = entity.AttributeId,
             UserId = entity.UserId,
-            Value = entity.Value
+            Value = entity.Value,
+            Attribute = AttributeMapper.GetToDto(entity.Attributes)
         };
     }
 }

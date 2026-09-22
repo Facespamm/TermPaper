@@ -14,7 +14,10 @@ public  class AttributeMapper
             Name = attribute.Name,
             DataType = attribute.DataType,
             Description = attribute.Description,
-            Version =  attribute.Version
+            Version =  attribute.Version,
+            AttributeValueOptions = attribute.AttributeValueOptions
+                .Select(x => AttributeValueOptionMapper.GetValueOption(x))
+                .ToList()
         };
     }
 
