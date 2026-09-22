@@ -49,5 +49,4 @@ public interface IAttributeService
 
     public Task<Result> DeleteUserAttribute(List<int> attributeIds);
 
-    public Task<List<GetUserAttributeDto>> GetOptionValuesAsync(int attributeId);
-}
+    Task<List<AttributeValueOptionDto>> GetOptionValuesAsync(int attributeId);}
