@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using TermPaper.Application.Common;
 using TermPaper.Enum;
 using TermPaper.Application.Interface;
@@ -11,13 +12,14 @@ public class RegisterService : IRegisterService
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly ISenderEmail _emailSender;
+    private readonly string _baseUrl;
 
-    public RegisterService(UserManager<AppUser> userManager, ISenderEmail emailSender)
+    public RegisterService(UserManager<AppUser> userManager, ISenderEmail emailSender, IConfiguration configuration)
     {
         _userManager = userManager;
         _emailSender = emailSender;
+        _baseUrl = configuration["AppSettings:BaseUrl"] ?? "http://localhost:5000";
     }
-
     public async Task<Result> RegisterUserAsync(string email, string password, string confirmPassword, string userName)
     {
         var existingUser = await _userManager.FindByEmailAsync(email);
@@ -41,10 +43,8 @@ public class RegisterService : IRegisterService
         await _userManager.AddToRoleAsync(user, "Candidate");
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmLink = QueryHelpers.AddQueryString(
-            "http://localhost:5000/ConfirmEmailPage",
-            new Dictionary<string, string?> { ["email"] = email, ["token"] = token });
-
+        var confirmLink = QueryHelpers.AddQueryString($"{_baseUrl}/ConfirmEmailPage", 
+            new Dictionary<string, string?>{["email"] = email,["token"] = token});
         var send = await _emailSender.SendEmailAsync(email, confirmLink);
 
         return Result.Success();
