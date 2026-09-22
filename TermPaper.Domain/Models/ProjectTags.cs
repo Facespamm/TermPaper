@@ -3,8 +3,8 @@
 public class ProjectTags
 {
     public int Id { get; set; }
-    
-    public string Tag { get; set; }
+
+    public string Tag { get; set; } = null!;
     
     public int ProjectId { get; set; }
     

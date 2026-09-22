@@ -31,12 +31,9 @@ public  class AttributeMapper
     
         public static Attributes ToUpdateEntity(Attributes attribute,UpdateAttributeDto dto)
         {
-            return new Attributes
-            {
-                Id = attribute.Id,
-                Name = dto.Name ?? attribute.Name,
-                Description = dto.Description ?? attribute.Description,
-                CategoryId = dto.CategoryId ?? attribute.CategoryId
-            };
+           attribute.CategoryId = dto.CategoryId ?? attribute.CategoryId;
+           attribute.Name = dto.Name ?? attribute.Name;
+           attribute.Description = dto.Description ?? attribute.Description;
+           return attribute;
         }
 }

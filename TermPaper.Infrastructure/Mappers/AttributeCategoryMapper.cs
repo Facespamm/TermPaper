@@ -24,10 +24,7 @@ public class AttributeCategoryMapper
 
     public static AttributeCategory UpdateEntity(AttributeUpdateCategoryDto dto,AttributeCategory entity)
     {
-        return new AttributeCategory
-        {
-            Id = entity.Id,
-            Name = dto.Name ?? entity.Name
-        };
+       entity.Name = dto.Name ?? entity.Name;
+       return entity;
     }
 }

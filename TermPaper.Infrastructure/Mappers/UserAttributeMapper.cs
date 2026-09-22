@@ -17,11 +17,9 @@ public class UserAttributeMapper
 
     public static UserAttributes UpdateUserAttributes(UpdateUserAttributeDto dto, UserAttributes entity)
     {
-        return new UserAttributes()
-        {
-            AttributeId = dto.AttributeId ?? entity.AttributeId,
-            Value = dto.Value ?? entity.Value
-        };
+        entity.AttributeId = dto.AttributeId ??  entity.AttributeId;
+        entity.Value = dto.Value ??  entity.Value;
+        return entity;
     }
 
     public static GetUserAttributeDto GetUserAttribute(UserAttributes entity)

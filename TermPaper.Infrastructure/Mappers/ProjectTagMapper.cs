@@ -26,10 +26,8 @@ public class ProjectTagMapper
 
     public static ProjectTags UpdateProjectTagsData(UpdateProjectTagDto tagDto, ProjectTags projectData)
     {
-        return new ProjectTags()
-        {
-            ProjectId = tagDto.ProjectId ?? projectData.ProjectId,
-            Tag = tagDto.Tag ?? projectData.Tag
-        };
+        projectData.ProjectId = tagDto.ProjectId ?? projectData.ProjectId;
+        projectData.Tag = tagDto.Tag ?? projectData.Tag;
+        return projectData;
     }
 }

@@ -44,13 +44,11 @@ public class PositionMapper
     
     public static Position UpdateToEntity(UpdatePositionDto dto, Position position)
     {
-        return new Position
-        {
-            Title = dto.Title ?? position.Title,
-            ShortDescription = dto.ShortDescription ?? position.ShortDescription,
-            CompanyName = dto.CompanyName ?? position.CompanyName,
-            MaxProjectsCount = dto.MaxProjectsCount ?? position.MaxProjectsCount,
-            Level = dto.Level ?? position.Level,
-        };
+        position.CompanyName = dto.CompanyName ??  position.CompanyName;
+        position.Level = dto.Level  ??  position.Level;
+        position.MaxProjectsCount = dto.MaxProjectsCount ?? position.MaxProjectsCount;
+        position.ShortDescription = dto.ShortDescription ?? position.ShortDescription;
+        position.Title = dto.Title ?? position.Title;
+        return position;
     }
 }

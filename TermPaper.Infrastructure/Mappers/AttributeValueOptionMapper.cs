@@ -17,10 +17,8 @@ public class AttributeValueOptionMapper
 
     public static AttributeValueOption UpdateToEntity(UpdateAttributeValueDto dto,AttributeValueOption entity)
     {
-        return new AttributeValueOption
-        {
-            AttributeId = dto.AttributeId ?? entity.AttributeId,
-            Value = dto.Value ?? entity.Value,
-        };
+        entity.AttributeId = dto.AttributeId ?? entity.AttributeId;
+        entity.Value = dto.Value ?? entity.Value;
+        return entity;
     }
 }

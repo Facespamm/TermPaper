@@ -32,13 +32,10 @@ public class ProjectMapper
 
     public static Projects UpdateProjectData(UpdateProjectDto project, Projects projectData)
     {
-        return new Projects()
-        {
-            Name = project.Name ?? projectData.Name,
-            DescriptionMd = project.DescriptionMd ?? projectData.DescriptionMd,
-            UserId = project.UserId ?? projectData.UserId,
-            PeriodFrom = project.PeriodFrom ?? projectData.PeriodFrom,
-            PeriodTo = project.PeriodTo  ?? projectData.PeriodTo,
-        };
+        projectData.DescriptionMd = project.DescriptionMd ?? projectData.DescriptionMd;
+        projectData.Name = project.Name  ?? projectData.Name;
+        projectData.PeriodFrom= project.PeriodFrom  ?? projectData.PeriodFrom;
+        projectData.PeriodTo = project.PeriodTo   ?? projectData.PeriodTo;
+        return projectData;
     }
 }
