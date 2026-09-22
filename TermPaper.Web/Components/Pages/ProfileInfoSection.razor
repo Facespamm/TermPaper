@@ -85,8 +85,10 @@
             TimeSpan.FromSeconds(7), TimeSpan.FromSeconds(7));
     }
 
-    private List<string> GetOptionsFor(int attributeId) =>
-        optionsByAttributeId.GetValueOrDefault(attributeId, new List<string>());
+    private List<string> GetOptionsFor(int attributeId)
+    {
+       return optionsByAttributeId.GetValueOrDefault(attributeId, new List<string>());
+    }
 
     private void OnValueChanged(GetUserAttributeDto item, string newValue)
     {
