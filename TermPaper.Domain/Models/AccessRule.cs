@@ -8,6 +8,10 @@ public class AccessRule
     
     public int AttributeId { get; set; }
     
+    public Attribute Attribute { get; set; } = null!;
+    
+    public Position Position { get; set; } = null!;
+    
     public int PositionId  { get; set; }
     
     public Operator Operator { get; set; }
