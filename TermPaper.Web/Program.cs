@@ -23,18 +23,17 @@ var app = builder.Build();
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-    KnownNetworks = { },
+    KnownIPNetworks = { },
     KnownProxies = { }
 });
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
 
-using (var scope = app.Services.CreateScope())  
+using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<TermPaper.Infrastructure.Context.AppDbContext>();
     await dbContext.Database.MigrateAsync();
@@ -44,18 +43,22 @@ using (var scope = app.Services.CreateScope())
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new IdentityRole(role)); 
+            await roleManager.CreateAsync(new IdentityRole(role));
     }
 }
+
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
-app.UseHttpsRedirection();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapStaticAssets();
 app.MapAuthEndpoints();
-app.MapGet("/", () => Results.Redirect("/LoginPage"));
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
