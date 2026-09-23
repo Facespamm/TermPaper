@@ -31,6 +31,7 @@ public class UserAttributeMapper
             AttributeId = entity.AttributeId,
             UserId = entity.UserId,
             Value = entity.Value,
+            Version = entity.Version, 
             Attribute = AttributeMapper.GetToDto(entity.Attributes)
         };
     }

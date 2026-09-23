@@ -192,16 +192,28 @@ public class AttributeService:IAttributeService
 
     public async Task<List<AttributeGetDto>> SearchByPrefixAsync(string prefix)
     {
-        var search = await _context.Attributes.Where(x => x.Name.StartsWith(prefix)).ToListAsync();
-
-        return search.Select(x=>AttributeMapper.GetToDto(x)).ToList();
+        var search = await _context.Attributes
+            .Where(x => EF.Functions.ILike(x.Name, prefix + "%"))
+            .ToListAsync();
+        return search.Select(x => AttributeMapper.GetToDto(x)).ToList();
     }
-
+    
     public async Task<List<AttributeGetDto>> GetByCategoryAsync(int categoryId)
     {
         var entity = await _context.Attributes.Where(x => x.CategoryId == categoryId).ToListAsync();
         return entity.Select(x=>AttributeMapper.GetToDto(x)).ToList();
     }
+    
+        public async Task<List<GetUserAttributeDto>> GetUserBuiltInAttributeValuesAsync(string userId)
+        {
+            var attributes = await _context.Attributes
+                .Include(a => a.AttributeValueOptions)
+                .Include(a => a.UserAttributes.Where(v => v.UserId == userId))   
+                .Where(a => a.IsBuiltIn)
+                .ToListAsync();
+
+            return attributes.Select(attr => AttributeMapper.ToMeSectionDto(attr, userId)).ToList();
+        }
     
     public async Task<List<AttributeGetDto>> GetRecentlyUsedAsync(string userId)
     {

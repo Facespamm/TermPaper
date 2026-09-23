@@ -1,0 +1,56 @@
+@page "/positions"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Dto.PositionDto
+@inject IPositionService PositionService
+@inject NavigationManager Navigation
+
+<h3>Позиции</h3>
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" class="rz-mb-4">
+    <RadzenTextBox @bind-Value="@searchText" @oninput="@OnSearchInput" Placeholder="Поиск по названию..." Style="width:250px;" />
+
+    <AuthorizeView Roles="Recruiter,Admin">
+        <RadzenButton Text="Создать" Icon="add" Click="@(() => Navigation.NavigateTo("/positions/new"))" />
+        <RadzenButton Text="Открыть" Icon="open_in_new"
+                      Disabled="@(selected.Count != 1)"
+                      Click="@(() => Navigation.NavigateTo($"/positions/{selected.First().Id}"))" />
+        <RadzenButton Text="Удалить" Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                      Disabled="@(!selected.Any())" Click="@DeleteSelected" />
+    </AuthorizeView>
+</RadzenStack>
+
+<RadzenDataGrid Data="@positions" TItem="GetPositionDto"
+                SelectionMode="DataGridSelectionMode.Multiple"
+                @bind-Value="@selected">
+    <Columns>
+        <RadzenDataGridColumn TItem="GetPositionDto" Property="Title" Title="Название" />
+        <RadzenDataGridColumn TItem="GetPositionDto" Property="ShortDescription" Title="Описание" />
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    private List<GetPositionDto> positions = new();
+    private IList<GetPositionDto> selected = new List<GetPositionDto>();
+    private string searchText = "";
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    private async Task Load() => positions = await PositionService.GetPositions(searchText);
+
+    private async Task OnSearchInput(Microsoft.AspNetCore.Components.ChangeEventArgs e)
+    {
+        searchText = e.Value?.ToString() ?? "";
+        await Load();
+    }
+
+    private async Task DeleteSelected()
+    {
+        var ids = selected.Select(p => p.Id).ToList();
+        if (!ids.Any()) return;
+        await PositionService.DeletePosition(ids);
+        selected = new List<GetPositionDto>();
+        await Load();
+    }
+}

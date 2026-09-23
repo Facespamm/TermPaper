@@ -1,47 +1,165 @@
-﻿    @page "/AdminPanel"
-    @using Microsoft.AspNetCore.Authorization
-    @using TermPaper.Application.Dto
-    @using TermPaper.Application.Interface
-    @inject IUserManagementService userManegement
-    <div class="adminPanel-page">
-       
-        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" class="rz-mb-2" JustifyContent="JustifyContent.Center" 0>                
-            <RadzenButton Text="Block" Icon="block" ButtonStyle="ButtonStyle.Danger"/>
-            <RadzenButton Text="Unlock" Icon="check_circle" ButtonStyle="ButtonStyle.Success"/>
-            <RadzenButton Text="Assign role: Recruiter"/>
-            <RadzenButton Text="Assign role: Candidate"/>
-            <RadzenButton Text="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Outlined"/>
-        </RadzenStack>
+﻿@page "/AdminPanel"
 
+@using Microsoft.AspNetCore.Authorization
+@using TermPaper.Application.Dto
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Common
 
-        <RadzenDataGrid AllowFiltering="true"
-                        AllowColumnResize="true"
-                        AllowSorting="true"
-                        AllowPaging="true"
-                        PageSize="10"
-                        AllowRowSelectOnRowClick="true"
-                        FilterMode="FilterMode.Advanced"
-                        @bind-Value ="@selectedUsers"
-                        TItem="UserDto"
-                        Data="@users"
-                        ColumnWidth="200px"
-                        SelectionMode="DataGridSelectionMode.Multiple"
-                        >
-            <Columns>
-                <RadzenDataGridColumn Property="Email" Title="Email" Width="260px" />
-                <RadzenDataGridColumn Property="UserName" Title="User name" Width="200px" />
-                <RadzenDataGridColumn Property="Roles" Title="Roles" Width="180px"><Template Context="data">@string.Join(", ", data.Roles)</Template></RadzenDataGridColumn>           
-                <RadzenDataGridColumn Property="EmailConfirmed" Title="Email confirmed" Width="150px" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn Property="IsLockedOut" Title="Is Locked" Width="130px" TextAlign="TextAlign.Center" />
-            </Columns>
-        </RadzenDataGrid>
-    </div>
+@attribute [Authorize(Roles = "Admin")]
 
-    @code {
-        private IList<UserDto> users = new List<UserDto>();
-        private IList<UserDto> selectedUsers = new List<UserDto>();
-        protected override async Task OnInitializedAsync()
-        {
-            users = await userManegement.GetUsersAsync();
-        }
+@inject IUserManagementService userManegement
+
+<div class="adminPanel-page">
+   
+    <RadzenStack Orientation="Orientation.Horizontal"
+                 Gap="0.5rem"
+                 class="rz-mb-2"
+                 JustifyContent="JustifyContent.Center">
+
+        <RadzenButton Text="Block"
+                      Icon="block"
+                      ButtonStyle="ButtonStyle.Danger"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@BlockSelectedUsers"/>
+
+        <RadzenButton Text="Unlock"
+                      Icon="check_circle"
+                      ButtonStyle="ButtonStyle.Success"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@UnlockSelectedUsers"/>
+
+        <RadzenButton Text="Assign role: Recruiter"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@(() => AssignRole("Recruiter"))"/>
+
+        <RadzenButton Text="Assign role: Candidate"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@(() => AssignRole("Candidate"))"/>
+
+        <RadzenButton Text="Delete"
+                      Icon="delete"
+                      ButtonStyle="ButtonStyle.Danger"
+                      Variant="Variant.Outlined"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@DeleteSelectedUsers"/>
+
+    </RadzenStack>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" class="rz-mb-2">@error</RadzenAlert>
     }
+
+    <RadzenDataGrid AllowFiltering="true"
+                    AllowColumnResize="true"
+                    AllowSorting="true"
+                    AllowPaging="true"
+                    PageSize="10"
+                    AllowRowSelectOnRowClick="true"
+                    FilterMode="FilterMode.Advanced"
+                    @bind-Value="@selectedUsers"
+                    TItem="UserDto"
+                    Data="@users"
+                    ColumnWidth="200px"
+                    SelectionMode="DataGridSelectionMode.Multiple">
+
+        <Columns>
+
+            <RadzenDataGridColumn Property="Email"
+                                  Title="Email"
+                                  Width="260px" />
+
+            <RadzenDataGridColumn Property="UserName"
+                                  Title="User name"
+                                  Width="200px" />
+
+            <RadzenDataGridColumn TItem="UserDto"
+                                  Property="Roles"
+                                  Title="Roles"
+                                  Width="180px">
+
+                <Template Context="data">
+                    @string.Join(", ", data.Roles)
+                </Template>
+
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn Property="EmailConfirmed"
+                                  Title="Email confirmed"
+                                  Width="150px"
+                                  TextAlign="TextAlign.Center" />
+
+            <RadzenDataGridColumn Property="IsLockedOut"
+                                  Title="Is Locked"
+                                  Width="130px"
+                                  TextAlign="TextAlign.Center" />
+
+        </Columns>
+
+    </RadzenDataGrid>
+
+</div>
+
+@code {
+    private IList<UserDto> users = new List<UserDto>();
+    private IList<UserDto> selectedUsers = new List<UserDto>();
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await userManegement.GetUsersAsync();
+    }
+
+    private List<string> SelectedIds => selectedUsers.Select(u => u.Id).ToList();
+
+    private async Task BlockSelectedUsers()
+    {
+        var result = await userManegement.LockUserAsync(SelectedIds);
+        await HandleResult(result);
+    }
+
+    private async Task UnlockSelectedUsers()
+    {
+        var result = await userManegement.UnlockUserAsync(SelectedIds);
+        await HandleResult(result);
+    }
+
+    private async Task AssignRole(string role)
+    {
+        foreach (var userId in SelectedIds)
+        {
+            var result = await userManegement.AddUserRolesAsync(userId, new List<string> { role });
+            if (!result.IsSuccess)
+            {
+                error = $"Не удалось назначить роль {role} пользователю: {result.ErrorCode}";
+                return;
+            }
+        }
+        error = "";
+        await RefreshUsers();
+    }
+
+    private async Task DeleteSelectedUsers()
+    {
+        var result = await userManegement.DeleteUsersAsync(SelectedIds);
+        await HandleResult(result);
+    }
+
+    private async Task HandleResult(Result result)
+    {
+        if (!result.IsSuccess)
+        {
+            error = $"Операция не выполнена: {result.ErrorCode}";
+            return;
+        }
+
+        error = "";
+        await RefreshUsers();
+    }
+
+    private async Task RefreshUsers()
+    {
+        users = await userManegement.GetUsersAsync();
+        selectedUsers = new List<UserDto>();
+    }
+}

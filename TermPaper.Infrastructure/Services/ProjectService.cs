@@ -22,7 +22,10 @@ public class ProjectService :IProjectService
 
     public async Task<List<GetProjectDto>> GetProjectList(string userId)
     {
-        var entity = await _context.Projects.Where(x => x.UserId == userId).ToListAsync();
+        var entity = await _context.Projects
+            .Where(x => x.UserId == userId)
+            .Include(x => x.ProjectTags)
+            .ToListAsync();
         
         return entity.Select(x => ProjectMapper.GetProjectData(x)).ToList();
     }
@@ -83,9 +86,9 @@ public class ProjectService :IProjectService
         return Result.Success();
     }
 
-    public async Task<Result> DeleteProjectTag(List<int> projectIds)
+    public async Task<Result> DeleteProjectTag(List<int> tagIds)
     {
-        var entity = await _context.ProjectTags.Where(x => projectIds.Contains(x.ProjectId)).ToListAsync();
+        var entity = await _context.ProjectTags.Where(x => tagIds.Contains(x.Id)).ToListAsync();
         _context.ProjectTags.RemoveRange(entity);
         await _context.SaveChangesAsync();
         return Result.Success();

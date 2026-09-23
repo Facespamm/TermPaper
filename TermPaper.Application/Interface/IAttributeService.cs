@@ -24,6 +24,9 @@ public interface IAttributeService
     
     public Task<List<AttributeGetDto>> GetRecentlyUsedAsync(string userId);
 
+    public Task<List<GetUserAttributeDto>> GetUserBuiltInAttributeValuesAsync(string userId);
+
+
     // Attribute Category
     public Task<Result> CreateCategory(AttributeCreateCategoryDto dto);
 

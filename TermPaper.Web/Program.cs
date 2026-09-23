@@ -12,7 +12,10 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<DialogService>();
 builder.Services.AddRadzenComponents();
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
 var app = builder.Build();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions

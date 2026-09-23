@@ -25,10 +25,11 @@ public class LoginService:ILoginService
         _baseUrl = configuration["AppSettings:BaseUrl"] ?? "http://localhost:5000";
     }
     public async Task<Result> LoginUsersAsync(string email, string password)
+    public async Task<Result> LoginUsersAsync(string email, string password, bool isPersistent = false)
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null){ return Result.Failure(ErrorCode.UserNotFound); }
-        var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
+        var result = await _signInManager.PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure: false);
         if (!result.Succeeded){ return Result.Failure(ErrorCode.PasswordsDoNotMatch); }
         if (result.IsNotAllowed)
         { return Result.Failure(ErrorCode.None); } 

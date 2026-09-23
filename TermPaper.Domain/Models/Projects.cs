@@ -13,5 +13,6 @@ public class Projects
     public DateTime? PeriodFrom { get; set; }
     
     public DateTime? PeriodTo { get; set; }
-    
+
+    public List<ProjectTags> ProjectTags { get; set; }  = new();
 }

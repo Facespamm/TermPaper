@@ -1,0 +1,99 @@
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Dto
+@using TermPaper.Application.Dto.UsersAttributesDto
+@inject IAttributeService AttributeService
+@inject DialogService DialogService
+
+<RadzenStack Gap="1rem" class="rz-p-4" style="min-width: 350px;">
+
+    <RadzenFormField Text="Поиск">
+        <RadzenTextBox @bind-Value="@searchText" Change="@Search" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Категория">
+        <RadzenDropDown Data="@categories" TextProperty="Name" ValueProperty="Id"
+                        @bind-Value="@selectedCategoryId"
+                        Change="@FilterByCategory"
+                        AllowClear="true" Placeholder="Все категории" />
+    </RadzenFormField>
+
+    @if (recentlyUsed.Any() && string.IsNullOrEmpty(searchText))
+    {
+        <div>
+            <small class="rz-text-muted">Недавние:</small>
+            <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" Gap="0.25rem" class="rz-mt-1">
+                @foreach (var attr in recentlyUsed)
+                {
+                    <RadzenBadge Text="@attr.Name" BadgeStyle="BadgeStyle.Light"
+                                 Style="cursor:pointer"
+                                 Click="@(() => SelectAttribute(attr.Id))" />
+                }
+            </RadzenStack>
+        </div>
+    }
+
+    <RadzenStack Gap="0">
+        @foreach (var attr in searchResults)
+        {
+            <div class="rz-p-2 rz-border-bottom"
+                 style="cursor:pointer"
+                 @onclick="@(() => SelectAttribute(attr.Id))">
+                @attr.Name
+            </div>
+        }
+    </RadzenStack>
+</RadzenStack>
+
+@code {
+    [Parameter] public string UserId { get; set; } = "";
+
+    private string searchText = "";
+    private int? selectedCategoryId;
+    private List<AttributeGetCategoryDto> categories = new();
+    private List<AttributeGetDto> searchResults = new();
+    private List<AttributeGetDto> recentlyUsed = new();
+    private HashSet<int> alreadyAdded = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await AttributeService.GetCategory();
+        recentlyUsed = await AttributeService.GetRecentlyUsedAsync(UserId);
+
+        var current = await AttributeService.GetUserAttributeValuesAsync(UserId);
+        alreadyAdded = current.Select(x => x.AttributeId).ToHashSet();
+    }
+
+    private async Task Search()
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            searchResults = new();
+            return;
+        }
+        var results = await AttributeService.SearchByPrefixAsync(searchText);
+        searchResults = results.Where(a => !a.IsBuiltIn && !alreadyAdded.Contains(a.Id)).ToList();
+    }
+
+    private async Task FilterByCategory()
+    {
+        if (selectedCategoryId == null)
+        {
+            searchResults = new();
+            return;
+        }
+        var results = await AttributeService.GetByCategoryAsync(selectedCategoryId.Value);
+        searchResults = results.Where(a => !a.IsBuiltIn && !alreadyAdded.Contains(a.Id)).ToList();
+    }
+
+    private async Task SelectAttribute(int attributeId)
+    {
+        await AttributeService.AddToUsersValue(new UserAttributesAddDto
+        {
+            AttributeId = attributeId,
+            UserId = UserId,
+            Value = ""
+        });
+
+        DialogService.Close(true); 
+    }
+}

@@ -9,6 +9,20 @@ public static class AuthEndPoints
 {
     public static void MapAuthEndpoints( this WebApplication app)
     {
+        app.MapPost("/api/auth/login", async (HttpRequest request, TermPaper.Application.Interface.ILoginService loginService) =>
+        {
+            var form = await request.ReadFormAsync();
+            var email = form["email"].ToString();
+            var password = form["password"].ToString();
+            var isPersistent = form["rememberMe"].ToString() is "true" or "on";
+
+            var result = await loginService.LoginUsersAsync(email, password, isPersistent);
+
+            return result.IsSuccess
+                ? Results.Redirect("/")
+                : Results.Redirect($"/LoginPage?error={result.ErrorCode}");
+        }).DisableAntiforgery();
+
         app.MapGet("/api/auth/google-login", (SignInManager<AppUser> signInManager) =>
             {
                 var redirectUrl = "/api/auth/google-callback";

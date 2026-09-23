@@ -123,11 +123,10 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
         modelBuilder.Entity<ProjectTags>(entity =>
         {
             entity.HasOne(e => e.Project)
-                .WithMany()
-                .HasForeignKey(a => a.ProjectId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .WithMany(p => p.ProjectTags)
+                .HasForeignKey(e => e.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
-
         modelBuilder.Entity<AttributeCategory>(entity =>
         {
             entity.Property(x => x.Version).IsRowVersion();

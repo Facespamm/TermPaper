@@ -1,0 +1,228 @@
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Dto.ProjectDto
+@using TermPaper.Application.Dto.ProjectTagDto
+@inject IProjectService ProjectService
+@inject DialogService DialogService
+
+<RadzenStack Gap="1rem" class="rz-p-4">
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger"
+                     Variant="Variant.Flat">
+            @errorMessage
+        </RadzenAlert>
+    }
+
+    <RadzenFormField Text="Название">
+        <RadzenTextBox @bind-Value="@name" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Описание (Markdown)">
+        <RadzenTextArea @bind-Value="@descriptionMd"
+                        Rows="4" />
+    </RadzenFormField>
+
+    <RadzenStack Orientation="Orientation.Horizontal"
+                 Gap="1rem">
+
+        <RadzenFormField Text="Начало">
+            <RadzenDatePicker TValue="DateTime?"
+                              @bind-Value="@periodFrom"
+                              DateFormat="MM.yyyy" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="Окончание">
+            <RadzenDatePicker TValue="DateTime?"
+                              @bind-Value="@periodTo"
+                              DateFormat="MM.yyyy" />
+        </RadzenFormField>
+
+    </RadzenStack>
+
+    @if (isEdit)
+    {
+        <RadzenText TextStyle="TextStyle.Subtitle2">
+            Теги
+        </RadzenText>
+
+        <RadzenStack Orientation="Orientation.Horizontal"
+                     Gap="0.5rem"
+                     Wrap="FlexWrap.Wrap">
+
+            @foreach (var tag in tags)
+            {
+                <RadzenBadge BadgeStyle="BadgeStyle.Light">
+
+                    @tag.Tag
+
+                    <RadzenButton Icon="close"
+                                  Size="ButtonSize.ExtraSmall"
+                                  ButtonStyle="ButtonStyle.Light"
+                                  Click="@(() => RemoveTag(tag.Id))" />
+
+                </RadzenBadge>
+            }
+
+        </RadzenStack>
+
+        <RadzenStack Orientation="Orientation.Horizontal"
+                     Gap="0.5rem">
+
+            <RadzenTextBox @bind-Value="@newTag"
+                           Placeholder="Новый тег" />
+
+            <RadzenButton Text="Добавить"
+                          Click="@AddTag" />
+
+        </RadzenStack>
+    }
+    else
+    {
+        <RadzenText TextStyle="TextStyle.Caption">
+            Теги можно будет добавить после сохранения проекта.
+        </RadzenText>
+    }
+
+    <RadzenStack Orientation="Orientation.Horizontal"
+                 Gap="0.5rem"
+                 JustifyContent="JustifyContent.End">
+
+        <RadzenButton Text="Отмена"
+                      ButtonStyle="ButtonStyle.Light"
+                      Click="@Cancel" />
+
+        <RadzenButton Text="Сохранить"
+                      ButtonStyle="ButtonStyle.Primary"
+                      Click="@Save" />
+
+    </RadzenStack>
+
+</RadzenStack>
+
+@code
+{
+    [Parameter]
+    public string UserId { get; set; } = "";
+
+    [Parameter]
+    public GetProjectDto? Existing { get; set; }
+
+    private bool isEdit => Existing != null;
+
+    private string name = "";
+    private string descriptionMd = "";
+
+    private DateTime? periodFrom;
+    private DateTime? periodTo;
+
+    private string? errorMessage;
+
+    private List<GetProjectTagDto> tags = new();
+    private string newTag = "";
+
+    protected override void OnInitialized()
+    {
+        if (Existing != null)
+        {
+            name = Existing.Name ?? "";
+            descriptionMd = Existing.DescriptionMd ?? "";
+
+            periodFrom = Existing.PeriodFrom;
+            periodTo = Existing.PeriodTo;
+
+            tags = Existing.Tags?.ToList()
+                   ?? new List<GetProjectTagDto>();
+        }
+    }
+
+    private async Task Save()
+    {
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            errorMessage = "Введите название проекта.";
+            return;
+        }
+
+        if (isEdit)
+        {
+            var result = await ProjectService.UpdateProject(
+                new UpdateProjectDto
+                {
+                    Id = Existing!.Id,
+                    Name = name,
+                    DescriptionMd = descriptionMd,
+                    PeriodFrom = periodFrom,
+                    PeriodTo = periodTo
+                });
+
+            if (result.IsSuccess)
+            {
+                DialogService.Close(true);
+            }
+            else
+            {
+                errorMessage = "Не удалось обновить проект.";
+            }
+        }
+        else
+        {
+            var result = await ProjectService.CreateProject(
+                new CreateProjectDto
+                {
+                    Name = name,
+                    DescriptionMd = descriptionMd,
+                    UserId = UserId,
+                    PeriodFrom = periodFrom,
+                    PeriodTo = periodTo
+                });
+
+            if (result.IsSuccess)
+            {
+                DialogService.Close(true);
+            }
+            else
+            {
+                errorMessage = "Не удалось создать проект.";
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        DialogService.Close(false);
+    }
+
+    private async Task AddTag()
+    {
+        if (string.IsNullOrWhiteSpace(newTag))
+            return;
+
+        if (Existing == null)
+            return;
+
+        await ProjectService.CreateProjectTag(
+            new CreateProjectTagDto
+            {
+                Tag = newTag,
+                ProjectId = Existing.Id
+            });
+
+        newTag = "";
+
+        tags = await ProjectService.GetProjectTag(Existing.Id);
+    }
+
+    private async Task RemoveTag(int tagId)
+    {
+        if (Existing == null)
+            return;
+
+        await ProjectService.DeleteProjectTag(
+            new List<int> { tagId });
+
+        tags = await ProjectService.GetProjectTag(Existing.Id);
+    }
+}

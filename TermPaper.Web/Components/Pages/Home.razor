@@ -1,7 +1,129 @@
 ﻿@page "/"
+@attribute [AllowAnonymous]
+@layout MainLayout
+
+@using Microsoft.AspNetCore.Authorization
+@using TermPaper.Components.Layout
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Dto.PositionDto
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject IPositionService PositionService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container py-5">
 
-Welcome to your new app.
+    <div class="mb-5">
+        <h1 class="display-5 fw-bold">CV Management System</h1>
+        <p class="lead text-muted">
+            Attribute library, position templates, and candidate profiles — all in one place.
+        </p>
+    </div>
+
+    @if (isAuthenticated)
+    {
+        <div class="row g-4 mb-5">
+
+            @if (isRecruiterOrAdmin)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Attribute Library</h5>
+                            <p class="card-text text-muted">
+                                Manage attributes
+                            </p>
+
+                            <RadzenButton Text="Open"
+                                          Click="@(() => Navigation.NavigateTo("/attributes"))" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Positions</h5>
+                            <p class="card-text text-muted">
+                                Create or edit a vacancy
+                            </p>
+
+                            <RadzenButton Text="Open"
+                                          Click="@(() => Navigation.NavigateTo("/positions"))" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="mb-5">
+            <RadzenButton Text="Login"
+                          Click="@(() => Navigation.NavigateTo("/Account/Login"))" />
+
+            <RadzenButton Text="Register"
+                          ButtonStyle="ButtonStyle.Light"
+                          Click="@(() => Navigation.NavigateTo("/Account/Register"))" />
+        </div>
+    }
+
+    <div>
+        <h2 class="h4 mb-3">Current Positions</h2>
+
+        @if (isLoading)
+        {
+            <p>Loading...</p>
+        }
+        else if (!positions.Any())
+        {
+            <div class="alert alert-light border">
+                No open positions yet.
+            </div>
+        }
+        else
+        {
+            <div class="card shadow-sm">
+                <RadzenDataGrid Data="@positions"
+                                TItem="GetPositionDto"
+                                AllowPaging="true"
+                                PageSize="5">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="GetPositionDto"
+                                              Property="Title"
+                                              Title="Title" />
+
+                        <RadzenDataGridColumn TItem="GetPositionDto"
+                                              Property="ShortDescription"
+                                              Title="Description" />
+                    </Columns>
+                </RadzenDataGrid>
+            </div>
+        }
+    </div>
+
+</div>
+
+@code {
+    private List<GetPositionDto> positions = new();
+    private bool isLoading = true;
+    private bool isAuthenticated;
+    private bool isRecruiterOrAdmin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+        isRecruiterOrAdmin = user.IsInRole("Recruiter") || user.IsInRole("Admin");
+
+        positions = await PositionService.GetPositions("");
+
+        isLoading = false;
+    }
+}

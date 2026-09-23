@@ -15,8 +15,10 @@ public class ProjectMapper
             UserId = project.UserId,
             PeriodFrom = project.PeriodFrom,
             PeriodTo = project.PeriodTo,
+            Tags = project.ProjectTags.Select(x => ProjectTagMapper.GetProjectTagData(x)).ToList(),
         };
     }
+
 
     public static Projects CreateProjectData(CreateProjectDto dto)
     {
@@ -25,8 +27,12 @@ public class ProjectMapper
             Name = dto.Name,
             DescriptionMd = dto.DescriptionMd,
             UserId = dto.UserId,
-            PeriodFrom = dto.PeriodFrom,
-            PeriodTo = dto.PeriodTo,
+            PeriodFrom = dto.PeriodFrom.HasValue
+                ? DateTime.SpecifyKind(dto.PeriodFrom.Value, DateTimeKind.Utc)
+                : null,
+            PeriodTo = dto.PeriodTo.HasValue
+                ? DateTime.SpecifyKind(dto.PeriodTo.Value, DateTimeKind.Utc)
+                : null,
         };
     }
 
