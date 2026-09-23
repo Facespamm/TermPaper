@@ -29,17 +29,6 @@
                                       Value="@ParseDate(item.Value)"
                                       ValueChanged="@(v => OnValueChanged(item, v?.ToString("O") ?? ""))" />
                     break;
-
-                case DataType.Image:
-                    <div class="rz-p-2">
-                        @if (!string.IsNullOrWhiteSpace(item.Value))
-                        {
-                            <img src="@item.Value" style="max-width:150px;border-radius:8px;" />
-                        }
-                        <p class="rz-text-caption">Загрузка через Cloudinary — подключим отдельно</p>
-                    </div>
-                    break;
-
                 default:
                     <RadzenTextBox TValue="string"
                                    Value="@item.Value"
@@ -131,5 +120,4 @@
     {
         autoSaveTimer?.Dispose();
     }
-}
 }

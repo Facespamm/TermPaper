@@ -15,6 +15,7 @@ public class ProjectMapper
             UserId = project.UserId,
             PeriodFrom = project.PeriodFrom,
             PeriodTo = project.PeriodTo,
+            Tags = project.ProjectTags.Select(x => ProjectTagMapper.GetProjectTagData(x)).ToList(),
         };
     }
 
