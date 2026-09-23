@@ -1,4 +1,3 @@
-
 # ---------- build stage ----------
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
@@ -16,8 +15,7 @@ COPY TermPaper.Web/ TermPaper.Web/
 
 RUN dotnet publish TermPaper.Web/TermPaper.Web.csproj \
     -c Release \
-    -o /app/publish \
-    --no-restore
+    -o /app/publish
 
 # ---------- runtime stage ----------
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
