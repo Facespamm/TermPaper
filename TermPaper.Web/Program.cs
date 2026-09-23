@@ -55,6 +55,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapStaticAssets();
 app.MapAuthEndpoints();
+app.MapGet("/", () => Results.Redirect("/LoginPage"));
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
