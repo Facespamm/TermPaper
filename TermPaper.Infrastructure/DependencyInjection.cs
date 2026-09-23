@@ -18,7 +18,16 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-        services.AddIdentity<AppUser, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = true)
+        services.AddIdentity<AppUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireDigit = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredUniqueChars = 1;
+            })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
         var googleSettings = configuration.GetSection("Authentication:Google")
@@ -43,7 +52,9 @@ public static class DependencyInjection
         services.AddScoped<IUserManagementService, UserManagementService>();
         services.AddScoped<ISenderEmail, SenderEmailSerivce>();
         services.AddScoped<ILoginService,LoginService>();
-        services.AddResend(options => options.ApiToken = Environment.GetEnvironmentVariable("RESEND_TOKEN"));
+        services.AddResend(options =>
+            options.ApiToken = configuration["Resend:ApiKey"]);
+        
         services.AddScoped<IExternalAuthService, ExternalAuthService>();
 
         return services;

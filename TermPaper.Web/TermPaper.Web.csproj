@@ -4,7 +4,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>TermPaper</RootNamespace>
-    </PropertyGroup>
+      <UserSecretsId>9b92c7c3-0d65-494b-a384-e741f44ea507</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\TermPaper.Application\TermPaper.Application.csproj" />

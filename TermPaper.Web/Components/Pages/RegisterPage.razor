@@ -84,14 +84,23 @@
 
     private async Task HandleClick()
     {
-        var reg = await RegisterService.RegisterUserAsync(email, password, checkPassword, userName);
-        if (!reg.IsSuccess)
+        try
         {
-            result = !string.IsNullOrWhiteSpace(reg.ErrorMessage) ? reg.ErrorMessage : $"Registration failed: {reg.ErrorCode}";
-            return;
+            var reg = await RegisterService.RegisterUserAsync(email, password, checkPassword, userName);
+            if (!reg.IsSuccess)
+            {
+                result = !string.IsNullOrWhiteSpace(reg.ErrorMessage) ? reg.ErrorMessage : $"Registration failed: {reg.ErrorCode}";
+                isSuccess = false;
+                return;
+            }
+            result = "A confirmation email has been sent to your email address.";
+            isSuccess = true;
         }
-        result = "A confirmation email has been sent to your email address.";
-        isSuccess = true;
+        catch (Exception)
+        {
+            result = "Произошла ошибка при регистрации. Попробуйте ещё раз.";
+            isSuccess = false;
+        }
     }
 
     private void ToggleShowPassword()

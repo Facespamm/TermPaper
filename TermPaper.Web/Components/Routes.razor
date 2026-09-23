@@ -1,19 +1,9 @@
 ﻿@using TermPaper.Components.Pages
+
 <Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
-            <NotAuthorized>
-                @if (routeData.PageType == typeof(LoginPage) ||
-                     routeData.PageType == typeof(RegisterPage))
-                {
-                    <RouteView RouteData="routeData" />
-                }
-                else
-                {
-                    <p>У вас нет доступа к этой странице.</p>
-                }
-            </NotAuthorized>
-        </AuthorizeRouteView>
+        <RouteView RouteData="routeData"
+                   DefaultLayout="typeof(Layout.MainLayout)" />
 
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>

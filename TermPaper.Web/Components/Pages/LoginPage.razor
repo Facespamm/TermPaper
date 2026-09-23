@@ -71,18 +71,25 @@
 
     private async Task HandleClick()
     {
-        var login = await LoginService.LoginUsersAsync(email, password);
-        if (login.IsSuccess){Navigation.NavigateTo("/");return;}
-        error = "Failed to login";
+        try
+        {
+            var login = await LoginService.LoginUsersAsync(email, password);
+            if (login.IsSuccess){Navigation.NavigateTo("/");return;}
+            error = "Failed to login";
+        }
+        catch (Exception)
+        {
+            error = "Произошла ошибка при входе. Попробуйте ещё раз.";
+        }
     }
 
-    private async Task GoogleLoginClick()
+    private void GoogleLoginClick()
     {
-        Navigation.NavigateTo("/api/auth/google-login");
+        Navigation.NavigateTo("/api/auth/google-login", forceLoad: true);
     }
-    private async Task FacebookLoginClick()
+    private void FacebookLoginClick()
     {
-        Navigation.NavigateTo("/api/auth/facebook-login");
+        Navigation.NavigateTo("/api/auth/facebook-login", forceLoad: true);
     }
 
     private void TogglePassword()

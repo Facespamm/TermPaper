@@ -17,7 +17,7 @@
 <RadzenDataGrid Data="@attributes" TItem="AttributeGetDto"
                 SelectionMode="DataGridSelectionMode.Multiple"
                 @bind-Value="@selected"
-                RowSelect="@(a => OpenEdit(a))">
+                RowSelect="@((AttributeGetDto a) => OpenEdit(a))">
     <Columns>
         <RadzenDataGridColumn TItem="AttributeGetDto" Property="Name" Title="Name" Width="30%" />
         <RadzenDataGridColumn TItem="AttributeGetDto" Property="DataType" Title="Type" Width="20%" />
