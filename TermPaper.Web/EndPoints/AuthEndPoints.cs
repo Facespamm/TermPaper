@@ -19,7 +19,7 @@ public static class AuthEndPoints
             var result = await loginService.LoginUsersAsync(email, password, isPersistent);
 
             return result.IsSuccess
-                ? Results.Redirect("/")
+                ? Results.Redirect("/home")
                 : Results.Redirect($"/LoginPage?error={result.ErrorCode}");
         }).DisableAntiforgery();
 
@@ -33,7 +33,8 @@ public static class AuthEndPoints
         app.MapGet("/api/auth/google-callback", async (IExternalAuthService externalAuthService) =>
         {
             var result = await externalAuthService.ExternalLoginAsync();
-            return result.IsSuccess ? Results.Redirect("/") : Results.Redirect($"/LoginPage?error={result.ErrorCode}");
+            return result.IsSuccess ? Results.Redirect("/home")
+                : Results.Redirect($"/LoginPage?error={result.ErrorCode}");
         });
 
         app.MapGet("/api/auth/facebook-login", (SignInManager<AppUser> signInManager) =>
@@ -46,7 +47,8 @@ public static class AuthEndPoints
         app.MapGet("/api/auth/facebook-callback", async (IExternalAuthService externalAuthService) =>
         {
             var result = await externalAuthService.ExternalLoginAsync();
-            return result.IsSuccess ? Results.Redirect("/") : Results.Redirect($"/LoginPage?error={result.ErrorCode}");
+            return result.IsSuccess ? Results.Redirect("/home")
+                : Results.Redirect($"/LoginPage?error={result.ErrorCode}");
         });
 
         app.MapGet("/api/auth/log-out", async (SignInManager<AppUser> signInManager) =>
