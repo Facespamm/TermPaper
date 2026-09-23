@@ -5,8 +5,9 @@
 @using TermPaper.Application.Interface
 @inject ILoginService LoginService
 @inject NavigationManager Navigation
-@using TermPaper.Application
 @layout EmptyLayout
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @using TermPaper.Application.Common
 @using Microsoft.AspNetCore.WebUtilities
 <div class="login-page">
@@ -67,21 +68,29 @@
     private string error = "";
     private bool showPassword = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (authState.User.Identity?.IsAuthenticated == true)
+        {
+            Navigation.NavigateTo("/", forceLoad: true);
+            return;
+        }
+
         var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
         var query = QueryHelpers.ParseQuery(uri.Query);
+
         if (query.TryGetValue("error", out var errorCode))
         {
             error = errorCode.ToString() switch
             {
-                "UserNotFound" => "Пользователь с таким email не найден.",
-                "PasswordsDoNotMatch" => "Неверный пароль.",
-                _ => "Произошла ошибка при входе. Попробуйте ещё раз."
+                "UserNotFound" => "User with this email was not found.",
+                "PasswordsDoNotMatch" => "Incorrect password.",
+                _ => "An error occurred while signing in. Please try again."
             };
         }
     }
-
     private void GoogleLoginClick()
     {
         Navigation.NavigateTo("/api/auth/google-login", forceLoad: true);
