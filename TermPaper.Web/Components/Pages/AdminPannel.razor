@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using TermPaper.Application.Dto
 @using TermPaper.Application.Interface
+@using TermPaper.Application.Common
 
 @attribute [Authorize(Roles = "Admin")]
 
@@ -17,22 +18,37 @@
 
         <RadzenButton Text="Block"
                       Icon="block"
-                      ButtonStyle="ButtonStyle.Danger"/>
+                      ButtonStyle="ButtonStyle.Danger"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@BlockSelectedUsers"/>
 
         <RadzenButton Text="Unlock"
                       Icon="check_circle"
-                      ButtonStyle="ButtonStyle.Success"/>
+                      ButtonStyle="ButtonStyle.Success"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@UnlockSelectedUsers"/>
 
-        <RadzenButton Text="Assign role: Recruiter"/>
+        <RadzenButton Text="Assign role: Recruiter"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@(() => AssignRole("Recruiter"))"/>
 
-        <RadzenButton Text="Assign role: Candidate"/>
+        <RadzenButton Text="Assign role: Candidate"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@(() => AssignRole("Candidate"))"/>
 
         <RadzenButton Text="Delete"
                       Icon="delete"
                       ButtonStyle="ButtonStyle.Danger"
-                      Variant="Variant.Outlined"/>
+                      Variant="Variant.Outlined"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@DeleteSelectedUsers"/>
 
     </RadzenStack>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" class="rz-mb-2">@error</RadzenAlert>
+    }
 
     <RadzenDataGrid AllowFiltering="true"
                     AllowColumnResize="true"
@@ -87,9 +103,63 @@
 @code {
     private IList<UserDto> users = new List<UserDto>();
     private IList<UserDto> selectedUsers = new List<UserDto>();
+    private string error = "";
 
     protected override async Task OnInitializedAsync()
     {
         users = await userManegement.GetUsersAsync();
+    }
+
+    private List<string> SelectedIds => selectedUsers.Select(u => u.Id).ToList();
+
+    private async Task BlockSelectedUsers()
+    {
+        var result = await userManegement.LockUserAsync(SelectedIds);
+        await HandleResult(result);
+    }
+
+    private async Task UnlockSelectedUsers()
+    {
+        var result = await userManegement.UnlockUserAsync(SelectedIds);
+        await HandleResult(result);
+    }
+
+    private async Task AssignRole(string role)
+    {
+        foreach (var userId in SelectedIds)
+        {
+            var result = await userManegement.AddUserRolesAsync(userId, new List<string> { role });
+            if (!result.IsSuccess)
+            {
+                error = $"Не удалось назначить роль {role} пользователю: {result.ErrorCode}";
+                return;
+            }
+        }
+        error = "";
+        await RefreshUsers();
+    }
+
+    private async Task DeleteSelectedUsers()
+    {
+        var result = await userManegement.DeleteUsersAsync(SelectedIds);
+        await HandleResult(result);
+    }
+
+    private async Task HandleResult(Result result)
+    {
+        if (!result.IsSuccess)
+        {
+            error = $"Операция не выполнена: {result.ErrorCode}";
+            return;
+        }
+
+        error = "";
+        await RefreshUsers();
+    }
+
+    private async Task RefreshUsers()
+    {
+        users = await userManegement.GetUsersAsync();
+        selectedUsers = new List<UserDto>();
     }
 }

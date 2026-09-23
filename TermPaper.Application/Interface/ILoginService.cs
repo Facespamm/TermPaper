@@ -5,7 +5,7 @@ namespace TermPaper.Application.Interface;
 
 public interface ILoginService
 {
-    Task<Result> LoginUsersAsync (string email, string password);
+    Task<Result> LoginUsersAsync (string email, string password, bool isPersistent = false);
     Task<Result> ChangePasswordAsync (string email);
     
 }
