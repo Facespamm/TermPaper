@@ -5,6 +5,8 @@ using TermPaper.Components;
 using TermPaper.Infrastructure;
 using TermPaper.EndPoints;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
@@ -34,6 +36,9 @@ if (!app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())  
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<TermPaper.Infrastructure.Context.AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     string[] roles = { "Candidate", "Recruiter", "Admin" };
     foreach (var role in roles)
