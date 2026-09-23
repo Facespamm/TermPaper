@@ -1,0 +1,63 @@
+@page "/attributes"
+@attribute [Authorize(Roles = "Recruiter,Admin")]
+@using Microsoft.AspNetCore.Authorization
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Dto
+@inject IAttributeService AttributeService
+@inject DialogService DialogService
+
+<h3>Attribute Library</h3>
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" class="rz-mb-4">
+    <RadzenButton Text="Create" Icon="add" Click="@OpenCreate" />
+    <RadzenButton Text="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                  Disabled="@(!selected.Any())" Click="@DeleteSelected" />
+</RadzenStack>
+
+<RadzenDataGrid Data="@attributes" TItem="AttributeGetDto"
+                SelectionMode="DataGridSelectionMode.Multiple"
+                @bind-Value="@selected"
+                RowSelect="@(a => OpenEdit(a))">
+    <Columns>
+        <RadzenDataGridColumn TItem="AttributeGetDto" Property="Name" Title="Name" Width="30%" />
+        <RadzenDataGridColumn TItem="AttributeGetDto" Property="DataType" Title="Type" Width="20%" />
+        <RadzenDataGridColumn TItem="AttributeGetDto" Title="Built-in" Width="15%">
+            <Template Context="a">@(a.IsBuiltIn ? "Yes" : "No")</Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="AttributeGetDto" Property="Description" Title="Description" />
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    private List<AttributeGetDto> attributes = new();
+    private IList<AttributeGetDto> selected = new List<AttributeGetDto>();
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    private async Task Load() => attributes = await AttributeService.GetAttribute();
+
+    private async Task OpenCreate()
+    {
+        var result = await DialogService.OpenAsync<AttributeFormDialog>("New Attribute");
+        if (result is true) await Load();
+    }
+
+    private async Task OpenEdit(AttributeGetDto attr)
+    {
+        if (attr.IsBuiltIn) return;
+
+        var result = await DialogService.OpenAsync<AttributeFormDialog>("Edit Attribute",
+            new Dictionary<string, object> { { "Existing", attr } });
+        if (result is true) await Load();
+    }
+
+    private async Task DeleteSelected()
+    {
+        var ids = selected.Where(a => !a.IsBuiltIn).Select(a => a.Id).ToList();
+        if (!ids.Any()) return;
+
+        await AttributeService.DeleteAttribute(ids);
+        selected = new List<AttributeGetDto>();
+        await Load();
+    }
+}

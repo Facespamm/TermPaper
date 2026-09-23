@@ -1,0 +1,213 @@
+@page "/positions/{Id}"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Dto
+@using TermPaper.Application.Dto.PositionDto
+@using TermPaper.Application.Dto.PositionAttributeDto
+@using TermPaper.Application.Dto.PositionProjectTagDto
+@using TermPaper.Application.Dto.PositionAccessRuleDto
+@using TermPaper.Enum
+@inject IPositionService PositionService
+@inject IAttributeService AttributeService
+@inject NavigationManager Navigation
+
+<h3>@(isNew ? "Новая позиция" : positionInfo?.Title)</h3>
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="Основное">
+            <RadzenStack Gap="1rem" style="max-width:500px;">
+                <RadzenFormField Text="Название"><RadzenTextBox @bind-Value="@title" /></RadzenFormField>
+                <RadzenFormField Text="Краткое описание"><RadzenTextArea @bind-Value="@shortDescription" Rows="3" /></RadzenFormField>
+                <RadzenFormField Text="Компания"><RadzenTextBox @bind-Value="@companyName" /></RadzenFormField>
+                <RadzenFormField Text="Уровень"><RadzenTextBox @bind-Value="@level" /></RadzenFormField>
+                <RadzenFormField Text="Макс. проектов в CV"><RadzenNumeric @bind-Value="@maxProjects" /></RadzenFormField>
+                <RadzenFormField Text="Публичная"><RadzenCheckBox @bind-Value="@isPublic" /></RadzenFormField>
+                <RadzenButton Text="Сохранить" ButtonStyle="ButtonStyle.Primary" Click="@SavePosition" />
+            </RadzenStack>
+        </RadzenTabsItem>
+
+        @if (!isNew)
+        {
+            <RadzenTabsItem Text="Атрибуты">
+                <RadzenStack Gap="0.5rem" class="rz-mb-4">
+                    @foreach (var pa in positionAttributes)
+                    {
+                        <RadzenFormField Text="@GetAttrName(pa.AttributeId)">
+                            <ChildContent><span></span></ChildContent>
+                            <End><RadzenButton Icon="close" Click="@(() => RemoveAttribute(pa.Id))" /></End>
+                        </RadzenFormField>
+                    }
+                </RadzenStack>
+
+                <RadzenFormField Text="Добавить атрибут">
+                    <RadzenTextBox @bind-Value="@attrSearch" Change="@SearchAttributes" />
+                </RadzenFormField>
+                @foreach (var a in attrSearchResults)
+                {
+                    <div class="rz-p-2" style="cursor:pointer" @onclick="@(() => AddAttribute(a.Id))">@a.Name</div>
+                }
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="Теги проектов">
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem" Wrap="FlexWrap.Wrap" class="rz-mb-4">
+                    @foreach (var t in projectTags)
+                    {
+                        <RadzenBadge Text="@t.Tag" BadgeStyle="BadgeStyle.Light" />
+                    }
+                </RadzenStack>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                    <RadzenTextBox @bind-Value="@newTag" Placeholder="Новый тег" />
+                    <RadzenButton Text="Добавить" Click="@AddTag" />
+                </RadzenStack>
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="Правила доступа">
+                <RadzenStack Gap="0.5rem" class="rz-mb-4">
+                    @foreach (var rule in accessRules)
+                    {
+                        <RadzenText>@GetAttrName(rule.AttributeId) @rule.Operator @rule.Value
+                            <RadzenButton Icon="close" Click="@(() => RemoveRule(rule.Id))" />
+                        </RadzenText>
+                    }
+                </RadzenStack>
+
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                    <RadzenDropDown Data="@allAttributes" TextProperty="Name" ValueProperty="Id" @bind-Value="@ruleAttributeId" Placeholder="Атрибут" />
+                    <RadzenDropDown Data="@Enum.GetValues<Operator>()" @bind-Value="@ruleOperator" />
+                    <RadzenTextBox @bind-Value="@ruleValue" Placeholder="Значение" />
+                    <RadzenButton Text="Добавить" Click="@AddRule" />
+                </RadzenStack>
+            </RadzenTabsItem>
+        }
+    </Tabs>
+</RadzenTabs>
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+    private bool isNew => Id == "new";
+    private int positionId;
+
+    private GetPositionInfoDto? positionInfo;
+    private string title = "", shortDescription = "", companyName = "", level = "";
+    private int maxProjects;
+    private bool isPublic;
+
+    private List<GetPositionAttributeDto> positionAttributes = new();
+    private List<GetPositionProjectTagDto> projectTags = new();
+    private List<GetPositionAccessRuleDto> accessRules = new();
+    private List<AttributeGetDto> allAttributes = new();
+
+    private string attrSearch = "";
+    private List<AttributeGetDto> attrSearchResults = new();
+    private string newTag = "";
+    private int? ruleAttributeId;
+    private Operator ruleOperator;
+    private string ruleValue = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        allAttributes = await AttributeService.GetAttribute();
+
+        if (!isNew)
+        {
+            positionId = int.Parse(Id);
+            await LoadAll();
+        }
+    }
+
+    private async Task LoadAll()
+    {
+        positionInfo = await PositionService.GetPositionInfo(positionId);
+        title = positionInfo.Title;
+        shortDescription = positionInfo.ShortDescription;
+        companyName = positionInfo.CompanyName ?? "";
+        level = positionInfo.Level ?? "";
+        maxProjects = positionInfo.MaxProjectsCount ?? 0;
+        isPublic = positionInfo.IsPublic;
+
+        positionAttributes = await PositionService.GetPositionAttribute(positionId);
+        projectTags = await PositionService.GetPositionProjectTag(positionId);
+        accessRules = await PositionService.GetPositionAccessRules(positionId);
+    }
+
+    private string GetAttrName(int attributeId)
+        => allAttributes.FirstOrDefault(a => a.Id == attributeId)?.Name ?? "?";
+
+    private async Task SavePosition()
+    {
+        if (isNew)
+        {
+            var result = await PositionService.CreatePosition(new CreatePositionDto
+            {
+                Title = title, ShortDescription = shortDescription,
+                CompanyName = companyName, Level = level,
+                MaxProjectsCount = maxProjects, IsPublic = isPublic
+            });
+            if (result.IsSuccess) Navigation.NavigateTo("/positions");
+        }
+        else
+        {
+            await PositionService.UpdatePosition(new UpdatePositionDto
+            {
+                Id = positionId, Title = title, ShortDescription = shortDescription,
+                CompanyName = companyName, Level = level, MaxProjectsCount = maxProjects
+            });
+            await LoadAll();
+        }
+    }
+
+    private async Task SearchAttributes()
+    {
+        if (string.IsNullOrWhiteSpace(attrSearch)) { attrSearchResults = new(); return; }
+        var results = await AttributeService.SearchByPrefixAsync(attrSearch);
+        var existingIds = positionAttributes.Select(pa => pa.AttributeId).ToHashSet();
+        attrSearchResults = results.Where(a => !existingIds.Contains(a.Id)).ToList();
+    }
+
+    private async Task AddAttribute(int attributeId)
+    {
+        await PositionService.CreatePositionAttribute(new CreatePositionAttributeDto
+        {
+            PositionId = positionId, AttributeId = attributeId, Order = positionAttributes.Count
+        });
+        attrSearch = ""; attrSearchResults = new();
+        positionAttributes = await PositionService.GetPositionAttribute(positionId);
+    }
+
+    private async Task RemoveAttribute(int positionAttributeId)
+    {
+        await PositionService.DeletePositionAttribute(new List<int> { positionAttributeId });
+        positionAttributes = await PositionService.GetPositionAttribute(positionId);
+    }
+
+    private async Task AddTag()
+    {
+        if (string.IsNullOrWhiteSpace(newTag)) return;
+        await PositionService.CreatePositionProjectTag(new CreatePositionProjectTagDto
+        {
+            PositionId = positionId, Tag = newTag
+        });
+        newTag = "";
+        projectTags = await PositionService.GetPositionProjectTag(positionId);
+    }
+
+    private async Task AddRule()
+    {
+        if (ruleAttributeId == null || string.IsNullOrWhiteSpace(ruleValue)) return;
+        await PositionService.CreatePositionAccessRule(new CreatePositionAccessRuleDto
+        {
+            PositionId = positionId, AttributeId = ruleAttributeId.Value,
+            Operator = ruleOperator, Value = ruleValue
+        });
+        ruleValue = "";
+        accessRules = await PositionService.GetPositionAccessRules(positionId);
+    }
+
+    private async Task RemoveRule(int ruleId)
+    {
+        await PositionService.DeletePositionAccessRule(new List<int> { ruleId });
+        accessRules = await PositionService.GetPositionAccessRules(positionId);
+    }
+}

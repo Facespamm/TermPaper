@@ -11,6 +11,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<DialogService>();
 builder.Services.AddRadzenComponents();
 var app = builder.Build();
 

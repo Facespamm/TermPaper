@@ -4,6 +4,7 @@
 @using TermPaper.Application.Dto
 @using TermPaper.Enum
 @inject IAttributeService AttributeService
+@inject DialogService DialogService
 @implements IDisposable
 
 <RadzenStack Gap="1rem">
@@ -143,8 +144,17 @@
 
     private async Task OpenAddAttributeDialog()
     {
-    }
+        var result = await DialogService.OpenAsync<AddAttributeDialog>(
+            "Добавить атрибут",
+            new Dictionary<string, object> { { "UserId", UserId } },
+            new DialogOptions { Width = "450px", Height = "auto" }
+        );
 
+        if (result is true) // юзер реально что-то выбрал и добавил
+        {
+            userValues = await AttributeService.GetUserAttributeValuesAsync(UserId); // обновляем список
+        }
+    }
     public void Dispose()
     {
         autoSaveTimer?.Dispose();

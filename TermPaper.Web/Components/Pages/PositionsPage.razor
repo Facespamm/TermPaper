@@ -1,0 +1,45 @@
+@page "/positions"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Dto.PositionDto
+@inject IPositionService PositionService
+@inject NavigationManager Navigation
+
+<h3>Позиции</h3>
+
+<RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" class="rz-mb-4">
+    <AuthorizeView Roles="Recruiter,Admin">
+        <RadzenButton Text="Создать" Icon="add" Click="@(() => Navigation.NavigateTo("/positions/new"))" />
+        <RadzenButton Text="Удалить" Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                      Disabled="@(!selected.Any())" Click="@DeleteSelected" />
+    </AuthorizeView>
+</RadzenStack>
+
+<RadzenDataGrid Data="@positions" TItem="GetPositionDto"
+                SelectionMode="DataGridSelectionMode.Multiple"
+                @bind-Value="@selected"
+                RowSelect="@(p => Navigation.NavigateTo($"/positions/{p.Id}"))">
+    <Columns>
+        <RadzenDataGridColumn TItem="GetPositionDto" Property="Title" Title="Название" />
+        <RadzenDataGridColumn TItem="GetPositionDto" Property="ShortDescription" Title="Описание" />
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    private List<GetPositionDto> positions = new();
+    private IList<GetPositionDto> selected = new List<GetPositionDto>();
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    private async Task Load() => positions = await PositionService.GetPositions("");
+
+    private async Task DeleteSelected()
+    {
+        var ids = selected.Select(p => p.Id).ToList();
+        if (!ids.Any()) return;
+        await PositionService.DeletePosition(ids);
+        selected = new List<GetPositionDto>();
+        await Load();
+    }
+}

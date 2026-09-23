@@ -1,0 +1,94 @@
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Dto
+@using TermPaper.Enum
+@inject IAttributeService AttributeService
+@inject DialogService DialogService
+
+<RadzenStack Gap="1rem" class="rz-p-4" style="min-width: 350px;">
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat">@errorMessage</RadzenAlert>
+    }
+
+    <RadzenFormField Text="Название">
+        <RadzenTextBox @bind-Value="@name" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Категория">
+        <RadzenDropDown Data="@categories" TextProperty="Name" ValueProperty="Id"
+                        @bind-Value="@categoryId" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Тип данных">
+        <RadzenDropDown Data="@Enum.GetValues<DataType>()" @bind-Value="@dataType"
+                        Disabled="@isEdit" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Описание">
+        <RadzenTextArea @bind-Value="@description" Rows="3" />
+    </RadzenFormField>
+
+    <RadzenButton Text="Сохранить" ButtonStyle="ButtonStyle.Primary" Click="@Save" />
+</RadzenStack>
+
+@code {
+    [Parameter] public AttributeGetDto? Existing { get; set; }
+
+    private bool isEdit => Existing != null;
+
+    private List<AttributeGetCategoryDto> categories = new();
+    private string name = "";
+    private int categoryId;
+    private DataType dataType = DataType.String;
+    private string description = "";
+    private uint version;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await AttributeService.GetCategory();
+
+        if (Existing != null)
+        {
+            name = Existing.Name;
+            categoryId = Existing.CategoryId;
+            dataType = Existing.DataType;
+            description = Existing.Description;
+            version = Existing.Version;
+        }
+    }
+
+    private async Task Save()
+    {
+        var result = isEdit
+            ? await AttributeService.UpdateAttribute(new UpdateAttributeDto
+            {
+                Id = Existing!.Id,
+                Name = name,
+                CategoryId = categoryId,
+                Description = description,
+                Version = version
+            })
+            : await AttributeService.CreateAttribute(new CreateAttributeDto
+            {
+                Name = name,
+                CategoryId = categoryId,
+                DataType = dataType,
+                Description = description
+            });
+
+        if (result.IsSuccess)
+        {
+            DialogService.Close(true);
+        }
+        else if (result.ErrorCode == ErrorCode.ConcurrencyConflict)
+        {
+            errorMessage = "Атрибут уже изменён кем-то другим. Закройте окно и откройте заново.";
+        }
+        else
+        {
+            errorMessage = "Не удалось сохранить.";
+        }
+    }
+}

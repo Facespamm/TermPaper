@@ -203,6 +203,17 @@ public class AttributeService:IAttributeService
         return entity.Select(x=>AttributeMapper.GetToDto(x)).ToList();
     }
     
+        public async Task<List<GetUserAttributeDto>> GetUserBuiltInAttributeValuesAsync(string userId)
+        {
+            var attributes = await _context.Attributes
+                .Include(a => a.AttributeValueOptions)
+                .Include(a => a.UserAttributes.Where(v => v.UserId == userId))   
+                .Where(a => a.IsBuiltIn)
+                .ToListAsync();
+
+            return attributes.Select(attr => AttributeMapper.ToMeSectionDto(attr, userId)).ToList();
+        }
+    
     public async Task<List<AttributeGetDto>> GetRecentlyUsedAsync(string userId)
     {
         var recently = await _context.RecentlyUsedAttribute.Where(x => x.UserId == userId)

@@ -1,7 +1,93 @@
 ﻿@page "/"
+@using TermPaper.Application.Interface
+@using TermPaper.Application.Dto.PositionDto
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject IPositionService PositionService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<RadzenStack Gap="2rem" class="rz-p-4">
 
-Welcome to your new app.
+    <div>
+        <RadzenText TextStyle="TextStyle.H3">CV Management System</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1">Attribute library, position templates, and candidate profiles — all in one place.</RadzenText>
+    </div>
+
+    @if (isAuthenticated)
+    {
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap">
+            @if (isRecruiterOrAdmin)
+            {
+                <RadzenCard Style="cursor:pointer; min-width:200px;" Click="@(() => Navigation.NavigateTo("/attributes"))">
+                    <RadzenText TextStyle="TextStyle.Subtitle1">Attribute Library</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Caption">Manage attributes</RadzenText>
+                </RadzenCard>
+                <RadzenCard Style="cursor:pointer; min-width:200px;" Click="@(() => Navigation.NavigateTo("/positions"))">
+                    <RadzenText TextStyle="TextStyle.Subtitle1">Positions</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Caption">Create or edit a vacancy</RadzenText>
+                </RadzenCard>
+            }
+            @if (isCandidateOrAdmin)
+            {
+                <RadzenCard Style="cursor:pointer; min-width:200px;" Click="@(() => Navigation.NavigateTo("/ProfilePage"))">
+                    <RadzenText TextStyle="TextStyle.Subtitle1">My Profile</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Caption">Me / Info / Projects / CVs</RadzenText>
+                </RadzenCard>
+            }
+        </RadzenStack>
+    }
+    else
+    {
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+            <RadzenButton Text="Login" Click="@(() => Navigation.NavigateTo("/Account/Login"))" />
+            <RadzenButton Text="Register" ButtonStyle="ButtonStyle.Light" Click="@(() => Navigation.NavigateTo("/Account/Register"))" />
+        </RadzenStack>
+    }
+
+    <div>
+        <RadzenText TextStyle="TextStyle.H5" class="rz-mb-2">Current Positions</RadzenText>
+
+        @if (isLoading)
+        {
+            <p>Loading...</p>
+        }
+        else if (!positions.Any())
+        {
+            <RadzenText TextStyle="TextStyle.Body2">No open positions yet.</RadzenText>
+        }
+        else
+        {
+            <RadzenDataGrid Data="@positions" TItem="GetPositionDto" AllowPaging="true" PageSize="5">
+                <Columns>
+                    <RadzenDataGridColumn TItem="GetPositionDto" Property="Title" Title="Title" />
+                    <RadzenDataGridColumn TItem="GetPositionDto" Property="ShortDescription" Title="Description" />
+                </Columns>
+            </RadzenDataGrid>
+        }
+    </div>
+
+</RadzenStack>
+
+@code {
+    private List<GetPositionDto> positions = new();
+    private bool isLoading = true;
+    private bool isAuthenticated;
+    private bool isRecruiterOrAdmin;
+    private bool isCandidateOrAdmin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+        isRecruiterOrAdmin = user.IsInRole("Recruiter") || user.IsInRole("Admin");
+        isCandidateOrAdmin = user.IsInRole("Candidate") || user.IsInRole("Admin");
+
+        positions = await PositionService.GetPositions("");
+        isLoading = false;
+    }
+}
