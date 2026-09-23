@@ -192,11 +192,12 @@ public class AttributeService:IAttributeService
 
     public async Task<List<AttributeGetDto>> SearchByPrefixAsync(string prefix)
     {
-        var search = await _context.Attributes.Where(x => x.Name.StartsWith(prefix)).ToListAsync();
-
-        return search.Select(x=>AttributeMapper.GetToDto(x)).ToList();
+        var search = await _context.Attributes
+            .Where(x => EF.Functions.ILike(x.Name, prefix + "%"))
+            .ToListAsync();
+        return search.Select(x => AttributeMapper.GetToDto(x)).ToList();
     }
-
+    
     public async Task<List<AttributeGetDto>> GetByCategoryAsync(int categoryId)
     {
         var entity = await _context.Attributes.Where(x => x.CategoryId == categoryId).ToListAsync();

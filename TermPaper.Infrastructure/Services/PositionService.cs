@@ -24,11 +24,17 @@ public class PositionService:IPositionService
 
     public async Task<List<GetPositionDto>> GetPositions(string search)
     {
-        var records = await _context.Positions.Where(x => x.Title == search || x.ShortDescription == search)
-            .ToListAsync(); 
-        return records.Select(x=>PositionMapper.GetToPosition(x)).ToList();
-    }
+        var query = _context.Positions.AsQueryable();
 
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(x => 
+                (x.Title != null && x.Title.Contains(search)) || 
+                (x.ShortDescription != null && x.ShortDescription.Contains(search)));
+        }
+        var records = await query.ToListAsync();
+        return records.Select(x => PositionMapper.GetToPosition(x)).ToList();
+    }
     public async Task<GetPositionInfoDto> GetPositionInfo(int id)
     {
         var info = await _context.Positions.FirstOrDefaultAsync(x => x.Id == id);

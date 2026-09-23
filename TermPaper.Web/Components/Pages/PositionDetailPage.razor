@@ -12,7 +12,16 @@
 @inject IAttributeService AttributeService
 @inject NavigationManager Navigation
 
+<RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" class="rz-mb-4">
+    <RadzenButton Text="← Назад к списку" ButtonStyle="ButtonStyle.Light" Click="@(() => Navigation.NavigateTo("/positions"))" />
+</RadzenStack>
+
 <h3>@(isNew ? "Новая позиция" : positionInfo?.Title)</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" class="rz-mb-4">@errorMessage</RadzenAlert>
+}
 
 <RadzenTabs>
     <Tabs>
@@ -42,8 +51,13 @@
                 </RadzenStack>
 
                 <RadzenFormField Text="Добавить атрибут">
-                    <RadzenTextBox @bind-Value="@attrSearch" Change="@SearchAttributes" />
+                    <RadzenTextBox @bind-Value="@attrSearch" @oninput="@OnAttrSearchInput" />
                 </RadzenFormField>
+
+                @if (!string.IsNullOrEmpty(attrSearch) && !attrSearchResults.Any())
+                {
+                    <RadzenText TextStyle="TextStyle.Caption">Ничего не найдено</RadzenText>
+                }
                 @foreach (var a in attrSearchResults)
                 {
                     <div class="rz-p-2" style="cursor:pointer" @onclick="@(() => AddAttribute(a.Id))">@a.Name</div>
@@ -93,6 +107,7 @@
     private string title = "", shortDescription = "", companyName = "", level = "";
     private int maxProjects;
     private bool isPublic;
+    private uint version;
 
     private List<GetPositionAttributeDto> positionAttributes = new();
     private List<GetPositionProjectTagDto> projectTags = new();
@@ -106,6 +121,9 @@
     private Operator ruleOperator;
     private Operator[] operators = Enum.GetValues<Operator>();
     private string ruleValue = "";
+    private string? errorMessage;
+    private CancellationTokenSource? _searchCts;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,6 +145,7 @@
         level = positionInfo.Level ?? "";
         maxProjects = positionInfo.MaxProjectsCount ?? 0;
         isPublic = positionInfo.IsPublic;
+        version = positionInfo.Version;
 
         positionAttributes = await PositionService.GetPositionAttribute(positionId);
         projectTags = await PositionService.GetPositionProjectTag(positionId);
@@ -138,6 +157,8 @@
 
     private async Task SavePosition()
     {
+        errorMessage = null;
+
         if (isNew)
         {
             var result = await PositionService.CreatePosition(new CreatePositionDto
@@ -146,19 +167,58 @@
                 CompanyName = companyName, Level = level,
                 MaxProjectsCount = maxProjects, IsPublic = isPublic
             });
-            if (result.IsSuccess) Navigation.NavigateTo("/positions");
+
+            if (result.IsSuccess)
+                Navigation.NavigateTo("/positions");
+            else
+                errorMessage = "Не удалось создать позицию.";
         }
         else
         {
-            await PositionService.UpdatePosition(new UpdatePositionDto
+            var result = await PositionService.UpdatePosition(new UpdatePositionDto
             {
                 Id = positionId, Title = title, ShortDescription = shortDescription,
-                CompanyName = companyName, Level = level, MaxProjectsCount = maxProjects
+                CompanyName = companyName, Level = level, MaxProjectsCount = maxProjects,
+                Version = version
             });
-            await LoadAll();
+
+            if (result.IsSuccess)
+            {
+                await LoadAll();
+            }
+            else if (result.ErrorCode == ErrorCode.ConcurrencyConflict)
+            {
+                errorMessage = "Позицию уже изменил кто-то другой. Данные обновлены, попробуйте снова.";
+                await LoadAll();
+            }
+            else
+            {
+                errorMessage = "Не удалось сохранить изменения.";
+            }
         }
     }
 
+    private async Task OnAttrSearchInput(Microsoft.AspNetCore.Components.ChangeEventArgs e)
+    {
+        attrSearch = e.Value?.ToString() ?? "";
+
+        _searchCts?.Cancel();
+        _searchCts = new CancellationTokenSource();
+        var token = _searchCts.Token;
+
+        try
+        {
+            await Task.Delay(300, token); // ждём паузу в наборе, чтобы не долбить БД на каждую букву
+            if (token.IsCancellationRequested) return;
+
+            await SearchAttributes();
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (TaskCanceledException)
+        {
+            // предыдущий поиск отменён новым вводом — это нормально, ничего не делаем
+        }
+    }
     private async Task SearchAttributes()
     {
         if (string.IsNullOrWhiteSpace(attrSearch)) { attrSearchResults = new(); return; }
