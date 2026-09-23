@@ -1,75 +1,156 @@
 ﻿@page "/ProfileProjectsSection"
+
 @using TermPaper.Application.Interface
 @using TermPaper.Application.Dto.ProjectDto
+
 @inject IProjectService ProjectService
 @inject DialogService DialogService
 
-<RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" class="rz-mb-4">
-    <RadzenButton Text="Добавить проект" Icon="add" Click="@OpenCreate" />
-    <RadzenButton Text="Удалить" Icon="delete" ButtonStyle="ButtonStyle.Danger"
-                  Disabled="@(!selected.Any())" Click="@DeleteSelected" />
+<RadzenStack Orientation="Orientation.Horizontal"
+             Gap="0.5rem"
+             class="rz-mb-4">
+
+    <RadzenButton Text="Добавить проект"
+                  Icon="add"
+                  Click="@OpenCreate" />
+
+    <RadzenButton Text="Удалить"
+                  Icon="delete"
+                  ButtonStyle="ButtonStyle.Danger"
+                  Disabled="@(!selected.Any())"
+                  Click="@DeleteSelected" />
+
 </RadzenStack>
 
-<RadzenDataGrid Data="@projects" TItem="GetProjectDto"
+<RadzenDataGrid Data="@projects"
+                TItem="GetProjectDto"
                 SelectionMode="DataGridSelectionMode.Multiple"
                 @bind-Value="@selected"
                 AllowSorting="true"
                 AllowFiltering="true"
-                RowSelect="@((GetProjectDto p) => OpenEdit(p))">
+                RowSelect="@OpenEdit">
+
     <Columns>
-        <RadzenDataGridColumn TItem="GetProjectDto" Property="Name" Title="Название" Width="25%" />
-        <RadzenDataGridColumn TItem="GetProjectDto" Title="Период" Width="20%">
-            <Template Context="p">@FormatPeriod(p)</Template>
+
+        <RadzenDataGridColumn TItem="GetProjectDto"
+                              Property="Name"
+                              Title="Название"
+                              Width="25%" />
+
+        <RadzenDataGridColumn TItem="GetProjectDto"
+                              Title="Период"
+                              Width="20%">
+
+            <Template Context="p">
+                @FormatPeriod(p)
+            </Template>
+
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="GetProjectDto" Title="Теги" Width="25%">
-            <Template Context="p">@string.Join(", ", p.Tags.Select(t => t.Tag))</Template>
+
+        <RadzenDataGridColumn TItem="GetProjectDto"
+                              Title="Теги"
+                              Width="25%">
+
+            <Template Context="p">
+                @string.Join(", ", p.Tags.Select(t => t.Tag))
+            </Template>
+
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="GetProjectDto" Property="DescriptionMd" Title="Описание" />
+
+        <RadzenDataGridColumn TItem="GetProjectDto"
+                              Property="DescriptionMd"
+                              Title="Описание" />
+
     </Columns>
+
 </RadzenDataGrid>
 
-@code {
-    [Parameter] public string UserId { get; set; } = "";
+@code
+{
+    [Parameter]
+    public string UserId { get; set; } = "";
 
     private List<GetProjectDto> projects = new();
-    private IList<GetProjectDto> selected = new List<GetProjectDto>();
 
-    protected override async Task OnInitializedAsync() => await Load();
+    private IList<GetProjectDto> selected =
+        new List<GetProjectDto>();
 
-    private async Task Load() => projects = await ProjectService.GetProjectList(UserId);
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        projects = await ProjectService.GetProjectList(UserId);
+    }
 
     private string FormatPeriod(GetProjectDto p)
     {
         var from = p.PeriodFrom?.ToString("MM.yyyy") ?? "—";
         var to = p.PeriodTo?.ToString("MM.yyyy") ?? "н.в.";
+
         return $"{from} – {to}";
     }
 
     private async Task OpenCreate()
     {
-        var result = await DialogService.OpenAsync<ProjectFormDialog>("Новый проект",
-            new Dictionary<string, object> { { "UserId", UserId } },
-            new DialogOptions { Width = "500px", Height = "auto" });
+        Console.WriteLine("OPEN CREATE");
 
-        if (result is true) await Load();
+        var result = await DialogService.OpenAsync<ProjectFormDialog>(
+            "Новый проект",
+            new Dictionary<string, object>
+            {
+                { "UserId", UserId }
+            },
+            new DialogOptions
+            {
+                Width = "500px",
+                Height = "auto"
+            });
+
+        Console.WriteLine("DIALOG CLOSED");
+
+        if (result is true)
+        {
+            await Load();
+        }
     }
 
     private async Task OpenEdit(GetProjectDto project)
     {
-        var result = await DialogService.OpenAsync<ProjectFormDialog>("Редактирование проекта",
-            new Dictionary<string, object> { { "UserId", UserId }, { "Existing", project } },
-            new DialogOptions { Width = "500px", Height = "auto" });
+        var result = await DialogService.OpenAsync<ProjectFormDialog>(
+            "Редактирование проекта",
+            new Dictionary<string, object>
+            {
+                { "UserId", UserId },
+                { "Existing", project }
+            },
+            new DialogOptions
+            {
+                Width = "500px",
+                Height = "auto"
+            });
 
-        if (result is true) await Load();
+        if (result is true)
+        {
+            await Load();
+        }
     }
 
     private async Task DeleteSelected()
     {
-        var ids = selected.Select(p => p.Id).ToList();
-        if (!ids.Any()) return;
+        var ids = selected
+            .Select(p => p.Id)
+            .ToList();
+
+        if (!ids.Any())
+            return;
 
         await ProjectService.DeleteProject(ids);
+
         selected = new List<GetProjectDto>();
+
         await Load();
     }
 }

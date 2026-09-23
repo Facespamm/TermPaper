@@ -19,6 +19,7 @@ public class ProjectMapper
         };
     }
 
+
     public static Projects CreateProjectData(CreateProjectDto dto)
     {
         return new Projects()
@@ -26,8 +27,12 @@ public class ProjectMapper
             Name = dto.Name,
             DescriptionMd = dto.DescriptionMd,
             UserId = dto.UserId,
-            PeriodFrom = dto.PeriodFrom,
-            PeriodTo = dto.PeriodTo,
+            PeriodFrom = dto.PeriodFrom.HasValue
+                ? DateTime.SpecifyKind(dto.PeriodFrom.Value, DateTimeKind.Utc)
+                : null,
+            PeriodTo = dto.PeriodTo.HasValue
+                ? DateTime.SpecifyKind(dto.PeriodTo.Value, DateTimeKind.Utc)
+                : null,
         };
     }
 

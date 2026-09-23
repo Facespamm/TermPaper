@@ -16,6 +16,7 @@ public  class AttributeMapper
             DataType = attribute.DataType,
             Description = attribute.Description,
             Version =  attribute.Version,
+            IsBuiltIn = attribute.IsBuiltIn,
             AttributeValueOptions = attribute.AttributeValueOptions
                 .Select(x => AttributeValueOptionMapper.GetValueOption(x))
                 .ToList()

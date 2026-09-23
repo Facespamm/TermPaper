@@ -35,12 +35,11 @@
     <RadzenStack Gap="0">
         @foreach (var attr in searchResults)
         {
-            <RadzenText TextStyle="TextStyle.Body1"
-                        class="rz-p-2 rz-border-bottom"
-                        Style="cursor:pointer"
-                        Click="@(() => SelectAttribute(attr.Id))">
+            <div class="rz-p-2 rz-border-bottom"
+                 style="cursor:pointer"
+                 @onclick="@(() => SelectAttribute(attr.Id))">
                 @attr.Name
-            </RadzenText>
+            </div>
         }
     </RadzenStack>
 </RadzenStack>
@@ -95,6 +94,6 @@
             Value = ""
         });
 
-        DialogService.Close(true); // закрываем модалку, возвращаем true как "результат"
+        DialogService.Close(true); 
     }
 }

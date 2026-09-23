@@ -14,5 +14,5 @@ public class Projects
     
     public DateTime? PeriodTo { get; set; }
 
-    public List<ProjectTags> ProjectTags { get; set; }
+    public List<ProjectTags> ProjectTags { get; set; }  = new();
 }

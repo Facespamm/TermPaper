@@ -4,11 +4,14 @@
 @inject IProjectService ProjectService
 @inject DialogService DialogService
 
-<RadzenStack Gap="1rem" class="rz-p-4" style="min-width: 400px;">
+<RadzenStack Gap="1rem" class="rz-p-4">
 
     @if (!string.IsNullOrEmpty(errorMessage))
     {
-        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat">@errorMessage</RadzenAlert>
+        <RadzenAlert AlertStyle="AlertStyle.Danger"
+                     Variant="Variant.Flat">
+            @errorMessage
+        </RadzenAlert>
     }
 
     <RadzenFormField Text="Название">
@@ -16,56 +19,103 @@
     </RadzenFormField>
 
     <RadzenFormField Text="Описание (Markdown)">
-        <RadzenTextArea @bind-Value="@descriptionMd" Rows="4" />
+        <RadzenTextArea @bind-Value="@descriptionMd"
+                        Rows="4" />
     </RadzenFormField>
 
-    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem">
+    <RadzenStack Orientation="Orientation.Horizontal"
+                 Gap="1rem">
+
         <RadzenFormField Text="Начало">
-            <RadzenDatePicker TValue="DateTime?" @bind-Value="@periodFrom" DateFormat="MM.yyyy" />
+            <RadzenDatePicker TValue="DateTime?"
+                              @bind-Value="@periodFrom"
+                              DateFormat="MM.yyyy" />
         </RadzenFormField>
+
         <RadzenFormField Text="Окончание">
-            <RadzenDatePicker TValue="DateTime?" @bind-Value="@periodTo" DateFormat="MM.yyyy" />
+            <RadzenDatePicker TValue="DateTime?"
+                              @bind-Value="@periodTo"
+                              DateFormat="MM.yyyy" />
         </RadzenFormField>
+
     </RadzenStack>
 
     @if (isEdit)
     {
-        <RadzenText TextStyle="TextStyle.Subtitle2">Теги</RadzenText>
+        <RadzenText TextStyle="TextStyle.Subtitle2">
+            Теги
+        </RadzenText>
 
-        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Wrap="FlexWrap.Wrap">
+        <RadzenStack Orientation="Orientation.Horizontal"
+                     Gap="0.5rem"
+                     Wrap="FlexWrap.Wrap">
+
             @foreach (var tag in tags)
             {
                 <RadzenBadge BadgeStyle="BadgeStyle.Light">
+
                     @tag.Tag
-                    <RadzenButton Icon="close" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Light"
+
+                    <RadzenButton Icon="close"
+                                  Size="ButtonSize.ExtraSmall"
+                                  ButtonStyle="ButtonStyle.Light"
                                   Click="@(() => RemoveTag(tag.Id))" />
+
                 </RadzenBadge>
             }
+
         </RadzenStack>
 
-        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-            <RadzenTextBox @bind-Value="@newTag" Placeholder="Новый тег" />
-            <RadzenButton Text="Добавить" Click="@AddTag" />
+        <RadzenStack Orientation="Orientation.Horizontal"
+                     Gap="0.5rem">
+
+            <RadzenTextBox @bind-Value="@newTag"
+                           Placeholder="Новый тег" />
+
+            <RadzenButton Text="Добавить"
+                          Click="@AddTag" />
+
         </RadzenStack>
     }
     else
     {
-        <RadzenText TextStyle="TextStyle.Caption">Теги можно будет добавить после сохранения проекта.</RadzenText>
+        <RadzenText TextStyle="TextStyle.Caption">
+            Теги можно будет добавить после сохранения проекта.
+        </RadzenText>
     }
 
-    <RadzenButton Text="Сохранить" ButtonStyle="ButtonStyle.Primary" Click="@Save" />
+    <RadzenStack Orientation="Orientation.Horizontal"
+                 Gap="0.5rem"
+                 JustifyContent="JustifyContent.End">
+
+        <RadzenButton Text="Отмена"
+                      ButtonStyle="ButtonStyle.Light"
+                      Click="@Cancel" />
+
+        <RadzenButton Text="Сохранить"
+                      ButtonStyle="ButtonStyle.Primary"
+                      Click="@Save" />
+
+    </RadzenStack>
+
 </RadzenStack>
 
-@code {
-    [Parameter] public string UserId { get; set; } = "";
-    [Parameter] public GetProjectDto? Existing { get; set; }
+@code
+{
+    [Parameter]
+    public string UserId { get; set; } = "";
+
+    [Parameter]
+    public GetProjectDto? Existing { get; set; }
 
     private bool isEdit => Existing != null;
 
     private string name = "";
     private string descriptionMd = "";
+
     private DateTime? periodFrom;
     private DateTime? periodTo;
+
     private string? errorMessage;
 
     private List<GetProjectTagDto> tags = new();
@@ -77,62 +127,102 @@
         {
             name = Existing.Name ?? "";
             descriptionMd = Existing.DescriptionMd ?? "";
+
             periodFrom = Existing.PeriodFrom;
             periodTo = Existing.PeriodTo;
 
-            tags = Existing.Tags;
+            tags = Existing.Tags?.ToList()
+                   ?? new List<GetProjectTagDto>();
         }
     }
 
     private async Task Save()
     {
-        var result = isEdit
-            ? await ProjectService.UpdateProject(new UpdateProjectDto
-            {
-                Id = Existing!.Id,
-                Name = name,
-                DescriptionMd = descriptionMd,
-                PeriodFrom = periodFrom,
-                PeriodTo = periodTo
-            })
-            : await ProjectService.CreateProject(new CreateProjectDto
-            {
-                Name = name,
-                DescriptionMd = descriptionMd,
-                UserId = UserId,
-                PeriodFrom = periodFrom,
-                PeriodTo = periodTo
-            });
+        errorMessage = null;
 
-        if (result.IsSuccess)
+        if (string.IsNullOrWhiteSpace(name))
         {
-            DialogService.Close(true);
+            errorMessage = "Введите название проекта.";
+            return;
+        }
+
+        if (isEdit)
+        {
+            var result = await ProjectService.UpdateProject(
+                new UpdateProjectDto
+                {
+                    Id = Existing!.Id,
+                    Name = name,
+                    DescriptionMd = descriptionMd,
+                    PeriodFrom = periodFrom,
+                    PeriodTo = periodTo
+                });
+
+            if (result.IsSuccess)
+            {
+                DialogService.Close(true);
+            }
+            else
+            {
+                errorMessage = "Не удалось обновить проект.";
+            }
         }
         else
         {
-            errorMessage = "Не удалось сохранить проект.";
+            var result = await ProjectService.CreateProject(
+                new CreateProjectDto
+                {
+                    Name = name,
+                    DescriptionMd = descriptionMd,
+                    UserId = UserId,
+                    PeriodFrom = periodFrom,
+                    PeriodTo = periodTo
+                });
+
+            if (result.IsSuccess)
+            {
+                DialogService.Close(true);
+            }
+            else
+            {
+                errorMessage = "Не удалось создать проект.";
+            }
         }
+    }
+
+    private void Cancel()
+    {
+        DialogService.Close(false);
     }
 
     private async Task AddTag()
     {
-        if (string.IsNullOrWhiteSpace(newTag) || Existing == null) return;
+        if (string.IsNullOrWhiteSpace(newTag))
+            return;
 
-        await ProjectService.CreateProjectTag(new CreateProjectTagDto
-        {
-            Tag = newTag,
-            ProjectId = Existing.Id
-        });
+        if (Existing == null)
+            return;
+
+        await ProjectService.CreateProjectTag(
+            new CreateProjectTagDto
+            {
+                Tag = newTag,
+                ProjectId = Existing.Id
+            });
 
         newTag = "";
+
         tags = await ProjectService.GetProjectTag(Existing.Id);
     }
 
     private async Task RemoveTag(int tagId)
     {
-        if (Existing == null) return;
+        if (Existing == null)
+            return;
 
-        await ProjectService.DeleteProjectTag(new List<int> { tagId });
+        await ProjectService.DeleteProjectTag(
+            new List<int> { tagId });
+
         tags = await ProjectService.GetProjectTag(Existing.Id);
     }
 }
