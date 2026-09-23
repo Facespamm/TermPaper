@@ -24,7 +24,7 @@ public class LoginService:ILoginService
         _emailSender = emailSender;
         _baseUrl = configuration["AppSettings:BaseUrl"] ?? "http://localhost:5000";
     }
-    public async Task<Result> LoginUsersAsync(string email, string password)
+
     public async Task<Result> LoginUsersAsync(string email, string password, bool isPersistent = false)
     {
         var user = await _userManager.FindByEmailAsync(email);
