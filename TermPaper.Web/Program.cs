@@ -13,6 +13,7 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddRadzenComponents();
+builder.Services.AddCascadingAuthenticationState();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

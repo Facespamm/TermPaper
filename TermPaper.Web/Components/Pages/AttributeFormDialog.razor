@@ -11,25 +11,25 @@
         <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat">@errorMessage</RadzenAlert>
     }
 
-    <RadzenFormField Text="Название">
+    <RadzenFormField Text="Name">
         <RadzenTextBox @bind-Value="@name" />
     </RadzenFormField>
 
-    <RadzenFormField Text="Категория">
+    <RadzenFormField Text="Category">
         <RadzenDropDown Data="@categories" TextProperty="Name" ValueProperty="Id"
                         @bind-Value="@categoryId" />
     </RadzenFormField>
 
-    <RadzenFormField Text="Тип данных">
-        <RadzenDropDown Data="@Enum.GetValues<DataType>()" @bind-Value="@dataType"
+    <RadzenFormField Text="Data Type">
+        <RadzenDropDown Data="@dataTypes" @bind-Value="@dataType"
                         Disabled="@isEdit" />
     </RadzenFormField>
 
-    <RadzenFormField Text="Описание">
+    <RadzenFormField Text="Description">
         <RadzenTextArea @bind-Value="@description" Rows="3" />
     </RadzenFormField>
 
-    <RadzenButton Text="Сохранить" ButtonStyle="ButtonStyle.Primary" Click="@Save" />
+    <RadzenButton Text="Save" ButtonStyle="ButtonStyle.Primary" Click="@Save" />
 </RadzenStack>
 
 @code {
@@ -38,6 +38,7 @@
     private bool isEdit => Existing != null;
 
     private List<AttributeGetCategoryDto> categories = new();
+    private DataType[] dataTypes = Enum.GetValues<DataType>();
     private string name = "";
     private int categoryId;
     private DataType dataType = DataType.String;
@@ -84,11 +85,11 @@
         }
         else if (result.ErrorCode == ErrorCode.ConcurrencyConflict)
         {
-            errorMessage = "Атрибут уже изменён кем-то другим. Закройте окно и откройте заново.";
+            errorMessage = "The attribute has already been modified by someone else. Close the window and open it again.";
         }
         else
         {
-            errorMessage = "Не удалось сохранить.";
+            errorMessage = "Failed to save.";
         }
     }
 }

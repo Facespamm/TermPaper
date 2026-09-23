@@ -75,7 +75,7 @@
 
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                     <RadzenDropDown Data="@allAttributes" TextProperty="Name" ValueProperty="Id" @bind-Value="@ruleAttributeId" Placeholder="Атрибут" />
-                    <RadzenDropDown Data="@Enum.GetValues<Operator>()" @bind-Value="@ruleOperator" />
+                    <RadzenDropDown Data="@operators" @bind-Value="@ruleOperator" />
                     <RadzenTextBox @bind-Value="@ruleValue" Placeholder="Значение" />
                     <RadzenButton Text="Добавить" Click="@AddRule" />
                 </RadzenStack>
@@ -104,6 +104,7 @@
     private string newTag = "";
     private int? ruleAttributeId;
     private Operator ruleOperator;
+    private Operator[] operators = Enum.GetValues<Operator>();
     private string ruleValue = "";
 
     protected override async Task OnInitializedAsync()
