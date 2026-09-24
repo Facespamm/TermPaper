@@ -20,6 +20,7 @@ public static class DependencyInjection
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
         services.AddIdentity<AppUser, IdentityRole>(options =>
             {
+                options.User.RequireUniqueEmail = true;
                 options.SignIn.RequireConfirmedEmail = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireDigit = false;
