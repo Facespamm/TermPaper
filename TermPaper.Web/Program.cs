@@ -4,6 +4,7 @@ using TermPaper.Application;
 using TermPaper.Components;
 using TermPaper.Infrastructure;
 using TermPaper.EndPoints;
+using TermPaper.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,6 +45,36 @@ using (var scope = app.Services.CreateScope())
     {
         if (!await roleManager.RoleExistsAsync(role))
             await roleManager.CreateAsync(new IdentityRole(role));
+    }
+    
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+    var hasAdmin = (await userManager.GetUsersInRoleAsync("Admin")).Any();
+    if (!hasAdmin)
+    {
+        var adminEmail = app.Configuration["Admin:Email"] ?? "admin@termpaper.local";
+        var adminPassword = app.Configuration["Admin:Password"] ?? "Admin123!";
+
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+        if (adminUser == null)
+        {
+            adminUser = new AppUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+            var createResult = await userManager.CreateAsync(adminUser, adminPassword);
+            if (!createResult.Succeeded)
+            {
+                var errors = string.Join("; ", createResult.Errors.Select(e => e.Description));
+                app.Logger.LogError("Failed to seed default admin user: {Errors}", errors);
+            }
+        }
+
+        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
     }
 }
 
