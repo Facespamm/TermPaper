@@ -14,11 +14,11 @@
         </RadzenAlert>
     }
 
-    <RadzenFormField Text="Название">
+    <RadzenFormField Text="Name">
         <RadzenTextBox @bind-Value="@name" />
     </RadzenFormField>
 
-    <RadzenFormField Text="Описание (Markdown)">
+    <RadzenFormField Text="Description (Markdown)">
         <RadzenTextArea @bind-Value="@descriptionMd"
                         Rows="4" />
     </RadzenFormField>
@@ -26,13 +26,13 @@
     <RadzenStack Orientation="Orientation.Horizontal"
                  Gap="1rem">
 
-        <RadzenFormField Text="Начало">
+        <RadzenFormField Text="Start">
             <RadzenDatePicker TValue="DateTime?"
                               @bind-Value="@periodFrom"
                               DateFormat="MM.yyyy" />
         </RadzenFormField>
 
-        <RadzenFormField Text="Окончание">
+        <RadzenFormField Text="Conclusion">
             <RadzenDatePicker TValue="DateTime?"
                               @bind-Value="@periodTo"
                               DateFormat="MM.yyyy" />
@@ -70,9 +70,9 @@
                      Gap="0.5rem">
 
             <RadzenTextBox @bind-Value="@newTag"
-                           Placeholder="Новый тег" />
+                           Placeholder="New tag" />
 
-            <RadzenButton Text="Добавить"
+            <RadzenButton Text="Add"
                           Click="@AddTag" />
 
         </RadzenStack>
@@ -80,19 +80,19 @@
     else
     {
         <RadzenText TextStyle="TextStyle.Caption">
-            Теги можно будет добавить после сохранения проекта.
-        </RadzenText>
+            Tags can be added after saving the project.
+            </RadzenText>
     }
 
     <RadzenStack Orientation="Orientation.Horizontal"
                  Gap="0.5rem"
                  JustifyContent="JustifyContent.End">
 
-        <RadzenButton Text="Отмена"
+        <RadzenButton Text="Cancel"
                       ButtonStyle="ButtonStyle.Light"
                       Click="@Cancel" />
 
-        <RadzenButton Text="Сохранить"
+        <RadzenButton Text="Save"
                       ButtonStyle="ButtonStyle.Primary"
                       Click="@Save" />
 
@@ -142,7 +142,7 @@
 
         if (string.IsNullOrWhiteSpace(name))
         {
-            errorMessage = "Введите название проекта.";
+            errorMessage = "Enter the project name.";
             return;
         }
 
@@ -164,7 +164,7 @@
             }
             else
             {
-                errorMessage = "Не удалось обновить проект.";
+                errorMessage = "Failed to update the project..";
             }
         }
         else
@@ -185,7 +185,7 @@
             }
             else
             {
-                errorMessage = "Не удалось создать проект.";
+                errorMessage = "Failed to create the project.";
             }
         }
     }

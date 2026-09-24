@@ -9,14 +9,14 @@
 <h3>Позиции</h3>
 
 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" class="rz-mb-4">
-    <RadzenTextBox @bind-Value="@searchText" @oninput="@OnSearchInput" Placeholder="Поиск по названию..." Style="width:250px;" />
+    <RadzenTextBox @bind-Value="@searchText" @oninput="@OnSearchInput" Placeholder="Search by name..." Style="width:250px;" />
 
     <AuthorizeView Roles="Recruiter,Admin">
-        <RadzenButton Text="Создать" Icon="add" Click="@(() => Navigation.NavigateTo("/positions/new"))" />
-        <RadzenButton Text="Открыть" Icon="open_in_new"
+        <RadzenButton Text="Create" Icon="add" Click="@(() => Navigation.NavigateTo("/positions/new"))" />
+        <RadzenButton Text="Open" Icon="open_in_new"
                       Disabled="@(selected.Count != 1)"
                       Click="@(() => Navigation.NavigateTo($"/positions/{selected.First().Id}"))" />
-        <RadzenButton Text="Удалить" Icon="delete" ButtonStyle="ButtonStyle.Danger"
+        <RadzenButton Text="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger"
                       Disabled="@(!selected.Any())" Click="@DeleteSelected" />
     </AuthorizeView>
 </RadzenStack>
@@ -25,8 +25,8 @@
                 SelectionMode="DataGridSelectionMode.Multiple"
                 @bind-Value="@selected">
     <Columns>
-        <RadzenDataGridColumn TItem="GetPositionDto" Property="Title" Title="Название" />
-        <RadzenDataGridColumn TItem="GetPositionDto" Property="ShortDescription" Title="Описание" />
+        <RadzenDataGridColumn TItem="GetPositionDto" Property="Title" Title="Name" />
+        <RadzenDataGridColumn TItem="GetPositionDto" Property="ShortDescription" Title="Description" />
     </Columns>
 </RadzenDataGrid>
 

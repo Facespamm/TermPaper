@@ -13,10 +13,10 @@
 @inject NavigationManager Navigation
 
 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" class="rz-mb-4">
-    <RadzenButton Text="← Назад к списку" ButtonStyle="ButtonStyle.Light" Click="@(() => Navigation.NavigateTo("/positions"))" />
+    <RadzenButton Text="← Back to the list" ButtonStyle="ButtonStyle.Light" Click="@(() => Navigation.NavigateTo("/positions"))" />
 </RadzenStack>
 
-<h3>@(isNew ? "Новая позиция" : positionInfo?.Title)</h3>
+<h3>@(isNew ? "New position" : positionInfo?.Title)</h3>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -25,21 +25,21 @@
 
 <RadzenTabs>
     <Tabs>
-        <RadzenTabsItem Text="Основное">
+        <RadzenTabsItem Text="Main">
             <RadzenStack Gap="1rem" style="max-width:500px;">
-                <RadzenFormField Text="Название"><RadzenTextBox @bind-Value="@title" /></RadzenFormField>
-                <RadzenFormField Text="Краткое описание"><RadzenTextArea @bind-Value="@shortDescription" Rows="3" /></RadzenFormField>
-                <RadzenFormField Text="Компания"><RadzenTextBox @bind-Value="@companyName" /></RadzenFormField>
-                <RadzenFormField Text="Уровень"><RadzenTextBox @bind-Value="@level" /></RadzenFormField>
-                <RadzenFormField Text="Макс. проектов в CV"><RadzenNumeric @bind-Value="@maxProjects" /></RadzenFormField>
-                <RadzenFormField Text="Публичная"><RadzenCheckBox @bind-Value="@isPublic" /></RadzenFormField>
-                <RadzenButton Text="Сохранить" ButtonStyle="ButtonStyle.Primary" Click="@SavePosition" />
+                <RadzenFormField Text="Name"><RadzenTextBox @bind-Value="@title" /></RadzenFormField>
+                <RadzenFormField Text="Brief description"><RadzenTextArea @bind-Value="@shortDescription" Rows="3" /></RadzenFormField>
+                <RadzenFormField Text="Company"><RadzenTextBox @bind-Value="@companyName" /></RadzenFormField>
+                <RadzenFormField Text="Level"><RadzenTextBox @bind-Value="@level" /></RadzenFormField>
+                <RadzenFormField Text="Max. projects in CV"><RadzenNumeric @bind-Value="@maxProjects" /></RadzenFormField>
+                <RadzenFormField Text="Public"><RadzenCheckBox @bind-Value="@isPublic" /></RadzenFormField>
+                <RadzenButton Text="Save" ButtonStyle="ButtonStyle.Primary" Click="@SavePosition" />
             </RadzenStack>
         </RadzenTabsItem>
 
         @if (!isNew)
         {
-            <RadzenTabsItem Text="Атрибуты">
+            <RadzenTabsItem Text="Attributes">
                 <RadzenStack Gap="0.5rem" class="rz-mb-4">
                     @foreach (var pa in positionAttributes)
                     {
@@ -50,7 +50,7 @@
                     }
                 </RadzenStack>
 
-                <RadzenFormField Text="Добавить атрибут">
+                <RadzenFormField Text="Add attribute">
                     <RadzenTextBox @bind-Value="@attrSearch" @oninput="@OnAttrSearchInput" />
                 </RadzenFormField>
 
@@ -64,7 +64,7 @@
                 }
             </RadzenTabsItem>
 
-            <RadzenTabsItem Text="Теги проектов">
+            <RadzenTabsItem Text="Project tags">
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.25rem" Wrap="FlexWrap.Wrap" class="rz-mb-4">
                     @foreach (var t in projectTags)
                     {
@@ -72,12 +72,12 @@
                     }
                 </RadzenStack>
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                    <RadzenTextBox @bind-Value="@newTag" Placeholder="Новый тег" />
-                    <RadzenButton Text="Добавить" Click="@AddTag" />
+                    <RadzenTextBox @bind-Value="@newTag" Placeholder="New tag" />
+                    <RadzenButton Text="Add" Click="@AddTag" />
                 </RadzenStack>
             </RadzenTabsItem>
 
-            <RadzenTabsItem Text="Правила доступа">
+            <RadzenTabsItem Text="Access Rules">
                 <RadzenStack Gap="0.5rem" class="rz-mb-4">
                     @foreach (var rule in accessRules)
                     {
@@ -88,10 +88,10 @@
                 </RadzenStack>
 
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                    <RadzenDropDown Data="@allAttributes" TextProperty="Name" ValueProperty="Id" @bind-Value="@ruleAttributeId" Placeholder="Атрибут" />
+                    <RadzenDropDown Data="@allAttributes" TextProperty="Name" ValueProperty="Id" @bind-Value="@ruleAttributeId" Placeholder="Attribute" />
                     <RadzenDropDown Data="@operators" @bind-Value="@ruleOperator" />
-                    <RadzenTextBox @bind-Value="@ruleValue" Placeholder="Значение" />
-                    <RadzenButton Text="Добавить" Click="@AddRule" />
+                    <RadzenTextBox @bind-Value="@ruleValue" Placeholder="Meaning" />
+                    <RadzenButton Text="Add" Click="@AddRule" />
                 </RadzenStack>
             </RadzenTabsItem>
         }
@@ -171,7 +171,7 @@
             if (result.IsSuccess)
                 Navigation.NavigateTo("/positions");
             else
-                errorMessage = "Не удалось создать позицию.";
+                errorMessage = "Failed to create the position.";
         }
         else
         {
@@ -188,12 +188,12 @@
             }
             else if (result.ErrorCode == ErrorCode.ConcurrencyConflict)
             {
-                errorMessage = "Позицию уже изменил кто-то другой. Данные обновлены, попробуйте снова.";
+                errorMessage = "Someone else has already changed the position. The data has been updated; please try again.";
                 await LoadAll();
             }
             else
             {
-                errorMessage = "Не удалось сохранить изменения.";
+                errorMessage = "Failed to save changes.";
             }
         }
     }
@@ -208,7 +208,7 @@
 
         try
         {
-            await Task.Delay(300, token); // ждём паузу в наборе, чтобы не долбить БД на каждую букву
+            await Task.Delay(300, token); 
             if (token.IsCancellationRequested) return;
 
             await SearchAttributes();
@@ -216,7 +216,6 @@
         }
         catch (TaskCanceledException)
         {
-            // предыдущий поиск отменён новым вводом — это нормально, ничего не делаем
         }
     }
     private async Task SearchAttributes()

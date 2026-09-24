@@ -131,7 +131,7 @@
             var result = await userManegement.AddUserRolesAsync(userId, new List<string> { role });
             if (!result.IsSuccess)
             {
-                error = $"Не удалось назначить роль {role} пользователю: {result.ErrorCode}";
+                error = $"Failed to assign the role {role} to the user: {result.ErrorCode}";
                 return;
             }
         }
@@ -149,7 +149,7 @@
     {
         if (!result.IsSuccess)
         {
-            error = $"Операция не выполнена: {result.ErrorCode}";
+            error = $"Operation failed: {result.ErrorCode}";
             return;
         }
 

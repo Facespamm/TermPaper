@@ -10,11 +10,11 @@
         <RadzenTextBox @bind-Value="@searchText" Change="@Search" />
     </RadzenFormField>
 
-    <RadzenFormField Text="Категория">
+    <RadzenFormField Text="Category">
         <RadzenDropDown Data="@categories" TextProperty="Name" ValueProperty="Id"
                         @bind-Value="@selectedCategoryId"
                         Change="@FilterByCategory"
-                        AllowClear="true" Placeholder="Все категории" />
+                        AllowClear="true" Placeholder="All categories" />
     </RadzenFormField>
 
     @if (recentlyUsed.Any() && string.IsNullOrEmpty(searchText))

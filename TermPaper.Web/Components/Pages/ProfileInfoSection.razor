@@ -62,7 +62,7 @@
 
 </RadzenStack>
 
-<RadzenButton Text="Добавить атрибут"
+<RadzenButton Text="Add attribute"
               Icon="add"
               Click="@OpenAddAttributeDialog"
               class="rz-mt-4" />
@@ -145,14 +145,14 @@
     private async Task OpenAddAttributeDialog()
     {
         var result = await DialogService.OpenAsync<AddAttributeDialog>(
-            "Добавить атрибут",
+            "Add attribute\n",
             new Dictionary<string, object> { { "UserId", UserId } },
             new DialogOptions { Width = "450px", Height = "auto" }
         );
 
-        if (result is true) // юзер реально что-то выбрал и добавил
+        if (result is true)
         {
-            userValues = await AttributeService.GetUserAttributeValuesAsync(UserId); // обновляем список
+            userValues = await AttributeService.GetUserAttributeValuesAsync(UserId);
         }
     }
     public void Dispose()

@@ -10,11 +10,11 @@
              Gap="0.5rem"
              class="rz-mb-4">
 
-    <RadzenButton Text="Добавить проект"
+    <RadzenButton Text="Add project"
                   Icon="add"
                   Click="@OpenCreate" />
 
-    <RadzenButton Text="Удалить"
+    <RadzenButton Text="Delete"
                   Icon="delete"
                   ButtonStyle="ButtonStyle.Danger"
                   Disabled="@(!selected.Any())"
@@ -34,11 +34,11 @@
 
         <RadzenDataGridColumn TItem="GetProjectDto"
                               Property="Name"
-                              Title="Название"
+                              Title="Name"
                               Width="25%" />
 
         <RadzenDataGridColumn TItem="GetProjectDto"
-                              Title="Период"
+                              Title="Period"
                               Width="20%">
 
             <Template Context="p">
@@ -59,7 +59,7 @@
 
         <RadzenDataGridColumn TItem="GetProjectDto"
                               Property="DescriptionMd"
-                              Title="Описание" />
+                              Title="Description" />
 
     </Columns>
 
@@ -98,7 +98,7 @@
         Console.WriteLine("OPEN CREATE");
 
         var result = await DialogService.OpenAsync<ProjectFormDialog>(
-            "Новый проект",
+            "New project",
             new Dictionary<string, object>
             {
                 { "UserId", UserId }
@@ -120,7 +120,7 @@
     private async Task OpenEdit(GetProjectDto project)
     {
         var result = await DialogService.OpenAsync<ProjectFormDialog>(
-            "Редактирование проекта",
+            "Editing the project",
             new Dictionary<string, object>
             {
                 { "UserId", UserId },
