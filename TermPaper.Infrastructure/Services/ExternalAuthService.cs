@@ -45,7 +45,14 @@ public class ExternalAuthService : IExternalAuthService
         {
             return Result.Failure(ErrorCode.ValidationFailed);
         }
-
+        var existing = await _userManager.FindByEmailAsync(email);
+        if (existing != null)
+        {
+            var link = await _userManager.AddLoginAsync(existing, info);
+            if (!link.Succeeded) return Result.Failure(ErrorCode.ValidationFailed);
+            await _signInManager.SignInAsync(existing, isPersistent: false);
+            return Result.Success();
+        }
         var user = new AppUser
         {
             UserName = email,
