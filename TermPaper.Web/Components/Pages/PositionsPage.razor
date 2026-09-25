@@ -1,5 +1,6 @@
 @page "/positions"
 @attribute [Authorize]
+@implements IDisposable
 @using Microsoft.AspNetCore.Authorization
 @using TermPaper.Application.Interface
 @using TermPaper.Application.Dto.PositionDto
@@ -34,6 +35,7 @@
     private List<GetPositionDto> positions = new();
     private IList<GetPositionDto> selected = new List<GetPositionDto>();
     private string searchText = "";
+    private CancellationTokenSource? _searchCts;
 
     protected override async Task OnInitializedAsync() => await Load();
 
@@ -42,9 +44,21 @@
     private async Task OnSearchInput(Microsoft.AspNetCore.Components.ChangeEventArgs e)
     {
         searchText = e.Value?.ToString() ?? "";
-        await Load();
-    }
+        _searchCts?.Cancel();
+        _searchCts = new CancellationTokenSource();
+        var token = _searchCts.Token;
+        try
+        {
+            await Task.Delay(300, token);
+            if (token.IsCancellationRequested) return;
 
+            await Load();
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (TaskCanceledException)
+        {
+        }
+    }
     private async Task DeleteSelected()
     {
         var ids = selected.Select(p => p.Id).ToList();
@@ -52,5 +66,11 @@
         await PositionService.DeletePosition(ids);
         selected = new List<GetPositionDto>();
         await Load();
+    }
+
+    public void Dispose()
+    {
+        _searchCts?.Cancel();
+        _searchCts?.Dispose();
     }
 }
