@@ -1,5 +1,6 @@
 ﻿@using System.Net
 @using TermPaper.Application.Common
+@using Microsoft.AspNetCore.Components.Authorization
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 
@@ -7,7 +8,7 @@
     
     <div class="container-fluid">
 
-        <a class="navbar-brand" href="/home">
+        <a class="navbar-brand" href="#">
             <img src="/images/Logo.png"
                  alt="Logo"
                  width="160"
@@ -29,21 +30,32 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/home">
+                    <a class="nav-link active" aria-current="page" href="/">
                         Home
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Recruiter
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="/ProfilePage">
                         Profile
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/AdminPanel">
-                        Admin
-                    </a>
-                </li>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/AdminPanel">
+                                Admin
+                            </a>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
 
             </ul>
 
@@ -91,8 +103,5 @@
     private async Task LogOutClick()
     {
         Navigation.NavigateTo("api/auth/log-out",forceLoad: true);
-        
     }
 }
-
-    
