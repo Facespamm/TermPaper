@@ -45,7 +45,9 @@ public interface IPositionService
     public Task<List<GetPositionAccessRuleDto>> GetPositionAccessRules(int positionId);
     
     public Task<Result> DeletePositionAccessRule(List<int> positionId);
-    
-    
-    
+
+    // Candidate access check
+    public Task<bool> CheckCandidateAccess(int positionId, string candidateUserId);
+
+    public Task<List<GetPositionDto>> GetAvailablePositionsForCandidate(string candidateUserId);
 }

@@ -158,4 +158,46 @@ public class PositionService:IPositionService
         await _context.SaveChangesAsync();
         return Result.Success();
     }
+    
+    private static bool MatchesRule(Operator op, string? userValue, string ruleValue)
+    {
+        if (userValue == null)
+            return false;
+
+        return op switch
+        {
+            Operator.Equals => userValue == ruleValue,
+            Operator.NotEquals => userValue != ruleValue,
+            Operator.GreaterThan => decimal.TryParse(userValue, out var uv1) && decimal.TryParse(ruleValue, out var rv1) && uv1 > rv1,
+            Operator.LessThan => decimal.TryParse(userValue, out var uv2) && decimal.TryParse(ruleValue, out var rv2) && uv2 < rv2,
+            Operator.GreaterThanOrEqual => decimal.TryParse(userValue, out var uv3) && decimal.TryParse(ruleValue, out var rv3) && uv3 >= rv3,
+            Operator.LessThanOrEqual => decimal.TryParse(userValue, out var uv4) && decimal.TryParse(ruleValue, out var rv4) && uv4 <= rv4,
+            Operator.IsTrue => userValue == "true",
+            Operator.Contains => userValue.Contains(ruleValue, StringComparison.OrdinalIgnoreCase),
+            _ => false
+        };
+    }
+        public async Task<bool> CheckCandidateAccess(int positionId, string candidateUserId)
+    {
+        var rules = await _context.AccessRules
+            .Where(r => r.PositionId == positionId)
+            .ToListAsync();
+        if (!rules.Any()) return true;
+        var userValues = await _context.UserAttributes
+            .Where(ua => ua.UserId == candidateUserId)
+            .ToDictionaryAsync(ua => ua.AttributeId, ua => ua.Value);
+        return rules.All(r => MatchesRule(r.Operator, userValues.GetValueOrDefault(r.AttributeId), r.Value));
+    }
+    public async Task<List<GetPositionDto>> GetAvailablePositionsForCandidate(string candidateUserId)
+    {
+        var positions = await _context.Positions.ToListAsync();
+        var rules = await _context.AccessRules.ToListAsync();
+        var userValues = await _context.UserAttributes
+            .Where(ua => ua.UserId == candidateUserId)
+            .ToDictionaryAsync(ua => ua.AttributeId, ua => ua.Value);
+        var available = positions.Where(p =>
+            rules.Where(r => r.PositionId == p.Id)
+                .All(r => MatchesRule(r.Operator, userValues.GetValueOrDefault(r.AttributeId), r.Value)));
+        return available.Select(PositionMapper.GetToPosition).ToList();
+    }
 }
