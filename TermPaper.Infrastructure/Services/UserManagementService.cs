@@ -26,7 +26,7 @@ public class UserManagementService : IUserManagementService
 
         foreach (var user in users)
         {
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user); 
             var isLockedOut = await _userManager.IsLockedOutAsync(user);
             usersDto.Add(UserManagementMapper.ToDto(user, roles, isLockedOut));
         }
@@ -53,7 +53,7 @@ public class UserManagementService : IUserManagementService
 
         return Result.Success();
     }
-
+    
     public async Task<Result> DeleteUserRolesAsync(string userId, List<string> roles)
     {
         var user = await _userManager.FindByIdAsync(userId);

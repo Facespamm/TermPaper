@@ -20,7 +20,7 @@
     @if (recentlyUsed.Any() && string.IsNullOrEmpty(searchText))
     {
         <div>
-            <small class="rz-text-muted">Недавние:</small>
+            <small class="rz-text-muted">Recent:</small>
             <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" Gap="0.25rem" class="rz-mt-1">
                 @foreach (var attr in recentlyUsed)
                 {
