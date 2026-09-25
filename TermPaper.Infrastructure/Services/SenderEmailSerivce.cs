@@ -19,7 +19,7 @@ public class SenderEmailSerivce:ISenderEmail
     public async Task<Result> SendEmailAsync(string email,string link)
     {
         var message = new EmailMessage();
-        message.From = "onboarding@resend.dev";
+        message.From = "noreply@xyzs.click";
         message.To.Add(email);
         message.Subject = "Confirmation email";
         message.HtmlBody = $"""
@@ -35,7 +35,7 @@ public class SenderEmailSerivce:ISenderEmail
     public async Task<Result> SendPasswordAsync(string email, string link)
     {
         var message = new EmailMessage();
-        message.From = "onboarding@resend.dev";
+        message.From = "noreply@xyzs.click";
         message.To.Add(email);
         message.Subject = "Confirmation code to password";
         message.HtmlBody = $"""
