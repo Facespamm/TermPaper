@@ -36,10 +36,14 @@ public class ProjectService :IProjectService
         return Result.Success();
     }
 
-    public async Task<Result> UpdateProject(UpdateProjectDto updateProjectDto)
+    public async Task<Result> UpdateProject(UpdateProjectDto updateProjectDto,string currentUserId)
     {
         var entity = await _context.Projects.FindAsync(updateProjectDto.Id);
         if (entity == null)
+        {
+            return Result.Failure(ErrorCode.NotFound);
+        }
+        if (entity.UserId != currentUserId)
         {
             return Result.Failure(ErrorCode.NotFound);
         }
@@ -49,9 +53,9 @@ public class ProjectService :IProjectService
         return Result.Success();
     }
 
-    public async Task<Result> DeleteProject(List<int> projectIds)
+    public async Task<Result> DeleteProject(List<int> projectIds, string currentUserId)
     {
-        var entity = await _context.Projects.Where(x => projectIds.Contains(x.Id)).ToListAsync();
+        var entity = await _context.Projects.Where(x => projectIds.Contains(x.Id) || x.UserId == currentUserId).ToListAsync();
         _context.Projects.RemoveRange(entity);
         await _context.SaveChangesAsync();
         return Result.Success();

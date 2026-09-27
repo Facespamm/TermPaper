@@ -10,9 +10,9 @@ public interface IProjectService
     
     public Task<Result> CreateProject(CreateProjectDto createProjectDto);
     
-    public Task<Result> UpdateProject(UpdateProjectDto updateProjectDto);
+    public Task<Result> UpdateProject(UpdateProjectDto updateProjectDto,string currentUserId);
     
-    public Task<Result> DeleteProject(List<int> projectIds);
+    public Task<Result> DeleteProject(List<int> projectIds, string currentUserId);
     
     //ProjectTags
     
