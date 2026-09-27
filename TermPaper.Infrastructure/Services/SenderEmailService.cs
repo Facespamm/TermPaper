@@ -4,11 +4,11 @@ using TermPaper.Application.Common;
 
 namespace TermPaper.Infrastructure.Services;
 
-public class SenderEmailSerivce:ISenderEmail
+public class SenderEmailService:ISenderEmailService
 {
     private readonly IResend _resend;
 
-    public SenderEmailSerivce(IResend resend)
+    public SenderEmailService(IResend resend)
     {
         _resend = resend;
     }

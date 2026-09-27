@@ -11,13 +11,13 @@ namespace TermPaper.Infrastructure.Services;
 public class RegisterService : IRegisterService
 {
     private readonly UserManager<AppUser> _userManager;
-    private readonly ISenderEmail _emailSender;
+    private readonly ISenderEmailService _emailServiceSender;
     private readonly string _baseUrl;
 
-    public RegisterService(UserManager<AppUser> userManager, ISenderEmail emailSender, IConfiguration configuration)
+    public RegisterService(UserManager<AppUser> userManager, ISenderEmailService emailServiceSender, IConfiguration configuration)
     {
         _userManager = userManager;
-        _emailSender = emailSender;
+        _emailServiceSender = emailServiceSender;
         _baseUrl = configuration["AppSettings:BaseUrl"] ?? "http://localhost:5000";
     }
     public async Task<Result> RegisterUserAsync(string email, string password, string confirmPassword, string userName)
@@ -45,7 +45,7 @@ public class RegisterService : IRegisterService
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var confirmLink = QueryHelpers.AddQueryString($"{_baseUrl}/ConfirmEmailPage", 
             new Dictionary<string, string?>{["email"] = email,["token"] = token});
-        var send = await _emailSender.SendEmailAsync(email, confirmLink);
+        var send = await _emailServiceSender.SendEmailAsync(email, confirmLink);
 
         return Result.Success();
     }

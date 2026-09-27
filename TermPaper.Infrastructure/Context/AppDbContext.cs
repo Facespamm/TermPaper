@@ -84,7 +84,7 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
                 .HasForeignKey(a => a.PositionId)
                 .OnDelete(DeleteBehavior.Cascade); 
 
-            entity.HasOne(e => e.Attributes)
+            entity.HasOne(e => e.Attribute)
                 .WithMany()
                 .HasForeignKey(a => a.AttributeId)
                 .OnDelete(DeleteBehavior.Cascade); 

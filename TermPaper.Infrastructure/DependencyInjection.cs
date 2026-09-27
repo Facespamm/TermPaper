@@ -51,7 +51,7 @@ public static class DependencyInjection
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<CloudinaryService>();
         services.AddScoped<IUserManagementService, UserManagementService>();
-        services.AddScoped<ISenderEmail, SenderEmailSerivce>();
+        services.AddScoped<ISenderEmailService, SenderEmailService>();
         services.AddScoped<ILoginService,LoginService>();
         services.AddResend(options =>
             options.ApiToken = configuration["Resend:ApiKey"]);

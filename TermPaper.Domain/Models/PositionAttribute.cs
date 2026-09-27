@@ -10,7 +10,7 @@
 
         public Position Position { get; set; } = null!;
 
-        public Attributes Attributes { get; set; } = null!;
+        public Attributes Attribute { get; set; } = null!;
         
         public int Order { get; set; }
     }

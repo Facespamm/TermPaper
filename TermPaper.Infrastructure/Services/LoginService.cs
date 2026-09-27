@@ -14,14 +14,14 @@ public class LoginService:ILoginService
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
-    private readonly ISenderEmail _emailSender;
+    private readonly ISenderEmailService _emailServiceSender;
     private readonly string _baseUrl;
 
-    public LoginService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ISenderEmail emailSender, IConfiguration configuration)
+    public LoginService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ISenderEmailService emailServiceSender, IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _emailSender = emailSender;
+        _emailServiceSender = emailServiceSender;
         _baseUrl = configuration["AppSettings:BaseUrl"] ?? "http://localhost:5000";
     }
 
@@ -45,7 +45,7 @@ public class LoginService:ILoginService
         }
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
         var resetLink = QueryHelpers.AddQueryString($"{_baseUrl}/reset-password", new Dictionary<string, string?>{["email"] = email, ["token"] = token});
-        await _emailSender.SendPasswordAsync(email, resetLink);
+        await _emailServiceSender.SendPasswordAsync(email, resetLink);
         return Result.Success();
     }
     
