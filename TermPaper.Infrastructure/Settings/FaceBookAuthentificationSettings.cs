@@ -1,6 +1,6 @@
 ﻿namespace TermPaper.Infrastructure.Settings;
 
-public class FaceBookAuthentificationSettings
+public class FacebookAuthenticationSettings
 {
     public const string SectionName = "Authentication:Facebook";
 

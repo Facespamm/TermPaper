@@ -38,8 +38,7 @@ public static class DependencyInjection
             options.ClientId = googleSettings.ClientId;
             options.ClientSecret = googleSettings.ClientSecret;    
         });
-        var facebookSettings = configuration.GetSection("Authentication:Facebook").Get<FaceBookAuthentificationSettings>() ?? new FaceBookAuthentificationSettings();
-        services.AddAuthentication().AddFacebook(options =>
+        var facebookSettings = configuration.GetSection("Authentication:Facebook").Get<FacebookAuthenticationSettings>() ?? new FacebookAuthenticationSettings();        services.AddAuthentication().AddFacebook(options =>
         {
             options.AppId = facebookSettings.AppId;
             options.AppSecret = facebookSettings.AppSecret;
