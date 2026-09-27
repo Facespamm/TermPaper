@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TermPaper.Enum;
-
-namespace TermPaper.Models;
+using TermPaper.Domain.Enum;
+namespace TermPaper.Infrastructure.Identity;
 
 public class AppUser:IdentityUser
 {

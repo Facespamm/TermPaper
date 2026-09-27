@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Resend;
-using TermPaper.Interface;
+﻿using Resend;
 using TermPaper.Application.Interface;
 using TermPaper.Application.Common;
-using TermPaper.Enum;
 
 namespace TermPaper.Infrastructure.Services;
 

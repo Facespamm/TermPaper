@@ -1,5 +1,6 @@
 ﻿using TermPaper.Application.Common;
 using TermPaper.Application.Dto;
+using TermPaper.Application.Dto.UsersDto;
 
 namespace TermPaper.Application.Interface;
 

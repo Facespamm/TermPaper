@@ -3,13 +3,11 @@ using TermPaper.Application.Common;
 using TermPaper.Application.Dto.PositionAttributeDto;
 using TermPaper.Application.Dto.PositionDto;
 using TermPaper.Application.Dto.PositionProjectTagDto;
-using TermPaper.Enum;
 using TermPaper.Infrastructure.Context;
 using TermPaper.Infrastructure.Mappers;
-using System.Linq;
 using TermPaper.Application.Dto.PositionAccessRuleDto;
 using TermPaper.Application.Interface;
-using TermPaper.Domain.Models;
+using TermPaper.Domain.Enum;
 
 namespace TermPaper.Infrastructure.Services;
 

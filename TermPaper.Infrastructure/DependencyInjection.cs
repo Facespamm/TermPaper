@@ -5,11 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Resend;
 using TermPaper.Application.Interface;
 using TermPaper.Infrastructure.Context;
-using TermPaper.Models;
 using TermPaper.Infrastructure.Services;
 using TermPaper.Infrastructure.Settings;
-using TermPaper.Interface;
 using Microsoft.Extensions.Options;
+using TermPaper.Infrastructure.Identity;
+
 namespace TermPaper.Infrastructure;
 
 public static class DependencyInjection

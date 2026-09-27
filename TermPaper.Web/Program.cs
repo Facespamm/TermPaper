@@ -1,19 +1,17 @@
 using Microsoft.AspNetCore.Identity;
 using Radzen;
-using TermPaper.Application;
 using TermPaper.Components;
 using TermPaper.Infrastructure;
 using TermPaper.EndPoints;
-using TermPaper.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using TermPaper.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddRadzenComponents();

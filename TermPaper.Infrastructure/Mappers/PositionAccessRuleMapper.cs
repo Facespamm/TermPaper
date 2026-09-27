@@ -1,5 +1,4 @@
 ﻿using TermPaper.Application.Dto.PositionAccessRuleDto;
-using TermPaper.Application.Dto.PositionAttributeDto;
 using TermPaper.Domain.Models;
 
 namespace TermPaper.Infrastructure.Mappers;

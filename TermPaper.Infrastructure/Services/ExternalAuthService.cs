@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using TermPaper.Application.Common;
-using TermPaper.Enum;
-using TermPaper.Interface;
-using TermPaper.Models;
+using TermPaper.Application.Interface;
+using TermPaper.Domain.Enum;
+using TermPaper.Infrastructure.Identity;
 
 namespace TermPaper.Infrastructure.Services;
 

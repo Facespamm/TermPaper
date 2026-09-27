@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using TermPaper.Application.Common;
-using TermPaper.Enum;
 using TermPaper.Application.Interface;
-using TermPaper.Models;
+using TermPaper.Domain.Enum;
+using TermPaper.Infrastructure.Identity;
 
 namespace TermPaper.Infrastructure.Services;
 

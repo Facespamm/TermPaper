@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TermPaper.Application.Common;
-using TermPaper.Application.Dto;
-using TermPaper.Application.Dto.AttributeValueDto;
+using TermPaper.Application.Dto.AttributeDto;
+using TermPaper.Application.Dto.AttributesCategoryDto;
+using TermPaper.Application.Dto.AttributesValueDto;
 using TermPaper.Application.Dto.UsersAttributesDto;
 using TermPaper.Application.Interface;
-using TermPaper.Domain.Models;
-using TermPaper.Enum;
+using TermPaper.Domain.Enum;
 using TermPaper.Infrastructure.Context;
 using TermPaper.Infrastructure.Mappers;
 

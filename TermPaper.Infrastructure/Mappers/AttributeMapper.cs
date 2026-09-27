@@ -1,4 +1,5 @@
 ﻿using TermPaper.Application.Dto;
+using TermPaper.Application.Dto.AttributeDto;
 using TermPaper.Application.Dto.UsersAttributesDto;
 using TermPaper.Domain.Models;
 

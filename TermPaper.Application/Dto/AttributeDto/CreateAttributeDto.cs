@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using DataType = TermPaper.Enum.DataType;
+﻿using DataType = TermPaper.Domain.Enum.DataType;
 
-namespace TermPaper.Application.Dto;
+namespace TermPaper.Application.Dto.AttributeDto;
 
 public class CreateAttributeDto
 {

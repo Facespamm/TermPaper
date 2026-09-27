@@ -1,4 +1,4 @@
-﻿namespace TermPaper.Enum;
+﻿namespace TermPaper.Domain.Enum;
 
 public enum ErrorCode
 {

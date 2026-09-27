@@ -1,4 +1,4 @@
-﻿using TermPaper.Enum;
+﻿using TermPaper.Domain.Enum;
 
 namespace TermPaper.Application.Common;
 
@@ -14,7 +14,6 @@ public class Result
         ErrorCode = errorCode;
         ErrorMessage = errorMessage;
     }
-    
     public static Result Success() => new (true,ErrorCode.None,null);
     public static Result Failure(ErrorCode errorCode) => new (false,errorCode,null);
     public static Result Failure(ErrorCode errorCode, string? errorMessage) => new (false,errorCode,errorMessage);

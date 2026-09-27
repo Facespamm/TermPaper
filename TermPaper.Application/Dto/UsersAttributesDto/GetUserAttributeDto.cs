@@ -1,4 +1,6 @@
-﻿namespace TermPaper.Application.Dto.UsersAttributesDto;
+﻿using TermPaper.Application.Dto.AttributeDto;
+
+namespace TermPaper.Application.Dto.UsersAttributesDto;
 
 public class GetUserAttributeDto
 {

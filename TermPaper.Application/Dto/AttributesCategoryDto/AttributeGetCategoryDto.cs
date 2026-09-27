@@ -1,4 +1,4 @@
-﻿namespace TermPaper.Application.Dto;
+﻿namespace TermPaper.Application.Dto.AttributesCategoryDto;
 
 public class AttributeGetCategoryDto
 {

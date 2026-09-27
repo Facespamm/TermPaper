@@ -1,7 +1,6 @@
-﻿using TermPaper.Application.Dto.AttributeValueDto;
-using TermPaper.Enum;
-
-namespace TermPaper.Application.Dto;
+﻿using TermPaper.Application.Dto.AttributesValueDto;
+using TermPaper.Domain.Enum;
+namespace TermPaper.Application.Dto.AttributeDto;
 
 public class AttributeGetDto
 {

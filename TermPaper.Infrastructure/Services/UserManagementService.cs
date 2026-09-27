@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using TermPaper.Application.Common;
 using TermPaper.Application.Dto;
+using TermPaper.Application.Dto.UsersDto;
 using TermPaper.Application.Interface;
-using TermPaper.Enum;
+using TermPaper.Domain.Enum;
+using TermPaper.Infrastructure.Identity;
 using TermPaper.Infrastructure.Mappers;
-using TermPaper.Interface;
-using TermPaper.Models;
 
 namespace TermPaper.Infrastructure.Services;
 

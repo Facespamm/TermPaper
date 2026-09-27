@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TermPaper.Application.Common;
-using TermPaper.Interface;
-using TermPaper.Models;
+using TermPaper.Application.Interface;
+using TermPaper.Infrastructure.Identity;
 
 namespace TermPaper.EndPoints;
 

@@ -1,5 +1,4 @@
-﻿using TermPaper.Enum;
-
+﻿using TermPaper.Domain.Enum;
 namespace TermPaper.Domain.Models;
 
 public class Attributes

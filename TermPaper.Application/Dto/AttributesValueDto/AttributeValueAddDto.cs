@@ -1,4 +1,4 @@
-﻿namespace TermPaper.Application.Dto.AttributeValueDto;
+﻿namespace TermPaper.Application.Dto.AttributesValueDto;
 
 public class AttributeValueAddDto
 {

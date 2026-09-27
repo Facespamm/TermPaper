@@ -1,5 +1,6 @@
 ﻿using TermPaper.Application.Dto;
-using TermPaper.Models;
+using TermPaper.Application.Dto.UsersDto;
+using TermPaper.Infrastructure.Identity;
 
 namespace TermPaper.Infrastructure.Mappers;
 

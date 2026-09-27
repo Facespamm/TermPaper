@@ -1,5 +1,4 @@
-﻿using TermPaper.Enum;
-
+﻿using TermPaper.Domain.Enum;
 namespace TermPaper.Application.Dto.PositionAccessRuleDto;
 
 public class GetPositionAccessRuleDto

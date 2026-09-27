@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Resend;
 using TermPaper.Application.Interface;
 using TermPaper.Application.Common;
-using TermPaper.Enum;
-using TermPaper.Models;
+using TermPaper.Domain.Enum;
+using TermPaper.Infrastructure.Identity;
 
 namespace TermPaper.Infrastructure.Services;
 

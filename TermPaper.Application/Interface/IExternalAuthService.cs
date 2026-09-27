@@ -1,6 +1,6 @@
 ﻿using TermPaper.Application.Common;
 
-namespace TermPaper.Interface;
+namespace TermPaper.Application.Interface;
 
 public interface IExternalAuthService
 {

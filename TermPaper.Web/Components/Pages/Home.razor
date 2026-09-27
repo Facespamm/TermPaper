@@ -1,13 +1,10 @@
 ﻿@page "/home"
 @attribute [AllowAnonymous]
 @layout MainLayout
-
 @using Microsoft.AspNetCore.Authorization
-@using TermPaper.Components.Layout
 @using TermPaper.Application.Interface
 @using TermPaper.Application.Dto.PositionDto
 @using Microsoft.AspNetCore.Components.Authorization
-
 @inject IPositionService PositionService
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager Navigation

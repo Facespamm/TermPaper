@@ -1,13 +1,13 @@
 @page "/positions/{Id}"
 @attribute [Authorize]
 @using Microsoft.AspNetCore.Authorization
+@using TermPaper.Application.Dto.AttributeDto
 @using TermPaper.Application.Interface
-@using TermPaper.Application.Dto
 @using TermPaper.Application.Dto.PositionDto
 @using TermPaper.Application.Dto.PositionAttributeDto
 @using TermPaper.Application.Dto.PositionProjectTagDto
 @using TermPaper.Application.Dto.PositionAccessRuleDto
-@using TermPaper.Enum
+@using TermPaper.Domain.Enum
 @inject IPositionService PositionService
 @inject IAttributeService AttributeService
 @inject NavigationManager Navigation

@@ -3,7 +3,7 @@ using TermPaper.Application.Dto.PositionAccessRuleDto;
 using TermPaper.Application.Dto.PositionAttributeDto;
 using TermPaper.Application.Dto.PositionDto;
 using TermPaper.Application.Dto.PositionProjectTagDto;
-using TermPaper.Enum;
+using TermPaper.Domain.Enum;
 
 namespace TermPaper.Application.Interface;
 

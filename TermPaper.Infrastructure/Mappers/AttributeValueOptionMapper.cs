@@ -1,4 +1,4 @@
-﻿using TermPaper.Application.Dto.AttributeValueDto;
+﻿using TermPaper.Application.Dto.AttributesValueDto;
 using TermPaper.Domain.Models;
 
 namespace TermPaper.Infrastructure.Mappers;

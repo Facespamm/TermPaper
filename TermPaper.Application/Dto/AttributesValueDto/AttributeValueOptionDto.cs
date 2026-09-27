@@ -1,6 +1,4 @@
-﻿using TermPaper.Domain.Models;
-
-namespace TermPaper.Application.Dto.AttributeValueDto;
+﻿namespace TermPaper.Application.Dto.AttributesValueDto;
 
 public class AttributeValueOptionDto
 {

@@ -1,14 +1,12 @@
 ﻿@page "/"
 @page "/LoginPage"
 @rendermode InteractiveServer
-@using Microsoft.AspNetCore.Identity
 @using TermPaper.Application.Interface
 @inject ILoginService LoginService
 @inject NavigationManager Navigation
 @layout EmptyLayout
 @using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@using TermPaper.Application.Common
 @using Microsoft.AspNetCore.WebUtilities
 <div class="login-page">
     <div class="login-form">    

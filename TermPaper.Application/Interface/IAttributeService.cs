@@ -1,8 +1,9 @@
 ﻿using TermPaper.Application.Common;
 using TermPaper.Application.Dto;
-using TermPaper.Application.Dto.AttributeValueDto;
+using TermPaper.Application.Dto.AttributeDto;
+using TermPaper.Application.Dto.AttributesCategoryDto;
+using TermPaper.Application.Dto.AttributesValueDto;
 using TermPaper.Application.Dto.UsersAttributesDto;
-using TermPaper.Enum;
 
 namespace TermPaper.Application.Interface;
 
@@ -25,8 +26,7 @@ public interface IAttributeService
     public Task<List<AttributeGetDto>> GetRecentlyUsedAsync(string userId);
 
     public Task<List<GetUserAttributeDto>> GetUserBuiltInAttributeValuesAsync(string userId);
-
-
+    
     // Attribute Category
     public Task<Result> CreateCategory(AttributeCreateCategoryDto dto);
 

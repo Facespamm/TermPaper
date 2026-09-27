@@ -1,4 +1,5 @@
 ﻿using TermPaper.Application.Dto;
+using TermPaper.Application.Dto.AttributesCategoryDto;
 using TermPaper.Domain.Models;
 
 namespace TermPaper.Infrastructure.Mappers;

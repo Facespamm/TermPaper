@@ -1,6 +1,5 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using TermPaper.Infrastructure.Settings;
 
@@ -19,7 +18,6 @@ public class CloudinaryService
             _settings.CloudName,
             _settings.ApiKey,
             _settings.ApiSecret);
-        
         _cloudinary = new Cloudinary(account);
     }
 

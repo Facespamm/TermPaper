@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TermPaper.Domain.Models;
-using TermPaper.Enum;
-using TermPaper.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TermPaper.Domain.Enum;
+using TermPaper.Infrastructure.Identity;
 
 namespace TermPaper.Infrastructure.Context;
 
@@ -22,6 +22,7 @@ public class AppDbContext: IdentityDbContext<AppUser, IdentityRole, string>
         {
             entity.Property(u => u.Locale).HasConversion<string>();
             entity.Property(u => u.Theme).HasConversion<string>();
+
         });
 
         modelBuilder.Entity<Attributes>(entity =>
