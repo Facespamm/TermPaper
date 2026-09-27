@@ -5,7 +5,7 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class PositionMapper
 {
-    public static GetPositionDto GetToPosition(Position position)
+    public static GetPositionDto ToDto(Position position)
     {
         return new GetPositionDto()
         {
@@ -15,7 +15,7 @@ public class PositionMapper
         };
     }
 
-    public static GetPositionInfoDto GetPositionToInfo(Position position)
+    public static GetPositionInfoDto ToInfoDto(Position position)
     {
         return new GetPositionInfoDto
         {
@@ -28,8 +28,8 @@ public class PositionMapper
             Level = position.Level,
         };
     }
-    
-    public static Position CreateToPosition(CreatePositionDto dto)
+
+    public static Position ToEntity(CreatePositionDto dto)
     {
         return new Position
         {
@@ -41,11 +41,11 @@ public class PositionMapper
             Level = dto.Level
         };
     }
-    
-    public static Position UpdateToEntity(UpdatePositionDto dto, Position position)
+
+    public static Position UpdateEntity(UpdatePositionDto dto, Position position)
     {
-        position.CompanyName = dto.CompanyName ??  position.CompanyName;
-        position.Level = dto.Level  ??  position.Level;
+        position.CompanyName = dto.CompanyName ?? position.CompanyName;
+        position.Level = dto.Level ?? position.Level;
         position.MaxProjectsCount = dto.MaxProjectsCount ?? position.MaxProjectsCount;
         position.ShortDescription = dto.ShortDescription ?? position.ShortDescription;
         position.Title = dto.Title ?? position.Title;

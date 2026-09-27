@@ -5,7 +5,7 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class ProjectMapper
 {
-    public static GetProjectDto GetProjectData(Projects project)
+    public static GetProjectDto ToDto(Projects project)
     {
         return new GetProjectDto()
         {
@@ -15,12 +15,11 @@ public class ProjectMapper
             UserId = project.UserId,
             PeriodFrom = project.PeriodFrom,
             PeriodTo = project.PeriodTo,
-            Tags = project.ProjectTags.Select(x => ProjectTagMapper.GetProjectTagData(x)).ToList(),
+            Tags = project.ProjectTags.Select(x => ProjectTagMapper.ToDto(x)).ToList(),
         };
     }
 
-
-    public static Projects CreateProjectData(CreateProjectDto dto)
+    public static Projects ToEntity(CreateProjectDto dto)
     {
         return new Projects()
         {
@@ -36,12 +35,12 @@ public class ProjectMapper
         };
     }
 
-    public static Projects UpdateProjectData(UpdateProjectDto project, Projects projectData)
+    public static Projects UpdateEntity(UpdateProjectDto dto, Projects project)
     {
-        projectData.DescriptionMd = project.DescriptionMd ?? projectData.DescriptionMd;
-        projectData.Name = project.Name  ?? projectData.Name;
-        projectData.PeriodFrom= project.PeriodFrom  ?? projectData.PeriodFrom;
-        projectData.PeriodTo = project.PeriodTo   ?? projectData.PeriodTo;
-        return projectData;
+        project.DescriptionMd = dto.DescriptionMd ?? project.DescriptionMd;
+        project.Name = dto.Name ?? project.Name;
+        project.PeriodFrom = dto.PeriodFrom ?? project.PeriodFrom;
+        project.PeriodTo = dto.PeriodTo ?? project.PeriodTo;
+        return project;
     }
 }

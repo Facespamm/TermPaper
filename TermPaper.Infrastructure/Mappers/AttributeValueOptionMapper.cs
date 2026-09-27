@@ -5,8 +5,7 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class AttributeValueOptionMapper
 {
-
-    public static AttributeValueOptionDto GetValueOption(AttributeValueOption entity)
+    public static AttributeValueOptionDto ToDto(AttributeValueOption entity)
     {
         return new AttributeValueOptionDto()
         {
@@ -15,7 +14,8 @@ public class AttributeValueOptionMapper
             Order = entity.Order,
         };
     }
-    public static AttributeValueOption AddToEntity(AttributeValueAddDto addDto,int maxOrder)
+
+    public static AttributeValueOption ToEntity(AttributeValueAddDto addDto, int maxOrder)
     {
         return new AttributeValueOption
         {
@@ -25,7 +25,7 @@ public class AttributeValueOptionMapper
         };
     }
 
-    public static AttributeValueOption UpdateToEntity(UpdateAttributeValueDto dto,AttributeValueOption entity)
+    public static AttributeValueOption UpdateEntity(UpdateAttributeValueDto dto, AttributeValueOption entity)
     {
         entity.AttributeId = dto.AttributeId ?? entity.AttributeId;
         entity.Value = dto.Value ?? entity.Value;

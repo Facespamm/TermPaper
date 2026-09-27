@@ -25,12 +25,12 @@ public class ProjectService :IProjectService
             .Include(x => x.ProjectTags)
             .ToListAsync();
         
-        return entity.Select(x => ProjectMapper.GetProjectData(x)).ToList();
+        return entity.Select(x => ProjectMapper.ToDto(x)).ToList();
     }
 
     public async Task<Result> CreateProject(CreateProjectDto createProjectDto)
     {
-        var entity = ProjectMapper.CreateProjectData(createProjectDto);
+        var entity = ProjectMapper.ToEntity(createProjectDto);
         _context.Add(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -43,7 +43,7 @@ public class ProjectService :IProjectService
         {
             return Result.Failure(ErrorCode.NotFound);
         }
-        var update = ProjectMapper.UpdateProjectData(updateProjectDto, entity);
+        var update = ProjectMapper.UpdateEntity(updateProjectDto, entity);
         _context.Projects.Update(update);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -60,12 +60,12 @@ public class ProjectService :IProjectService
     public async Task<List<GetProjectTagDto>> GetProjectTag(int projectId)
     {
         var entity = await _context.ProjectTags.Where(x => x.ProjectId == projectId).ToListAsync();
-        return  entity.Select(x=>ProjectTagMapper.GetProjectTagData(x)).ToList();
+        return  entity.Select(x=>ProjectTagMapper.ToDto(x)).ToList();
     }
 
     public async Task<Result> CreateProjectTag(CreateProjectTagDto createProjectTagDto)
     {
-        var entity = ProjectTagMapper.CreateProjectTagsData(createProjectTagDto);
+        var entity = ProjectTagMapper.ToEntity(createProjectTagDto);
         _context.ProjectTags.Add(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -78,7 +78,7 @@ public class ProjectService :IProjectService
         {
             return Result.Failure(ErrorCode.NotFound);
         }
-        var update = ProjectTagMapper.UpdateProjectTagsData(updateProjectTagDto, entity); 
+        var update = ProjectTagMapper.UpdateEntity(updateProjectTagDto, entity); 
         _context.ProjectTags.Update(update);
         await _context.SaveChangesAsync();
         return Result.Success();

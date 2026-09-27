@@ -5,7 +5,7 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class PositionAccessRuleMapper
 {
-    public static AccessRule CreateAccessRule(CreatePositionAccessRuleDto dto)
+    public static AccessRule ToEntity(CreatePositionAccessRuleDto dto)
     {
         return new AccessRule()
         {
@@ -16,7 +16,7 @@ public class PositionAccessRuleMapper
         };
     }
 
-    public static GetPositionAccessRuleDto GetPositionAccessRule(AccessRule accessRule)
+    public static GetPositionAccessRuleDto ToDto(AccessRule accessRule)
     {
         return new GetPositionAccessRuleDto()
         {

@@ -31,7 +31,7 @@ public class PositionService:IPositionService
                 (x.ShortDescription != null && x.ShortDescription.Contains(search)));
         }
         var records = await query.ToListAsync();
-        return records.Select(x => PositionMapper.GetToPosition(x)).ToList();
+        return records.Select(x => PositionMapper.ToDto(x)).ToList();
     }
     public async Task<GetPositionInfoDto> GetPositionInfo(int id)
     {
@@ -40,12 +40,12 @@ public class PositionService:IPositionService
         {
             return new GetPositionInfoDto();
         }
-        return PositionMapper.GetPositionToInfo(info);
+        return PositionMapper.ToInfoDto(info);
     }
 
     public async Task<Result> CreatePosition(CreatePositionDto dto)
     {
-        var entity = PositionMapper.CreateToPosition(dto);
+        var entity = PositionMapper.ToEntity(dto);
         
         await _context.Positions.AddAsync(entity);
         await _context.SaveChangesAsync();
@@ -61,7 +61,7 @@ public class PositionService:IPositionService
         } 
         _context.Entry(entity).Property(x=>x.Version).OriginalValue = dto.Version;
         
-        PositionMapper.UpdateToEntity(dto,entity);
+        PositionMapper.UpdateEntity(dto,entity);
         try
         {
             await _context.SaveChangesAsync();
@@ -87,13 +87,13 @@ public class PositionService:IPositionService
     {
         var entities = await _context.PositionProjectTags.Where(x=>x.PositionId==positionId).ToListAsync();
            return entities
-            .Select(x=>PositionProjectTagMapper.GetPositionProjectTag(x))
+            .Select(x=>PositionProjectTagMapper.ToDto(x))
             .ToList();
     }
 
     public async Task<Result> CreatePositionProjectTag(CreatePositionProjectTagDto dto)
     {
-        var entity = PositionProjectTagMapper.CreatePositionTag(dto);
+        var entity = PositionProjectTagMapper.ToEntity(dto);
         _context.PositionProjectTags.Add(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -111,12 +111,12 @@ public class PositionService:IPositionService
     {
         var entity = await _context.PositionAttributes.Where(x => x.PositionId == positionId).ToListAsync();
         
-        return entity.Select(x=>PositionAttributeMapper.GetPositionAttribute(x)).ToList();
+        return entity.Select(x=>PositionAttributeMapper.ToDto(x)).ToList();
     }
 
     public async Task<Result> CreatePositionAttribute(CreatePositionAttributeDto dto)
     {
-        var entity = PositionAttributeMapper.CreatePositionAttributeDto(dto);
+        var entity = PositionAttributeMapper.ToEntity(dto);
         _context.PositionAttributes.Add(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -137,7 +137,7 @@ public class PositionService:IPositionService
 
     public async Task<Result> CreatePositionAccessRule(CreatePositionAccessRuleDto dto)
     {
-        var entity = PositionAccessRuleMapper.CreateAccessRule(dto);
+        var entity = PositionAccessRuleMapper.ToEntity(dto);
         _context.AccessRules.Add(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -146,7 +146,7 @@ public class PositionService:IPositionService
     public async Task<List<GetPositionAccessRuleDto>> GetPositionAccessRules(int positionId)
     {
         var entity = await _context.AccessRules.Where(x => x.PositionId== positionId).ToListAsync();
-        return entity.Select(x=>PositionAccessRuleMapper.GetPositionAccessRule(x)).ToList();
+        return entity.Select(x=>PositionAccessRuleMapper.ToDto(x)).ToList();
     }
 
     public async Task<Result> DeletePositionAccessRule(List<int> positionIds)
@@ -196,6 +196,6 @@ public class PositionService:IPositionService
         var available = positions.Where(p =>
             rules.Where(r => r.PositionId == p.Id)
                 .All(r => MatchesRule(r.Operator, userValues.GetValueOrDefault(r.AttributeId), r.Value)));
-        return available.Select(PositionMapper.GetToPosition).ToList();
+        return available.Select(PositionMapper.ToDto).ToList();
     }
 }

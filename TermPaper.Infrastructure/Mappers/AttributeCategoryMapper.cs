@@ -13,19 +13,19 @@ public class AttributeCategoryMapper
             Name = dto.Name,
         };
     }
-    
-    public static AttributeGetCategoryDto GetDtoToEntity(AttributeCategory entity)
+
+    public static AttributeGetCategoryDto ToDto(AttributeCategory entity)
     {
         return new AttributeGetCategoryDto
-            {
-                Id = entity.Id,
-                Name = entity.Name
-            };
+        {
+            Id = entity.Id,
+            Name = entity.Name
+        };
     }
 
-    public static AttributeCategory UpdateEntity(AttributeUpdateCategoryDto dto,AttributeCategory entity)
+    public static AttributeCategory UpdateEntity(AttributeUpdateCategoryDto dto, AttributeCategory entity)
     {
-       entity.Name = dto.Name ?? entity.Name;
-       return entity;
+        entity.Name = dto.Name ?? entity.Name;
+        return entity;
     }
 }

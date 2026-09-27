@@ -5,9 +5,9 @@ using TermPaper.Domain.Models;
 
 namespace TermPaper.Infrastructure.Mappers;
 
-public  class AttributeMapper
+public class AttributeMapper
 {
-    public static AttributeGetDto GetToDto(Attributes attribute)
+    public static AttributeGetDto ToDto(Attributes attribute)
     {
         return new AttributeGetDto
         {
@@ -16,10 +16,10 @@ public  class AttributeMapper
             Name = attribute.Name,
             DataType = attribute.DataType,
             Description = attribute.Description,
-            Version =  attribute.Version,
+            Version = attribute.Version,
             IsBuiltIn = attribute.IsBuiltIn,
             AttributeValueOptions = attribute.AttributeValueOptions
-                .Select(x => AttributeValueOptionMapper.GetValueOption(x))
+                .Select(x => AttributeValueOptionMapper.ToDto(x))
                 .ToList()
         };
     }
@@ -35,29 +35,28 @@ public  class AttributeMapper
             IsBuiltIn = false,
         };
     }
-    
-        public static Attributes ToUpdateEntity(Attributes attribute,UpdateAttributeDto dto)
-        {
-           attribute.CategoryId = dto.CategoryId ?? attribute.CategoryId;
-           attribute.Name = dto.Name ?? attribute.Name;
-           attribute.Description = dto.Description ?? attribute.Description;
-           return attribute;
-        }
-        
-        public static GetUserAttributeDto ToMeSectionDto(Attributes attribute, string userId)
-        {
-            var existingValue = attribute.UserAttributes
-                .FirstOrDefault(x => x.UserId == userId);
 
-            return new GetUserAttributeDto
-            {
-                Id = existingValue?.Id ?? 0,
-                AttributeId = attribute.Id,
-                UserId = userId,
-                Value = existingValue?.Value ?? "",
-                Version = existingValue?.Version ?? 0,
-                Attribute = AttributeMapper.GetToDto(attribute)
-            };
-        }
-        
+    public static Attributes UpdateEntity(UpdateAttributeDto dto, Attributes attribute)
+    {
+        attribute.CategoryId = dto.CategoryId ?? attribute.CategoryId;
+        attribute.Name = dto.Name ?? attribute.Name;
+        attribute.Description = dto.Description ?? attribute.Description;
+        return attribute;
+    }
+
+    public static GetUserAttributeDto ToUserAttributeDto(Attributes attribute, string userId)
+    {
+        var existingValue = attribute.UserAttributes
+            .FirstOrDefault(x => x.UserId == userId);
+
+        return new GetUserAttributeDto
+        {
+            Id = existingValue?.Id ?? 0,
+            AttributeId = attribute.Id,
+            UserId = userId,
+            Value = existingValue?.Value ?? "",
+            Version = existingValue?.Version ?? 0,
+            Attribute = ToDto(attribute)
+        };
+    }
 }

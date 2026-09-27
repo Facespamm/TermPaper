@@ -5,7 +5,7 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class PositionAttributeMapper
 {
-    public static GetPositionAttributeDto GetPositionAttribute(PositionAttribute positionAttribute)
+    public static GetPositionAttributeDto ToDto(PositionAttribute positionAttribute)
     {
         return new GetPositionAttributeDto
         {
@@ -16,7 +16,7 @@ public class PositionAttributeMapper
         };
     }
 
-    public static PositionAttribute CreatePositionAttributeDto(CreatePositionAttributeDto dto)
+    public static PositionAttribute ToEntity(CreatePositionAttributeDto dto)
     {
         return new PositionAttribute()
         {

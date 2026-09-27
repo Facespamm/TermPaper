@@ -24,7 +24,7 @@ public class AttributeService:IAttributeService
     {
         var attributesList = await _context.Attributes.ToListAsync();
 
-        return attributesList.Select(AttributeMapper.GetToDto).ToList();
+        return attributesList.Select(AttributeMapper.ToDto).ToList();
     }
 
     public async Task<Result> CreateCategory(AttributeCreateCategoryDto dto)
@@ -38,7 +38,7 @@ public class AttributeService:IAttributeService
     public async Task<List<AttributeGetCategoryDto>> GetCategory()
     {
         var entitys = await _context.AttributeCategories.ToListAsync();
-        return entitys.Select(AttributeCategoryMapper.GetDtoToEntity).ToList();
+        return entitys.Select(AttributeCategoryMapper.ToDto).ToList();
     }
 
     public async Task<Result> CreateAttribute(CreateAttributeDto dto)
@@ -54,7 +54,7 @@ public class AttributeService:IAttributeService
         var maxOrder = await _context.AttributeValueOptions
             .Where(x => x.AttributeId == addDto.AttributeId)
             .MaxAsync(x => x.Order) ?? 0;
-        var add = AttributeValueOptionMapper.AddToEntity(addDto, maxOrder);
+        var add = AttributeValueOptionMapper.ToEntity(addDto, maxOrder);
         await _context.AttributeValueOptions.AddAsync(add);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -62,7 +62,7 @@ public class AttributeService:IAttributeService
 
     public async Task<Result> AddToUsersValue(UserAttributesAddDto addDto)
     {
-       var entuty = UserAttributeMapper.AddUserAttributes(addDto);
+       var entuty = UserAttributeMapper.ToEntity(addDto);
        await _context.UserAttributes.AddAsync(entuty);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -74,7 +74,7 @@ public class AttributeService:IAttributeService
         if (entity == null)
             return Result.Failure(ErrorCode.NotFound);
         
-        AttributeMapper.ToUpdateEntity(entity, dto);
+        AttributeMapper.UpdateEntity(dto, entity);
         _context.Entry(entity).Property(x=>x.Version).OriginalValue = dto.Version;
         try
         {
@@ -130,7 +130,7 @@ public class AttributeService:IAttributeService
         {
             return Result.Failure(ErrorCode.NotFound);
         }
-        AttributeValueOptionMapper.UpdateToEntity(dto, entity);
+        AttributeValueOptionMapper.UpdateEntity(dto, entity);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
@@ -151,7 +151,7 @@ public class AttributeService:IAttributeService
             return Result.Failure(ErrorCode.NotFound);
         }
         _context.Entry(entity).Property(x => x.Version).OriginalValue = dto.Version;
-        UserAttributeMapper.UpdateUserAttributes(dto, entity);
+        UserAttributeMapper.UpdateEntity(dto, entity);
         try
         {
             await _context.SaveChangesAsync();
@@ -177,7 +177,7 @@ public class AttributeService:IAttributeService
             .Where(x => x.AttributeId == attributeId)
             .OrderBy(x => x.Order)
             .ToListAsync();
-        return options.Select(x=>AttributeValueOptionMapper.GetValueOption(x)).ToList();
+        return options.Select(x=>AttributeValueOptionMapper.ToDto(x)).ToList();
     }   
     public async Task<List<GetUserAttributeDto>> GetUserAttributeValuesAsync(string userId)
     {
@@ -187,7 +187,7 @@ public class AttributeService:IAttributeService
             .ThenInclude(x=>x.AttributeValueOptions)
             .ToListAsync();
 
-        return entitys.Select( x=>UserAttributeMapper.GetUserAttribute(x)).ToList();
+        return entitys.Select( x=>UserAttributeMapper.ToDto(x)).ToList();
     }
 
     public async Task<List<AttributeGetDto>> SearchByPrefixAsync(string prefix)
@@ -195,13 +195,13 @@ public class AttributeService:IAttributeService
         var search = await _context.Attributes
             .Where(x => EF.Functions.ILike(x.Name, prefix + "%"))
             .ToListAsync();
-        return search.Select(x => AttributeMapper.GetToDto(x)).ToList();
+        return search.Select(x => AttributeMapper.ToDto(x)).ToList();
     }
     
     public async Task<List<AttributeGetDto>> GetByCategoryAsync(int categoryId)
     {
         var entity = await _context.Attributes.Where(x => x.CategoryId == categoryId).ToListAsync();
-        return entity.Select(x=>AttributeMapper.GetToDto(x)).ToList();
+        return entity.Select(x=>AttributeMapper.ToDto(x)).ToList();
     }
     
         public async Task<List<GetUserAttributeDto>> GetUserBuiltInAttributeValuesAsync(string userId)
@@ -212,14 +212,14 @@ public class AttributeService:IAttributeService
                 .Where(a => a.IsBuiltIn)
                 .ToListAsync();
 
-            return attributes.Select(attr => AttributeMapper.ToMeSectionDto(attr, userId)).ToList();
+            return attributes.Select(attr => AttributeMapper.ToUserAttributeDto(attr, userId)).ToList();
         }
     
     public async Task<List<AttributeGetDto>> GetRecentlyUsedAsync(string userId)
     {
         var recently = await _context.RecentlyUsedAttribute.Where(x => x.UserId == userId)
             .Select(y => y.Attribute).Take(10).ToListAsync();
-        return recently.Select(x=>AttributeMapper.GetToDto(x)).ToList();
+        return recently.Select(x=>AttributeMapper.ToDto(x)).ToList();
     }
 
     public async Task<List<AttributeGetDto>> GetBuiltInAttributes()
@@ -228,6 +228,6 @@ public class AttributeService:IAttributeService
             .Where(a => a.IsBuiltIn)
             .ToListAsync();
         return attributes
-            .Select(x => AttributeMapper.GetToDto(x))
+            .Select(x => AttributeMapper.ToDto(x))
             .ToList();    }
 }

@@ -1,33 +1,26 @@
-﻿using TermPaper.Application.Dto.ProjectTagDto;
+﻿using TermPaper.Application.Dto.PositionProjectTagDto;
 using TermPaper.Domain.Models;
 
 namespace TermPaper.Infrastructure.Mappers;
 
-public class ProjectTagMapper
+public class PositionProjectTagMapper
 {
-    public static GetProjectTagDto GetProjectTagData(ProjectTags tags)
+    public static GetPositionProjectTagDto ToDto(PositionProjectTag positionProjectTag)
     {
-        return new GetProjectTagDto()
+        return new GetPositionProjectTagDto()
         {
-            Id = tags.Id,
-            ProjectId = tags.ProjectId,
-            Tag =  tags.Tag,
+            Id = positionProjectTag.Id,
+            PositionId = positionProjectTag.PositionId,
+            Tag = positionProjectTag.Tag
         };
     }
 
-    public static ProjectTags CreateProjectTagsData(CreateProjectTagDto dto)
+    public static PositionProjectTag ToEntity(CreatePositionProjectTagDto dto)
     {
-        return new ProjectTags()
+        return new PositionProjectTag()
         {
-            ProjectId = dto.ProjectId,
-            Tag = dto.Tag,
+            PositionId = dto.PositionId,
+            Tag = dto.Tag
         };
-    }
-
-    public static ProjectTags UpdateProjectTagsData(UpdateProjectTagDto tagDto, ProjectTags projectData)
-    {
-        projectData.ProjectId = tagDto.ProjectId ?? projectData.ProjectId;
-        projectData.Tag = tagDto.Tag ?? projectData.Tag;
-        return projectData;
     }
 }
