@@ -23,7 +23,6 @@ public class AttributeService:IAttributeService
     public async Task<List<AttributeGetDto>> GetAttribute()
     {
         var attributesList = await _context.Attributes.ToListAsync();
-
         return attributesList.Select(AttributeMapper.ToDto).ToList();
     }
 
@@ -76,7 +75,8 @@ public class AttributeService:IAttributeService
         _context.Entry(entity).Property(x => x.Version).OriginalValue = dto.Version;  
         AttributeMapper.UpdateEntity(dto, entity);                                    
         return await _context.SaveWithConcurrencyAsync();
-    }    public async Task<Result> DeleteAttribute(List<int> attributeIds)
+    }  
+    public async Task<Result> DeleteAttribute(List<int> attributeIds)
     {
         var entities = await _context.Attributes.Where(x=>attributeIds.Contains(x.Id)).ToListAsync();
          _context.Attributes.RemoveRange(entities);
@@ -135,7 +135,6 @@ public class AttributeService:IAttributeService
         {
             return Result.Failure(ErrorCode.AccessDenied);
         }
-
         _context.Entry(entity).Property(x => x.Version).OriginalValue = dto.Version;
         UserAttributeMapper.UpdateEntity(dto, entity);
         return await _context.SaveWithConcurrencyAsync();
@@ -181,7 +180,6 @@ public class AttributeService:IAttributeService
         var entity = await _context.Attributes.Where(x => x.CategoryId == categoryId).ToListAsync();
         return entity.Select(x=>AttributeMapper.ToDto(x)).ToList();
     }
-    
         public async Task<List<GetUserAttributeDto>> GetUserBuiltInAttributeValuesAsync(string userId)
         {
             var attributes = await _context.Attributes
