@@ -113,7 +113,7 @@
                 Version = item.Version
             };
 
-            var result = await AttributeService.UpdateUserAttribute(dto);
+            var result = await AttributeService.UpdateUserAttribute(UserId,dto);
 
             if (!result.IsSuccess &&
                 result.ErrorCode == ErrorCode.ConcurrencyConflict)

@@ -62,8 +62,8 @@ public class AttributeService:IAttributeService
 
     public async Task<Result> AddToUsersValue(UserAttributesAddDto addDto)
     {
-       var entuty = UserAttributeMapper.ToEntity(addDto);
-       await _context.UserAttributes.AddAsync(entuty);
+       var entity = UserAttributeMapper.ToEntity(addDto);
+       await _context.UserAttributes.AddAsync(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
@@ -73,21 +73,10 @@ public class AttributeService:IAttributeService
         var entity = await _context.Attributes.FindAsync(dto.Id);
         if (entity == null)
             return Result.Failure(ErrorCode.NotFound);
-        
-        AttributeMapper.UpdateEntity(dto, entity);
-        _context.Entry(entity).Property(x=>x.Version).OriginalValue = dto.Version;
-        try
-        {
-            await _context.SaveChangesAsync();
-            return Result.Success();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return Result.Failure(ErrorCode.ConcurrencyConflict);
-        }
-    }
-
-    public async Task<Result> DeleteAttribute(List<int> attributeIds)
+        _context.Entry(entity).Property(x => x.Version).OriginalValue = dto.Version;  
+        AttributeMapper.UpdateEntity(dto, entity);                                    
+        return await _context.SaveWithConcurrencyAsync();
+    }    public async Task<Result> DeleteAttribute(List<int> attributeIds)
     {
         var entities = await _context.Attributes.Where(x=>attributeIds.Contains(x.Id)).ToListAsync();
          _context.Attributes.RemoveRange(entities);
@@ -104,15 +93,7 @@ public class AttributeService:IAttributeService
         }
         _context.Entry(entity).Property(x => x.Version).OriginalValue = dto.Version;
         AttributeCategoryMapper.UpdateEntity(dto, entity);
-        try
-        {
-            await _context.SaveChangesAsync();
-            return Result.Success();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return Result.Failure(ErrorCode.ConcurrencyConflict);
-        }
+       return await _context.SaveWithConcurrencyAsync();
     }
 
     public async Task<Result> DeleteAttributeCategory(List<int> attributeCategoryIds)
@@ -143,29 +124,26 @@ public class AttributeService:IAttributeService
         return Result.Success();
     }
 
-    public async Task<Result> UpdateUserAttribute(UpdateUserAttributeDto dto)
+    public async Task<Result> UpdateUserAttribute(string userId,UpdateUserAttributeDto dto)
     {
         var entity = await _context.UserAttributes.FindAsync(dto.Id);
         if (entity == null)
         {
             return Result.Failure(ErrorCode.NotFound);
         }
+        if (entity.UserId != userId)
+        {
+            return Result.Failure(ErrorCode.AccessDenied);
+        }
+
         _context.Entry(entity).Property(x => x.Version).OriginalValue = dto.Version;
         UserAttributeMapper.UpdateEntity(dto, entity);
-        try
-        {
-            await _context.SaveChangesAsync();
-            return Result.Success();
-        }
-        catch (DbUpdateConcurrencyException e)
-        {
-            return Result.Failure(ErrorCode.ConcurrencyConflict);
-        }
+        return await _context.SaveWithConcurrencyAsync();
     }
 
-    public async Task<Result> DeleteUserAttribute(List<int> attributeIds)
+    public async Task<Result> DeleteUserAttribute(List<int> attributeIds,string userId)
     {
-        var entities = await _context.UserAttributes.Where(x=>attributeIds.Contains(x.Id)).ToListAsync();
+        var entities = await _context.UserAttributes.Where(x=>attributeIds.Contains(x.Id) && x.UserId == userId).ToListAsync();
         _context.UserAttributes.RemoveRange(entities);
         await _context.SaveChangesAsync();
          return Result.Success();
@@ -197,7 +175,7 @@ public class AttributeService:IAttributeService
             .ToListAsync();
         return search.Select(x => AttributeMapper.ToDto(x)).ToList();
     }
-    
+          
     public async Task<List<AttributeGetDto>> GetByCategoryAsync(int categoryId)
     {
         var entity = await _context.Attributes.Where(x => x.CategoryId == categoryId).ToListAsync();

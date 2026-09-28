@@ -60,17 +60,8 @@ public class PositionService:IPositionService
             return Result.Failure(ErrorCode.NotFound);
         } 
         _context.Entry(entity).Property(x=>x.Version).OriginalValue = dto.Version;
-        
         PositionMapper.UpdateEntity(dto,entity);
-        try
-        {
-            await _context.SaveChangesAsync();
-            return Result.Success();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return Result.Failure(ErrorCode.ConcurrencyConflict);
-        }
+        return await _context.SaveWithConcurrencyAsync();
     }
 
     public async Task<Result> DeletePosition(List<int> positionIds)
@@ -99,10 +90,12 @@ public class PositionService:IPositionService
         return Result.Success();
     }
 
-    public async Task<Result> DeletePositionProjectTag(List<int> positionIds)
+    public async Task<Result> DeletePositionProjectTag(List<int> tagIds)
     {
-        var entity = await _context.PositionProjectTags.Where(x=>positionIds.Contains(x.PositionId)).ToListAsync();
-         _context.PositionProjectTags.RemoveRange(entity);
+        var entity = await _context.PositionProjectTags
+            .Where(x => tagIds.Contains(x.Id))
+            .ToListAsync();
+        _context.PositionProjectTags.RemoveRange(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
     }
@@ -122,9 +115,11 @@ public class PositionService:IPositionService
         return Result.Success();
     }
 
-    public async Task<Result> DeletePositionAttribute(List<int> positionIds)
+    public async Task<Result> DeletePositionAttribute(List<int> positionAttributeIds)
     {
-        var entity = await _context.PositionAttributes.Where(x => positionIds.Contains(x.PositionId)).ToListAsync();
+        var entity = await _context.PositionAttributes
+            .Where(x => positionAttributeIds.Contains(x.Id))
+            .ToListAsync();
         _context.PositionAttributes.RemoveRange(entity);
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -149,14 +144,15 @@ public class PositionService:IPositionService
         return entity.Select(x=>PositionAccessRuleMapper.ToDto(x)).ToList();
     }
 
-    public async Task<Result> DeletePositionAccessRule(List<int> positionIds)
+    public async Task<Result> DeletePositionAccessRule(List<int> ruleIds)
     {
-        var entities = await _context.AccessRules.Where(x => positionIds.Contains(x.PositionId)).ToListAsync();
+        var entities = await _context.AccessRules
+            .Where(x => ruleIds.Contains(x.Id))
+            .ToListAsync();
         _context.AccessRules.RemoveRange(entities);
         await _context.SaveChangesAsync();
         return Result.Success();
-    }
-    
+    }    
     private static bool MatchesRule(Operator op, string? userValue, string ruleValue)
     {
         if (userValue == null)

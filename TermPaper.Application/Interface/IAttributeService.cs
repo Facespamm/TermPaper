@@ -48,8 +48,8 @@ public interface IAttributeService
     // User Attribute
     public Task<Result> AddToUsersValue(UserAttributesAddDto addDto);
 
-    public Task<Result> UpdateUserAttribute(UpdateUserAttributeDto dto);
+    public Task<Result> UpdateUserAttribute(string userId,UpdateUserAttributeDto dto);
 
-    public Task<Result> DeleteUserAttribute(List<int> attributeIds);
+    public Task<Result> DeleteUserAttribute(List<int> attributeIds, string  userId);
 
     Task<List<AttributeValueOptionDto>> GetOptionValuesAsync(int attributeId);}
