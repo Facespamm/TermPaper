@@ -8,10 +8,10 @@ public enum ErrorCode
     UserNotFound,
     EmailNotConfirmed,
     InvalidCredentials,
-
     NotFound,
     AlreadyExists,
     ValidationFailed,
     AccessDenied,
-    ConcurrencyConflict   
+    ConcurrencyConflict,
+    EmailSendFailed
 }

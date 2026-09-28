@@ -2,7 +2,9 @@
 @layout EmptyLayout
 
 @using TermPaper.Application.Interface
+@using Microsoft.Extensions.Logging
 @inject IRegisterService RegisterService
+@inject ILogger<RegisterPage> Logger
 @rendermode InteractiveServer
 <div class="Register-page">
     <div class="register-form">
@@ -95,8 +97,10 @@
             result = "A confirmation email has been sent to your email address.";
             isSuccess = true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Logger.LogError(ex, "An error occurred during registration");
+
             result = "An error occurred during registration. Please try again..";
             isSuccess = false;
         }
