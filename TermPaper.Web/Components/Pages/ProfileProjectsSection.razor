@@ -94,8 +94,6 @@
 
     private async Task OpenCreate()
     {
-        Console.WriteLine("OPEN CREATE");
-
         var result = await DialogService.OpenAsync<ProjectFormDialog>(
             "New project",
             new Dictionary<string, object>
@@ -107,8 +105,6 @@
                 Width = "500px",
                 Height = "auto"
             });
-
-        Console.WriteLine("DIALOG CLOSED");
 
         if (result is true)
         {
@@ -146,7 +142,7 @@
         if (!ids.Any())
             return;
 
-        await ProjectService.DeleteProject(ids);
+        await ProjectService.DeleteProject(UserId, ids);
 
         selected = new List<GetProjectDto>();
 

@@ -1,6 +1,7 @@
 @using TermPaper.Application.Interface
 @using TermPaper.Application.Dto.ProjectDto
 @using TermPaper.Application.Dto.ProjectTagDto
+@using TermPaper.Domain.Enum
 @inject IProjectService ProjectService
 @inject DialogService DialogService
 
@@ -81,7 +82,7 @@
     {
         <RadzenText TextStyle="TextStyle.Caption">
             Tags can be added after saving the project.
-            </RadzenText>
+        </RadzenText>
     }
 
     <RadzenStack Orientation="Orientation.Horizontal"
@@ -149,6 +150,7 @@
         if (isEdit)
         {
             var result = await ProjectService.UpdateProject(
+                UserId,
                 new UpdateProjectDto
                 {
                     Id = Existing!.Id,
@@ -162,9 +164,13 @@
             {
                 DialogService.Close(true);
             }
+            else if (result.ErrorCode == ErrorCode.AccessDenied)
+            {
+                errorMessage = "You don't have access to this project.";
+            }
             else
             {
-                errorMessage = "Failed to update the project..";
+                errorMessage = "Failed to update the project.";
             }
         }
         else
@@ -204,6 +210,7 @@
             return;
 
         await ProjectService.CreateProjectTag(
+            UserId,
             new CreateProjectTagDto
             {
                 Tag = newTag,
@@ -212,7 +219,7 @@
 
         newTag = "";
 
-        tags = await ProjectService.GetProjectTag(Existing.Id);
+        tags = await ProjectService.GetProjectTag(UserId, Existing.Id);
     }
 
     private async Task RemoveTag(int tagId)
@@ -221,8 +228,9 @@
             return;
 
         await ProjectService.DeleteProjectTag(
+            UserId,
             new List<int> { tagId });
 
-        tags = await ProjectService.GetProjectTag(Existing.Id);
+        tags = await ProjectService.GetProjectTag(UserId, Existing.Id);
     }
 }

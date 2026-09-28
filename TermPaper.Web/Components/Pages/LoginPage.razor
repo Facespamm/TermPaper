@@ -9,7 +9,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @using Microsoft.AspNetCore.WebUtilities
 <div class="login-page">
-    <div class="login-form">    
+    <div class="login-form">
         <form method="post" action="/api/auth/login">
             @if (!string.IsNullOrWhiteSpace(error))
             {
@@ -19,7 +19,9 @@
                         @error
                     </div>
                 </div>
-            }            <div class="mb-3">
+            }
+
+            <div class="mb-3">
                 <i class="bi bi-briefcase"></i>
                 <label for="exampleEmail" class="form-label">Login</label>
                 <input name="email" @bind="email" class="form-control" id="exampleEmail" placeholder="Email" required=""/>
@@ -59,7 +61,7 @@
             <p><a href="/RegisterPage" class="ms-2">Don't have an account?</a></p>
         </form>
     </div>
-</div>  
+</div>
 @code {
     private string email = "";
     private string password = "";
@@ -85,13 +87,17 @@
             {
                 "UserNotFound" => "User with this email was not found.",
                 "PasswordsDoNotMatch" => "Incorrect password.",
+                "EmailNotConfirmed" => "We sent a confirmation link to your email. Please confirm it and then sign in again.",
+                "AlreadyExists" => "An account with this email already exists. Please sign in with your password.",
                 _ => "An error occurred while signing in. Please try again."
-            };        }
+            };
+        }
     }
     private void GoogleLoginClick()
     {
         Navigation.NavigateTo("/api/auth/google-login", forceLoad: true);
     }
+
     private void FacebookLoginClick()
     {
         Navigation.NavigateTo("/api/auth/facebook-login", forceLoad: true);
