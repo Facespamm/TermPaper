@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Resend;
 using TermPaper.Application.Interface;
 using TermPaper.Infrastructure.Context;
@@ -36,12 +38,15 @@ public static class DependencyInjection
         services.AddAuthentication().AddGoogle(options =>
         {
             options.ClientId = googleSettings.ClientId;
-            options.ClientSecret = googleSettings.ClientSecret;    
+            options.ClientSecret = googleSettings.ClientSecret;
+            options.Events.OnRemoteFailure = RedirectToLoginOnRemoteFailure;
         });
-        var facebookSettings = configuration.GetSection("Authentication:Facebook").Get<FacebookAuthenticationSettings>() ?? new FacebookAuthenticationSettings();        services.AddAuthentication().AddFacebook(options =>
+        var facebookSettings = configuration.GetSection("Authentication:Facebook").Get<FacebookAuthenticationSettings>() ?? new FacebookAuthenticationSettings();
+        services.AddAuthentication().AddFacebook(options =>
         {
             options.AppId = facebookSettings.AppId;
             options.AppSecret = facebookSettings.AppSecret;
+            options.Events.OnRemoteFailure = RedirectToLoginOnRemoteFailure;
         });
         services.Configure<CloudinarySettings>(configuration.GetSection("Cloudinary"));
         services.AddScoped<IRegisterService, RegisterService>();
@@ -59,5 +64,13 @@ public static class DependencyInjection
 
         return services;
     }
- 
+    private static Task RedirectToLoginOnRemoteFailure(RemoteFailureContext context)
+    {
+        var logger = context.HttpContext.RequestServices
+            .GetRequiredService<ILoggerFactory>().CreateLogger("ExternalAuth");
+        logger.LogWarning(context.Failure, "External login failed");
+        context.HandleResponse();
+        context.Response.Redirect("/LoginPage");
+        return Task.CompletedTask;
+    } 
 }
