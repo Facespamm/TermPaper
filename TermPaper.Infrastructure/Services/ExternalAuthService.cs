@@ -60,7 +60,6 @@ public class ExternalAuthService : IExternalAuthService
             info.LoginProvider,
             info.ProviderKey,
             isPersistent: false);
-
         return result.Succeeded;
     }
 

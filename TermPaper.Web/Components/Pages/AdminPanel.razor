@@ -57,15 +57,13 @@
                     AllowPaging="true"
                     PageSize="10"
                     AllowRowSelectOnRowClick="true"
-                    FilterMode="FilterMode.Advanced"
+                    FilterMode="FilterMode.Advanced"    
                     @bind-Value="@selectedUsers"
                     TItem="UserDto"
                     Data="@users"
                     ColumnWidth="200px"
                     SelectionMode="DataGridSelectionMode.Multiple">
-
         <Columns>
-
             <RadzenDataGridColumn Property="Email"
                                   Title="Email"
                                   Width="260px" />
