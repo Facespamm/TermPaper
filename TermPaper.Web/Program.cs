@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.HttpOverrides;
     using Microsoft.EntityFrameworkCore;
     using TermPaper.Infrastructure.Identity;
+    using TermPaper.Infrastructure.Settings;
 
     var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@
     builder.Services.AddRadzenComponents();
     builder.Services.AddAuthorization();
     builder.Services.AddCascadingAuthenticationState();
+    builder.Services.Configure<SalesforceSettings>(
+        builder.Configuration.GetSection("Salesforce"));
     var app = builder.Build();
 
     app.UseForwardedHeaders(new ForwardedHeadersOptions

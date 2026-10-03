@@ -8,4 +8,8 @@ public class AppUser:IdentityUser
     
     public AppTheme Theme { get; set; }
     
+    public string? SalesforceAccountId { get; set; }
+    
+    public string? SalesforceContactId { get; set; }
+    
 }
