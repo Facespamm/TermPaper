@@ -4,9 +4,16 @@ namespace TermPaper.Application.Interface;
 
 public interface ICrmService
 {
-    public Dictionary<string,string> SalesforceVerificationData();
+    public Dictionary<string, string> SalesforceVerificationData();
 
-    public Task<string> GetSalesforceToken();
+    public Task<string> GetSalesforceAuf();
 
-    public Task<Result> CreateAccountSalesforce(string token);
+    public string GetSalesforceToken(string authResponse);
+
+    public Task<Result> CreateAccountSalesforce(string token, SalesforceAccountCreateDto dto, string userId);
+
+    public Task<SalesforceCompositeRequestDto> CreateDataAccountSalesforce(SalesforceAccountCreateDto dto,
+        string userId);
+
+
 }

@@ -50,7 +50,6 @@ public static class DependencyInjection
         });
         services.Configure<CloudinarySettings>(configuration.GetSection("Cloudinary"));
         services.AddScoped<IRegisterService, RegisterService>();
-        // services.AddScoped<ICrmService, CrmService>();
         services.AddScoped<IPositionService, PositionService>();
         services.AddScoped<IAttributeService , AttributeService>();
         services.AddScoped<IProjectService, ProjectService>();
