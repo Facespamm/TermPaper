@@ -60,21 +60,22 @@ public class CrmService: ICrmService
     {
         var url = $"https://{_configuration.InstanceUrl}/services/data/v62.0/composite/tree/Account";
         var data = await CreateDataAccountSalesforce(dto, userId);
-
         var request = new HttpRequestMessage(HttpMethod.Post, url)
-        {
-            Content = new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json")
-        };
+        { Content = new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json") };
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
         var response = await _httpClient.SendAsync(request);
-        return response.IsSuccessStatusCode
-            ? Result.Success()
-            : Result.Failure(ErrorCode.NotFound);   
+        return response.IsSuccessStatusCode ? Result.Success() : Result.Failure(ErrorCode.NotFound);   
     }
     public async Task<SalesforceCompositeRequestDto> CreateDataAccountSalesforce(SalesforceAccountCreateDto dto, string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        return SalesforceMapper.ToCompositeRequestDto(dto, user);
+        if (user == null)
+        {
+            throw new InvalidOperationException($"Unable to load user with ID '{userId}'.");
+        }
+        if (user.SalesforceAccountId != null && user.SalesforceContactId != null)
+        {
+            return new SalesforceCompositeRequestDto();
+        }        return SalesforceMapper.ToCompositeRequestDto(dto, user);
     }
 }

@@ -11,9 +11,21 @@ public class CrmEndPoints
         app.MapPost("/api/salesforce/token",
             async (ICrmService service, SalesforceAccountCreateDto dto, string userId) =>
             {
-                var token = await service.GetSalesforceAuf();
-                var response = await service.CreateAccountSalesforce(token, dto, userId);
-                return response;
+                try
+                {
+                    var token = await service.GetSalesforceAuf();
+
+                    var response = await service.CreateAccountSalesforce(token,dto,userId);
+
+                    return Results.Ok(response);
+                }
+                catch (InvalidOperationException e)
+                {
+                    return Results.NotFound(new
+                    {
+                        message = e.Message
+                    });
+                }
             });
     }
 }
