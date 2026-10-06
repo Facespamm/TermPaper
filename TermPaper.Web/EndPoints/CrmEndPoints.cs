@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using TermPaper.Application.Dto.SalesforceDto;
+using TermPaper.Application.Dto.SupportTicketDto;
 using TermPaper.Application.Interface;
 using TermPaper.Infrastructure.Services;
 
@@ -27,5 +29,11 @@ public class CrmEndPoints
                     });
                 }
             });
+        app.MapPost("/api/support-tickets",
+            async (ICrmService service, CreateTicketDto dto, ClaimsPrincipal user) =>
+            {
+
+            };
+
     }
 }

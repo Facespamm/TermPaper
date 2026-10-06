@@ -106,11 +106,12 @@ public class CrmService : ICrmService
     {
         var content = new FormUrlEncodedContent(GetEntraAuthData());
         var url = $"https://login.microsoftonline.com/{_entraSettings.TenantId}/oauth2/v2.0/token";
-        var response = _httpClient.PostAsync(url, content);
-        var body = await response.Result.Content.ReadAsStringAsync();
+        var response = await _httpClient.PostAsync(url, content);
+        var body = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException($"Entra auth failed: {body}");
         return ParseAccessToken(body);
     }
-
     public async Task<Result> CreateSupportTicket(CreateTicketDto createTicketDto, string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
