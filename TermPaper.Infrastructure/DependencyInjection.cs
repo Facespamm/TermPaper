@@ -49,10 +49,14 @@ public static class DependencyInjection
             options.Events.OnRemoteFailure = RedirectToLoginOnRemoteFailure;
         });
         services.Configure<CloudinarySettings>(configuration.GetSection("Cloudinary"));
+        services.Configure<SalesforceSettings>(
+            configuration.GetSection("Salesforce"));
+        services.Configure<EntraSettings>(configuration.GetSection("Entra"));
         services.AddScoped<IRegisterService, RegisterService>();
         services.AddScoped<IPositionService, PositionService>();
         services.AddScoped<IAttributeService , AttributeService>();
-        services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IProjectService, ProjectService>();  
+        
         services.AddScoped<CloudinaryService>();
         services.AddScoped<IUserManagementService, UserManagementService>();
         services.AddScoped<ISenderEmailService, SenderEmailService>();

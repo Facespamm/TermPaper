@@ -13,9 +13,9 @@ public class CrmEndPoints
             {
                 try
                 {
-                    var token = await service.GetSalesforceAuf();
+                    var token = await service.GetSalesforceToken();
 
-                    var response = await service.CreateAccountSalesforce(token,dto,userId);
+                    var response = await service.CreateSalesforceAccount(token, dto, userId);
 
                     return Results.Ok(response);
                 }

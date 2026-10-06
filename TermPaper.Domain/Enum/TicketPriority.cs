@@ -1,6 +1,6 @@
 ﻿namespace TermPaper.Domain.Enum;
 
-public enum TicketPriority
+public enum SupportTicketPriority
 {
     Low,
     Medium,
