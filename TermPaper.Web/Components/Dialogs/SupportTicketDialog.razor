@@ -1,0 +1,148 @@
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.Extensions.Logging
+@using TermPaper.Application.Dto.SupportTicketDto
+@using TermPaper.Application.Interface
+@using TermPaper.Domain.Enum
+@inject ICrmService CrmService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+@inject ILogger<SupportTicketDialog> Logger
+
+<RadzenStack Gap="1rem" class="rz-p-4" style="min-width: 380px;">
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" AllowClose="false">
+            @errorMessage
+        </RadzenAlert>
+    }
+
+    <RadzenFormField Text="Reported by (set automatically)" Variant="Variant.Outlined">
+        <RadzenTextBox Value="@reportedBy" ReadOnly="true" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Page (set automatically)" Variant="Variant.Outlined">
+        <RadzenTextBox Value="@Link" ReadOnly="true" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Summary *" Variant="Variant.Outlined">
+        <RadzenTextArea @bind-Value="@summary" Rows="5" MaxLength="1000" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Priority *" Variant="Variant.Outlined">
+        <RadzenDropDown TValue="string"
+                        Data="@priorities"
+                        @bind-Value="@priorityName"
+                        Placeholder="Select priority" />
+    </RadzenFormField>
+
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.End">
+        <RadzenButton Text="Cancel"
+                      ButtonStyle="ButtonStyle.Light"
+                      Disabled="@isSending"
+                      Click="@Cancel" />
+
+        <RadzenButton Text="Send ticket"
+                      ButtonStyle="ButtonStyle.Primary"
+                      IsBusy="@isSending"
+                      BusyText="Sending..."
+                      Disabled="@string.IsNullOrEmpty(userId)"
+                      Click="@Submit" />
+    </RadzenStack>
+
+</RadzenStack>
+
+@code {
+    [Parameter] public string Link { get; set; } = "";
+
+    [Parameter] public int? PositionId { get; set; }
+
+    private static readonly List<string> priorities = Enum.GetNames<SupportTicketPriority>().ToList();
+
+    private string userId = "";
+    private string reportedBy = "";
+
+    private string summary = "";
+    private string? priorityName;
+
+    private bool isSending;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
+        var principal = state.User;
+
+        userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        if (string.IsNullOrEmpty(userId))
+        {
+            errorMessage = "Please sign in again.";
+            return;
+        }
+
+        var roles = principal.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+        var name = principal.Identity?.Name ?? "";
+        reportedBy = roles.Count > 0 ? $"{name} ({string.Join(", ", roles)})" : name;
+    }
+
+    private async Task Submit()
+    {
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(summary))
+        {
+            errorMessage = "Describe the problem in the summary.";
+            return;
+        }
+
+        if (!Enum.TryParse<SupportTicketPriority>(priorityName, out var priority))
+        {
+            errorMessage = "Choose a priority.";
+            return;
+        }
+
+        isSending = true;
+
+        try
+        {
+            var dto = new CreateTicketDto
+            {
+                Summary = summary.Trim(),
+                Priority = priority,
+                Link = Link,
+                PositionId = PositionId
+            };
+
+            var result = await CrmService.CreateSupportTicket(dto, userId);
+
+            if (result.IsSuccess)
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Ticket sent",
+                    Detail = "The administrators will be notified shortly.",
+                    Duration = 5000
+                });
+                DialogService.Close(true);
+            }
+            else
+            {
+                errorMessage = $"The ticket could not be sent ({result.ErrorCode}).";
+            }
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or HttpRequestException)
+        {
+            Logger.LogError(ex, "Support ticket upload failed for user {UserId}", userId);
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isSending = false;
+        }
+    }
+
+    private void Cancel() => DialogService.Close(false);
+}

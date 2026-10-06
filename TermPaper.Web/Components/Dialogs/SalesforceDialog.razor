@@ -1,0 +1,214 @@
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Logging
+@using TermPaper.Application.Dto.SalesforceDto
+@using TermPaper.Application.Interface
+@using TermPaper.Infrastructure.Identity
+@inject ICrmService CrmService
+@inject UserManager<AppUser> UserManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+@inject ILogger<SalesforceDialog> Logger
+
+<RadzenStack Gap="1rem" class="rz-p-4" style="min-width: 380px;">
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" AllowClose="false">
+            @errorMessage
+        </RadzenAlert>
+    }
+
+    @if (alreadySynced)
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" AllowClose="false">
+            Your profile is already in Salesforce.
+        </RadzenAlert>
+    }
+
+    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">From your profile (cannot be changed)</RadzenText>
+
+    <RadzenFormField Text="Email" Variant="Variant.Outlined">
+        <RadzenTextBox Value="@email" ReadOnly="true" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Username" Variant="Variant.Outlined">
+        <RadzenTextBox Value="@userName" ReadOnly="true" />
+    </RadzenFormField>
+
+    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">Additional information</RadzenText>
+
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem">
+        <RadzenFormField Text="First name" Variant="Variant.Outlined" Style="flex:1;">
+            <RadzenTextBox @bind-Value="@firstName" MaxLength="40" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="Last name *" Variant="Variant.Outlined" Style="flex:1;">
+            <RadzenTextBox @bind-Value="@lastName" MaxLength="80" />
+        </RadzenFormField>
+    </RadzenStack>
+
+    <RadzenFormField Text="Company *" Variant="Variant.Outlined">
+        <RadzenTextBox @bind-Value="@companyName" MaxLength="255" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Phone" Variant="Variant.Outlined">
+        <RadzenTextBox @bind-Value="@phone" MaxLength="40" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Website" Variant="Variant.Outlined">
+        <RadzenTextBox @bind-Value="@website" MaxLength="255" Placeholder="https://" />
+    </RadzenFormField>
+
+    <RadzenFormField Text="Industry" Variant="Variant.Outlined">
+        <RadzenDropDown TValue="string"
+                        Data="@industries"
+                        @bind-Value="@industry"
+                        AllowClear="true"
+                        Placeholder="Select industry" />
+    </RadzenFormField>
+
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.End">
+        <RadzenButton Text="Cancel"
+                      ButtonStyle="ButtonStyle.Light"
+                      Disabled="@isSending"
+                      Click="@Cancel" />
+
+        <RadzenButton Text="Send to Salesforce"
+                      ButtonStyle="ButtonStyle.Primary"
+                      IsBusy="@isSending"
+                      BusyText="Sending..."
+                      Disabled="@(alreadySynced || string.IsNullOrEmpty(userId))"
+                      Click="@Submit" />
+    </RadzenStack>
+
+</RadzenStack>
+
+@code {
+    private static readonly List<string> industries = new()
+    {
+        "Agriculture", "Apparel", "Banking", "Biotechnology", "Chemicals", "Communications",
+        "Construction", "Consulting", "Education", "Electronics", "Energy", "Engineering",
+        "Entertainment", "Environmental", "Finance", "Food & Beverage", "Government",
+        "Healthcare", "Hospitality", "Insurance", "Machinery", "Manufacturing", "Media",
+        "Not For Profit", "Recreation", "Retail", "Shipping", "Technology",
+        "Telecommunications", "Transportation", "Utilities", "Other"
+    };
+
+    private string userId = "";
+    private string email = "";
+    private string userName = "";
+
+    private string firstName = "";
+    private string lastName = "";
+    private string companyName = "";
+    private string phone = "";
+    private string website = "";
+    private string? industry;
+
+    private bool alreadySynced;
+    private bool isSending;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
+        var principal = state.User;
+
+        userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+        if (string.IsNullOrEmpty(userId))
+        {
+            errorMessage = "Please sign in again.";
+            return;
+        }
+
+        email = principal.FindFirst(ClaimTypes.Email)?.Value ?? "";
+        userName = principal.Identity?.Name ?? "";
+
+        var user = await UserManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            errorMessage = "User not found.";
+            userId = "";
+            return;
+        }
+
+        email = user.Email ?? email;
+        userName = user.UserName ?? userName;
+        alreadySynced = user.SalesforceAccountId != null;
+    }
+
+    private async Task Submit()
+    {
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(companyName))
+        {
+            errorMessage = "Enter the company name.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(lastName))
+        {
+            errorMessage = "Enter the last name.";
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(website)
+            && !Uri.TryCreate(website.Trim(), UriKind.Absolute, out _))
+        {
+            errorMessage = "Website must be a full address, for example https://example.com.";
+            return;
+        }
+
+        isSending = true;
+
+        try
+        {
+            var dto = new SalesforceAccountCreateDto
+            {
+                FirstName = firstName.Trim(),
+                LastName = lastName.Trim(),
+                CompanyName = companyName.Trim(),
+                Phone = NullIfEmpty(phone),
+                Website = NullIfEmpty(website),
+                Industry = industry
+            };
+
+            var token = await CrmService.GetSalesforceToken();
+            var result = await CrmService.CreateSalesforceAccount(token, dto, userId);
+
+            if (result.IsSuccess)
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Sent to Salesforce",
+                    Detail = "Account and Contact were created.",
+                    Duration = 5000
+                });
+                DialogService.Close(true);
+            }
+            else
+            {
+                errorMessage = $"Salesforce did not accept the data ({result.ErrorCode}). Check the values and try again.";
+            }
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or HttpRequestException)
+        {
+            Logger.LogError(ex, "Salesforce request failed for user {UserId}", userId);
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isSending = false;
+        }
+    }
+
+    private void Cancel() => DialogService.Close(false);
+
+    private static string? NullIfEmpty(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+}

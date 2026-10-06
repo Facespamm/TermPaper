@@ -1,8 +1,10 @@
 ﻿@using System.Net
 @using TermPaper.Application.Common
 @using Microsoft.AspNetCore.Components.Authorization
+@using TermPaper.Components.Dialogs
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
+@inject DialogService DialogService
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
     
@@ -54,6 +56,18 @@
             </ul>
 
             <form class="d-flex align-items-center" role="search">
+                <AuthorizeView>
+                    <Authorized>
+                        <button class="btn btn-outline-secondary btn-sm me-2"
+                                type="button"
+                                title="Help: create a support ticket"
+                                aria-label="Help"
+                                @onclick="OpenSupportTicket">
+                            <i class="bi bi-question-circle"></i>
+                        </button>
+                    </Authorized>
+                </AuthorizeView>
+
                 <input class="form-control form-control-sm me-2"
                        type="search"
                        placeholder="Search"
@@ -79,6 +93,17 @@
             @Body
         </article>
     </main>
+
+    <AuthorizeView>
+        <Authorized>
+            <footer class="border-top bg-body-tertiary py-2 text-center small">
+                <a href="#" class="text-decoration-none"
+                   @onclick="OpenSupportTicket" @onclick:preventDefault>
+                    Create support ticket
+                </a>
+            </footer>
+        </Authorized>
+    </AuthorizeView>
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>
@@ -97,5 +122,30 @@
     private async Task LogOutClick()
     {
         Navigation.NavigateTo("api/auth/log-out",forceLoad: true);
+    }
+    private async Task OpenSupportTicket()
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            ["Link"] = Navigation.Uri
+        };
+        var positionId = GetCurrentPositionId();
+        if (positionId != null)
+            parameters["PositionId"] = positionId.Value;
+
+        await DialogService.OpenAsync<SupportTicketDialog>(
+            "Create support ticket",
+            parameters,
+            new DialogOptions { Width = "520px", Height = "auto" });
+    }
+    private int? GetCurrentPositionId()
+    {
+        var path = new Uri(Navigation.Uri).AbsolutePath.Trim('/');
+        var parts = path.Split('/');
+        return parts.Length == 2
+               && parts[0].Equals("positions", StringComparison.OrdinalIgnoreCase)
+               && int.TryParse(parts[1], out var id)
+            ? id
+            : null;
     }
 }
