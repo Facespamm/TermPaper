@@ -15,7 +15,8 @@ public class SupportTicketDto
     public string Link { get; set; } = string.Empty;
 
     [JsonPropertyName("priority")]
-    public string Priority { get; set; } = string.Empty;
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SupportTicketPriority Priority { get; set; }
 
     [JsonPropertyName("summary")]
     public string Summary { get; set; } = string.Empty;

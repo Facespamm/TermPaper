@@ -3,7 +3,6 @@
 public enum SupportTicketPriority
 {
     Low,
-    Medium,
-    High,
-    Critical
+    Average,
+    High
 }

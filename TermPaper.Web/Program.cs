@@ -1,3 +1,4 @@
+    using System.Text.Json.Serialization;
     using Microsoft.AspNetCore.Identity;
     using Radzen;
     using TermPaper.Components;
@@ -18,6 +19,8 @@
     builder.Services.AddRadzenComponents();
     builder.Services.AddAuthorization();
     builder.Services.AddCascadingAuthenticationState();
+    builder.Services.ConfigureHttpJsonOptions(o =>
+        o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     var app = builder.Build();
 
     app.UseForwardedHeaders(new ForwardedHeadersOptions

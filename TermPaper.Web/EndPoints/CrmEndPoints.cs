@@ -29,11 +29,13 @@ public class CrmEndPoints
                     });
                 }
             });
-        app.MapPost("/api/support-tickets",
+        app.MapPost("/api/support-tickets-token",
             async (ICrmService service, CreateTicketDto dto, ClaimsPrincipal user) =>
             {
-
-            };
-
+                var userId = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (userId == null) throw new InvalidOperationException($"Unable to load user with ID '{userId}'.");
+                var create = await service.CreateSupportTicket(dto, userId);
+                return Results.Ok(create);
+            });
     }
 }

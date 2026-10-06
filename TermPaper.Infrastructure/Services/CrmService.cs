@@ -89,7 +89,7 @@ public class CrmService : ICrmService
         return SalesforceMapper.ToCompositeRequestDto(dto, user);
     }
 
-    //Power Automate (OneDrive через Microsoft Graph)
+    //Power Automate
 
     public Dictionary<string, string> GetEntraAuthData()
     {
