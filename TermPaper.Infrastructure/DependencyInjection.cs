@@ -56,7 +56,7 @@ public static class DependencyInjection
         services.AddScoped<IPositionService, PositionService>();
         services.AddScoped<IAttributeService , AttributeService>();
         services.AddScoped<IProjectService, ProjectService>();  
-        
+        services.AddHttpClient<ICrmService, CrmService>();
         services.AddScoped<CloudinaryService>();
         services.AddScoped<IUserManagementService, UserManagementService>();
         services.AddScoped<ISenderEmailService, SenderEmailService>();
