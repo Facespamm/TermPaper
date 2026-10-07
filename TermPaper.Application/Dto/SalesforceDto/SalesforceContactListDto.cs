@@ -5,5 +5,5 @@ namespace TermPaper.Application.Dto.SalesforceDto;
 public class SalesforceContactListDto
 {
     [JsonPropertyName("records")]
-    public List<SalesforceContactRecordDto> Record = new(); 
+    public List<SalesforceContactRecordDto> Record { get; set; } = new();
 }

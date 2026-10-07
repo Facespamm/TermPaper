@@ -14,9 +14,9 @@ public class SalesforceMapper
                 new SalesforceAccountRecordDto
                 {
                     Name = dto.CompanyName,
-                    Phone = dto.Phone!,
-                    Industry = dto.Industry!,
-                    Website = dto.Website!,
+                    Phone = dto.Phone,
+                    Industry = dto.Industry,
+                    Website = dto.Website,
                     Contacts = new SalesforceContactListDto
                     {
                         Record = new List<SalesforceContactRecordDto>
@@ -25,7 +25,7 @@ public class SalesforceMapper
                             {
                                 FirstName = dto.FirstName,
                                 LastName = dto.LastName,
-                                Email = user.Email!,
+                                Email = user.Email!
                             }
                         }
                     }
@@ -34,6 +34,3 @@ public class SalesforceMapper
         };
     }
 }
-    
-                    
-        

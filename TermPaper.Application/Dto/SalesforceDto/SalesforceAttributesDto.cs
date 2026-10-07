@@ -6,5 +6,5 @@ public class SalesforceAttributesDto
 {
     [JsonPropertyName("type")] public string Type { get; set; } = string.Empty;
 
-    [JsonPropertyName("reference_id")] public string ReferenceId { get; set; } = string.Empty;
+    [JsonPropertyName("referenceId")] public string ReferenceId { get; set; } = string.Empty;
 }

@@ -6,20 +6,22 @@ public class SalesforceAccountRecordDto
 {
     [JsonPropertyName("attributes")]
     public SalesforceAttributesDto Attributes { get; set; } = new() { Type = "Account", ReferenceId = "acc1" };
-    
+
     [JsonPropertyName("Name")]
     public string Name { get; set; } = string.Empty;
-    
+
     [JsonPropertyName("Phone")]
-    public string Phone { get; set; } = string.Empty;
-    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Phone { get; set; }
+
     [JsonPropertyName("Industry")]
-    public string Industry { get; set; } = string.Empty;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Industry { get; set; }
 
-    [JsonPropertyName("Contacts")] 
-    public SalesforceContactListDto Contacts { get; set; } = new();
-    
     [JsonPropertyName("Website")]
-    public string Website { get; set; } = string.Empty;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Website { get; set; }
 
+    [JsonPropertyName("Contacts")]
+    public SalesforceContactListDto Contacts { get; set; } = new();
 }
