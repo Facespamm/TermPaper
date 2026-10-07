@@ -556,7 +556,7 @@ namespace TermPaper.Infrastructure.Migrations
                     b.ToTable("UserAttributes");
                 });
 
-            modelBuilder.Entity("TermPaper.Models.AppUser", b =>
+            modelBuilder.Entity("TermPaper.Infrastructure.Identity.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -602,6 +602,12 @@ namespace TermPaper.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("SalesforceAccountId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SalesforceContactId")
+                        .HasColumnType("text");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -639,7 +645,7 @@ namespace TermPaper.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("TermPaper.Models.AppUser", null)
+                    b.HasOne("TermPaper.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -648,7 +654,7 @@ namespace TermPaper.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("TermPaper.Models.AppUser", null)
+                    b.HasOne("TermPaper.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -663,7 +669,7 @@ namespace TermPaper.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TermPaper.Models.AppUser", null)
+                    b.HasOne("TermPaper.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -672,7 +678,7 @@ namespace TermPaper.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("TermPaper.Models.AppUser", null)
+                    b.HasOne("TermPaper.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -722,7 +728,7 @@ namespace TermPaper.Infrastructure.Migrations
 
             modelBuilder.Entity("TermPaper.Domain.Models.PositionAttribute", b =>
                 {
-                    b.HasOne("TermPaper.Domain.Models.Attributes", "Attributes")
+                    b.HasOne("TermPaper.Domain.Models.Attributes", "Attribute")
                         .WithMany()
                         .HasForeignKey("AttributeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -734,7 +740,7 @@ namespace TermPaper.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Attributes");
+                    b.Navigation("Attribute");
 
                     b.Navigation("Position");
                 });
@@ -763,7 +769,7 @@ namespace TermPaper.Infrastructure.Migrations
 
             modelBuilder.Entity("TermPaper.Domain.Models.Projects", b =>
                 {
-                    b.HasOne("TermPaper.Models.AppUser", null)
+                    b.HasOne("TermPaper.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -778,7 +784,7 @@ namespace TermPaper.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TermPaper.Models.AppUser", null)
+                    b.HasOne("TermPaper.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -795,7 +801,7 @@ namespace TermPaper.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TermPaper.Models.AppUser", null)
+                    b.HasOne("TermPaper.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
