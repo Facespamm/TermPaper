@@ -5,8 +5,18 @@ namespace TermPaper.Infrastructure.Mappers;
 
 public class SalesforceMapper
 {
-    public static SalesforceCompositeRequestDto ToCompositeRequestDto(SalesforceAccountCreateDto dto, AppUser user)
+    public static SalesforceCompositeRequestDto ToCompositeRequestDto(
+        SalesforceAccountCreateDto dto, AppUser user, Dictionary<string, string?> profile)
     {
+        string? Get(string key) =>
+            profile.TryGetValue(key, out var value) && !string.IsNullOrWhiteSpace(value)
+                ? value.Trim()
+                : null;
+
+        string? birthdate = DateTime.TryParse(Get("Date of Birth"), out var date)
+            ? date.ToString("yyyy-MM-dd")
+            : null;
+
         return new SalesforceCompositeRequestDto
         {
             Records = new List<SalesforceAccountRecordDto>
@@ -14,18 +24,21 @@ public class SalesforceMapper
                 new SalesforceAccountRecordDto
                 {
                     Name = dto.CompanyName,
-                    Phone = dto.Phone,
-                    Industry = dto.Industry,
                     Website = dto.Website,
+                    Industry = dto.Industry,
                     Contacts = new SalesforceContactListDto
                     {
                         Record = new List<SalesforceContactRecordDto>
                         {
                             new SalesforceContactRecordDto
                             {
-                                FirstName = dto.FirstName,
-                                LastName = dto.LastName,
-                                Email = user.Email!
+                                FirstName = Get("First Name") ?? string.Empty,
+                                LastName = Get("Last Name") ?? user.UserName ?? "Unknown",
+                                Email = user.Email!,
+                                Phone = Get("Phone"),
+                                Birthdate = birthdate,
+                                MailingCity = Get("Location"),
+                                Description = Get("About Me")
                             }
                         }
                     }

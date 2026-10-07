@@ -15,4 +15,20 @@ public class SalesforceContactRecordDto
 
     [JsonPropertyName("Email")]
     public string Email { get; set; } = string.Empty;
+
+    [JsonPropertyName("Phone")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Phone { get; set; }
+
+    [JsonPropertyName("Birthdate")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Birthdate { get; set; }
+
+    [JsonPropertyName("MailingCity")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? MailingCity { get; set; }
+
+    [JsonPropertyName("Description")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Description { get; set; }
 }

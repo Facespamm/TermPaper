@@ -91,9 +91,12 @@ public class CrmService : ICrmService
         if (user.SalesforceAccountId != null && user.SalesforceContactId != null)
             return new SalesforceCompositeRequestDto();
 
-        return SalesforceMapper.ToCompositeRequestDto(dto, user);
-    }
+        var profile = await _context.UserAttributes
+            .Where(x => x.UserId == userId && x.Attributes.IsBuiltIn)
+            .ToDictionaryAsync(x => x.Attributes.Name, x => (string?)x.Value);
 
+        return SalesforceMapper.ToCompositeRequestDto(dto, user, profile);
+    }
     //Power Automate
 
     public Dictionary<string, string> GetEntraAuthData()

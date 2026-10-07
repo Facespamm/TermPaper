@@ -28,7 +28,9 @@
         </RadzenAlert>
     }
 
-    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">From your profile (cannot be changed)</RadzenText>
+    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">
+        Sent automatically from your profile (cannot be changed)
+    </RadzenText>
 
     <RadzenFormField Text="Email" Variant="Variant.Outlined">
         <RadzenTextBox Value="@email" ReadOnly="true" />
@@ -38,24 +40,14 @@
         <RadzenTextBox Value="@userName" ReadOnly="true" />
     </RadzenFormField>
 
-    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">Additional information</RadzenText>
+    <RadzenText TextStyle="TextStyle.Body2" class="rz-mb-0">
+        Profile fields (name, date of birth, phone, location, about me) are added automatically.
+    </RadzenText>
 
-    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem">
-        <RadzenFormField Text="First name" Variant="Variant.Outlined" Style="flex:1;">
-            <RadzenTextBox @bind-Value="@firstName" MaxLength="40" />
-        </RadzenFormField>
-
-        <RadzenFormField Text="Last name *" Variant="Variant.Outlined" Style="flex:1;">
-            <RadzenTextBox @bind-Value="@lastName" MaxLength="80" />
-        </RadzenFormField>
-    </RadzenStack>
+    <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-0">Company information</RadzenText>
 
     <RadzenFormField Text="Company *" Variant="Variant.Outlined">
         <RadzenTextBox @bind-Value="@companyName" MaxLength="255" />
-    </RadzenFormField>
-
-    <RadzenFormField Text="Phone" Variant="Variant.Outlined">
-        <RadzenTextBox @bind-Value="@phone" MaxLength="40" />
     </RadzenFormField>
 
     <RadzenFormField Text="Website" Variant="Variant.Outlined">
@@ -101,10 +93,7 @@
     private string email = "";
     private string userName = "";
 
-    private string firstName = "";
-    private string lastName = "";
     private string companyName = "";
-    private string phone = "";
     private string website = "";
     private string? industry;
 
@@ -150,12 +139,6 @@
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(lastName))
-        {
-            errorMessage = "Enter the last name.";
-            return;
-        }
-
         if (!string.IsNullOrWhiteSpace(website)
             && !Uri.TryCreate(website.Trim(), UriKind.Absolute, out _))
         {
@@ -169,10 +152,7 @@
         {
             var dto = new SalesforceAccountCreateDto
             {
-                FirstName = firstName.Trim(),
-                LastName = lastName.Trim(),
                 CompanyName = companyName.Trim(),
-                Phone = NullIfEmpty(phone),
                 Website = NullIfEmpty(website),
                 Industry = industry
             };
@@ -196,7 +176,7 @@
                 errorMessage = $"Salesforce did not accept the data ({result.ErrorCode}). Check the values and try again.";
             }
         }
-        catch (Exception ex) when (ex is InvalidOperationException or HttpRequestException)
+        catch (Exception ex) when (ex is InvalidOperationException or HttpRequestException or UriFormatException)
         {
             Logger.LogError(ex, "Salesforce request failed for user {UserId}", userId);
             errorMessage = ex.Message;
