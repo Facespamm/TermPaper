@@ -74,7 +74,12 @@ public class CrmService : ICrmService
         };
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await _httpClient.SendAsync(request);
-        return response.IsSuccessStatusCode ? Result.Success() : Result.Failure(ErrorCode.NotFound);
+        var body = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException($"Salesforce error {(int)response.StatusCode}: {body}");
+
+        return Result.Success();
     }
 
     public async Task<SalesforceCompositeRequestDto> BuildSalesforceRequest(SalesforceAccountCreateDto dto, string userId)
