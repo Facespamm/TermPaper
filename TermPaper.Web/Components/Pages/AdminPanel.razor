@@ -43,6 +43,12 @@
                       Variant="Variant.Outlined"
                       Disabled="@(!selectedUsers.Any())"
                       Click="@DeleteSelectedUsers"/>
+        
+        <RadzenButton Text="Assign role: Admin"
+                      Icon="admin_panel_settings"
+                      ButtonStyle="ButtonStyle.Warning"
+                      Disabled="@(!selectedUsers.Any())"
+                      Click="@(() => AssignRole("Admin"))"/>
 
     </RadzenStack>
 
